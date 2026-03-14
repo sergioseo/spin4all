@@ -28,4 +28,24 @@ document.addEventListener('DOMContentLoaded', () => {
         revealObserver.observe(reveal);
     });
 
+    // FAQ Accordion Logic
+    const accordionHeaders = document.querySelectorAll('.accordion-header');
+
+    accordionHeaders.forEach(header => {
+        header.addEventListener('click', () => {
+            // Toggle active class on header
+            header.classList.toggle('active');
+            
+            // Get the content element
+            const content = header.nextElementSibling;
+            
+            // Toggle max-height for animation
+            if (header.classList.contains('active')) {
+                content.style.maxHeight = content.scrollHeight + "px";
+            } else {
+                content.style.maxHeight = 0;
+            }
+        });
+    });
+
 });

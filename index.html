@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spin4All - Comunidade de Tênis de Mesa</title>
+    <title>Spin4All | Tênis de Mesa em Águas de São Pedro</title>
+    <meta name="description" content="A comunidade Spin4All de tênis de mesa em Águas de São Pedro promove treinos semanais, saúde e integração. Venha aprender tênis de mesa com a gente!">
+    <meta name="keywords" content="tenis de mesa em aguas de sao pedro, ping pong aguas de sao pedro, comunidade de tenis de mesa, aprender tenis de mesa, esporte, aguas de sao pedro">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@800&display=swap" rel="stylesheet">
@@ -11,10 +13,15 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Header / Navigation (Simple) -->
+    <!-- Header / Navigation -->
     <header class="header">
         <div class="container header-container">
             <div class="logo-text">Spin<span class="text-gradient">4</span>All</div>
+            <nav class="desktop-nav">
+                <a href="#sobre">Sobre</a>
+                <a href="#treinos">Treinos</a>
+                <a href="#faq">Dúvidas</a>
+            </nav>
             <a href="https://chat.whatsapp.com/K2yuN2LIELUCY6iC8gYGAa" class="header-cta" target="_blank" rel="noopener noreferrer">Junte-se a nós</a>
         </div>
     </header>
@@ -22,15 +29,21 @@
     <!-- SECTION 1 — HERO -->
     <section id="hero" class="hero">
         <div class="hero-content reveal">
-            <img src="logo.png" alt="Spin4All Logo" class="hero-logo">
+            <img src="logo.png" alt="Logo da Comunidade Spin4All Tênis de Mesa" class="hero-logo">
             <div class="hero-badge">Comunidade em Águas de São Pedro</div>
             <h1 class="title">Spin<span class="text-gradient">4</span>All</h1>
             <h2 class="subtitle">Comunidade de Tênis de Mesa para Todos</h2>
             <p class="description">Um grupo apaixonado por tênis de mesa que promove inclusão, saúde e integração social em Águas de São Pedro.</p>
-            <a href="https://chat.whatsapp.com/K2yuN2LIELUCY6iC8gYGAa" class="cta-button cta-bounce" target="_blank" rel="noopener noreferrer">
-                <span>Entrar no grupo de WhatsApp</span>
-                <i class="ph-bold ph-whatsapp-logo"></i>
-            </a>
+            <div class="hero-actions">
+                <a href="https://chat.whatsapp.com/K2yuN2LIELUCY6iC8gYGAa" class="cta-button cta-bounce" target="_blank" rel="noopener noreferrer">
+                    <span>Entrar no grupo de WhatsApp</span>
+                    <i class="ph-bold ph-whatsapp-logo"></i>
+                </a>
+                <div class="social-share mt-4">
+                    <span class="share-text">Compartilhe: </span>
+                    <a href="https://api.whatsapp.com/send?text=Venha jogar Tênis de Mesa com a Spin4All em Águas de São Pedro! https://chat.whatsapp.com/K2yuN2LIELUCY6iC8gYGAa" target="_blank" class="share-btn"><i class="ph-fill ph-whatsapp-logo"></i></a>
+                </div>
+            </div>
         </div>
         
         <!-- Animated Background Elements -->
@@ -44,7 +57,7 @@
         <div class="container text-center max-w-lg">
             <h2 class="section-title">Sobre a Comunidade</h2>
             <div class="content-box glass-effect">
-                <p class="section-text lead">A Spin4All nasceu com o objetivo de democratizar o tênis de mesa e aproximar pessoas do esporte.</p>
+                <p class="section-text lead">Spin4All nasceu com o objetivo de democratizar o tênis de mesa e aproximar pessoas do esporte.</p>
                 <p class="section-text">Muitas pessoas acreditam que nunca conseguirão jogar ou que o esporte é difícil demais. Nossa missão é quebrar essa barreira e mostrar que qualquer pessoa pode aprender e se divertir jogando.</p>
                 <p class="section-text font-semibold gradient-text-blue-green mt-4">Aqui acreditamos que o esporte pode transformar vidas, melhorar a saúde e conectar pessoas.</p>
             </div>
@@ -61,21 +74,21 @@
                         <i class="ph ph-heartbeat"></i>
                     </div>
                     <h3 class="card-title">Saúde Física e Mental</h3>
-                    <p class="card-text">O esporte ajuda no bem-estar, melhora o condicionamento físico e reduz o estresse do dia a dia.</p>
+                    <p class="card-text">O esporte melhora o condicionamento físico, reduz o estresse e promove bem-estar.</p>
                 </div>
                 <div class="value-card card-hover">
                     <div class="icon-wrapper bg-gradient-democracy">
                         <i class="ph ph-users-three"></i>
                     </div>
                     <h3 class="card-title">Democratização do Esporte</h3>
-                    <p class="card-text">Qualquer pessoa pode jogar. Não importa idade, sexo ou experiência.</p>
+                    <p class="card-text">Qualquer pessoa pode jogar, independente de idade, sexo ou experiência.</p>
                 </div>
                 <div class="value-card card-hover">
                     <div class="icon-wrapper bg-gradient-collab">
                         <i class="ph ph-handshake"></i>
                     </div>
                     <h3 class="card-title">Ambiente Colaborativo</h3>
-                    <p class="card-text">Somos um grupo apaixonado pelo esporte que aprende, treina e evolui junto.</p>
+                    <p class="card-text">Somos um grupo apaixonado pelo esporte que aprende e evolui junto.</p>
                 </div>
             </div>
         </div>
@@ -95,7 +108,6 @@
                     <span class="time-badge">17h às 18h20</span>
                 </div>
             </div>
-            
             <p class="schedule-disclaimer text-center">* Os horários podem sofrer alterações. Acompanhe nosso grupo no WhatsApp para confirmação.</p>
             
             <div class="training-format max-w-lg margin-center">
@@ -110,26 +122,40 @@
             <div class="levels-grid">
                 <div class="level-card level-beginner">
                     <span class="level-badge badge-blue">Iniciante</span>
-                    <p>Fundamentos do esporte, aprendizado dos golpes e início da dinâmica de jogo.</p>
+                    <p>Fundamentos, aprendizado e fixação dos golpes.</p>
                 </div>
                 <div class="level-card level-intermediate">
                     <span class="level-badge badge-green">Intermediário</span>
-                    <p>Evolução dos golpes, introdução de técnicas de jogo e melhoria da consistência.</p>
+                    <p>Evolução dos golpes e introdução às técnicas de jogo.</p>
                 </div>
                 <div class="level-card level-advanced">
                     <span class="level-badge badge-orange">Avançado</span>
-                    <p>Dinâmica de jogo mais intensa, técnicas de saque e movimentação estratégica.</p>
+                    <p>Dinâmica de jogo mais intensa, técnicas de saque e movimentação.</p>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- EXTRA FEATURE: GALLERY -->
+    <section id="galeria" class="section bg-light reveal">
+        <div class="container">
+            <h2 class="section-title text-center">Nossa Dinâmica</h2>
+            <div class="gallery-grid">
+                <div class="gallery-item"><img src="foto1.jpg" alt="Treino da Comunidade Spin4All" class="gallery-img"></div>
+                <div class="gallery-item"><img src="foto2.jpg" alt="Estrutura de tênis de mesa em Águas de São Pedro" class="gallery-img"></div>
+                <div class="gallery-item"><img src="foto3.jpg" alt="Treino prático de ping pong" class="gallery-img"></div>
+                <div class="gallery-item"><img src="foto4.jpg" alt="Jogadores da Spin4All reunidos" class="gallery-img"></div>
+            </div>
+            <p class="text-center mt-4 text-sm color-text-light">Acompanhe nossos treinos de ping pong semanais.</p>
+        </div>
+    </section>
+
     <!-- SECTION 5 — QUEM PODE PARTICIPAR -->
-    <section id="participar" class="section bg-light reveal">
+    <section id="participar" class="section reveal">
         <div class="container max-w-lg">
             <div class="participate-box">
                 <h2 class="section-title text-center">Quem pode participar?</h2>
-                <h3 class="highlight-text text-center">Todos são bem-vindos.</h3>
+                <h3 class="highlight-text text-center">Nossa comunidade é aberta para todos.</h3>
                 
                 <div class="qna-list">
                     <div class="qna-item">
@@ -142,43 +168,127 @@
                     <div class="qna-item">
                         <div class="qna-icon"><i class="ph ph-sneaker"></i></div>
                         <div class="qna-content">
-                            <strong>Não precisa ter experiência nem equipamento especial.</strong>
-                        </div>
-                    </div>
-                    <div class="qna-item">
-                        <div class="qna-icon"><i class="ph ph-sparkle"></i></div>
-                        <div class="qna-content">
-                            <p>Se você tem curiosidade ou vontade de aprender, já é suficiente para começar.</p>
+                            <strong>Não precisa de experiência nem equipamento.</strong>
                         </div>
                     </div>
                 </div>
                 
-                <p class="invite-text text-center fade-in-up delay-1">Venha conhecer o grupo e experimentar.</p>
+                <p class="invite-text text-center fade-in-up delay-1">Venha conhecer e experimentar.</p>
             </div>
         </div>
     </section>
 
-    <!-- SECTION 6 — NOSSO OBJETIVO -->
-    <section id="objetivo" class="section reveal">
-        <div class="container text-center max-w-lg">
-            <div class="purpose-icon"><i class="ph ph-target"></i></div>
-            <h2 class="section-title">Nosso propósito</h2>
-            <p class="section-text text-lg">Queremos criar uma ponte entre o esporte e a sociedade, tornando o tênis de mesa acessível para pessoas de todas as idades e condições socioeconômicas.</p>
-            <p class="section-text text-lg mt-4 text-glow">Acreditamos que um ambiente acolhedor e colaborativo pode inspirar mais pessoas a descobrirem o prazer de jogar.</p>
+    <!-- EXTRA FEATURE: TESTIMONIALS -->
+    <section id="depoimentos" class="section bg-light reveal">
+        <div class="container">
+            <h2 class="section-title text-center">O que dizem os jogadores</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <p>"Nunca tinha jogado tênis de mesa antes e me senti super acolhido. Ótimo para a saúde!"</p>
+                    <strong>- Aluno Iniciante</strong>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <p>"Excelente comunidade de ping pong em Águas de São Pedro. Os treinos são muito dinâmicos."</p>
+                    <strong>- Jogador Intermediário</strong>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <p>"Nunca imaginei que pudesse ser tão facil aprender. Aprendi o basico em menos de 1 hora!"</p>
+                    <strong>- Aluno Curioso</strong>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <p>"Não sabia que poderia melhorar meu jogo em tão pouco tempo. Obrigado timee!"</p>
+                    <strong>- Aluno Intermediário</strong>
+                </div>
+            </div>
         </div>
     </section>
 
-    <!-- SECTION 7 — CALL TO ACTION -->
+    <!-- SECTION 6 — NOSSO PROPÓSITO -->
+    <section id="proposito" class="section reveal">
+        <div class="container text-center max-w-lg">
+            <div class="purpose-icon"><i class="ph ph-target"></i></div>
+            <h2 class="section-title">Nosso propósito</h2>
+            <p class="section-text text-lg">Criar uma ponte entre o esporte e a sociedade para democratizar o tênis de mesa para todas as idades e condições socioeconômicas.</p>
+            <p class="section-text text-lg mt-4 text-glow">Criar um ambiente acolhedor que inspire pessoas a descobrir o prazer de jogar.</p>
+        </div>
+    </section>
+
+    <!-- SECTION 7 — TÊNIS DE MESA EM ÁGUAS DE SÃO PEDRO (SEO BLOCK) -->
+    <section id="seo-text" class="section bg-light reveal">
+        <div class="container">
+            <div class="seo-box">
+                <h2 class="section-title">Tênis de Mesa em Águas de São Pedro</h2>
+                <p class="section-text">Se você procura onde jogar tênis de mesa em Águas de São Pedro, o Spin4All é uma comunidade aberta que reúne jogadores iniciantes e experientes.</p>
+                <p class="section-text">Nosso grupo promove treinos semanais, integração social e aprendizado do esporte.</p>
+                <p class="section-text font-semibold">Qualquer pessoa pode participar, mesmo sem experiência.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 8 — FAQ -->
+    <section id="faq" class="section reveal">
+        <div class="container max-w-lg">
+            <h2 class="section-title text-center">Perguntas Frequentes (FAQ)</h2>
+            <div class="accordion">
+                <div class="accordion-item">
+                    <button class="accordion-header">
+                        Preciso saber jogar?
+                        <i class="ph ph-caret-down"></i>
+                    </button>
+                    <div class="accordion-content">
+                        <p>Não. Recebemos iniciantes e ensinamos os fundamentos básicos do tênis de mesa passo a passo.</p>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <button class="accordion-header">
+                        Preciso levar raquete?
+                        <i class="ph ph-caret-down"></i>
+                    </button>
+                    <div class="accordion-content">
+                        <p>Não. Você pode vir apenas para conhecer e utilizar os materiais disponíveis durante os encontros da comunidade.</p>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <button class="accordion-header">
+                        Qual a idade mínima?
+                        <i class="ph ph-caret-down"></i>
+                    </button>
+                    <div class="accordion-content">
+                        <p>Não existe limite de idade. Nosso objetivo é proporcionar um ambiente seguro e amistoso para todas as gerações aprenderem ping pong.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 9 — MAP -->
+    <section id="mapa" class="section bg-light reveal">
+        <div class="container">
+            <h2 class="section-title text-center">Onde estamos</h2>
+            <div class="map-container premium-shadow">
+                <!-- Embedded Map Placeholder for Águas de São Pedro, SP -->
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14717.15170327318!2d-47.88725835!3d-22.60091395!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94c664bda0c10975%3A0xc6cb5aada4fa1c26!2zw4FndWFzIGRlIFPDo28gUGVkcm8gLSBTUA!5e0!3m2!1spt-BR!2sbr!4v1711111111111!5m2!1spt-BR!2sbr" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 10 — CALL TO ACTION -->
     <section id="cta" class="section cta-section reveal">
         <div class="cta-overlay"></div>
         <div class="container text-center position-relative z-10 w-full">
             <h2 class="section-title text-white cta-title">Venha jogar com a gente</h2>
             <p class="section-text text-white text-xl">Traga sua curiosidade e vontade de aprender.<br>Não importa seu nível.</p>
-            <p class="section-text text-white font-semibold mb-8 text-xl">A comunidade Spin4All está aberta para você.</p>
-            <a href="https://chat.whatsapp.com/K2yuN2LIELUCY6iC8gYGAa" class="cta-button cta-white cta-pulse" target="_blank" rel="noopener noreferrer">
-                <span>Entrar no grupo de WhatsApp</span>
-                <i class="ph-bold ph-whatsapp-logo"></i>
-            </a>
+            <p class="section-text text-white font-semibold mb-8 text-xl">A comunidade de tênis de mesa Spin4All está aberta para você.</p>
+            <div class="hero-actions justify-center">
+                <a href="https://chat.whatsapp.com/K2yuN2LIELUCY6iC8gYGAa" class="cta-button cta-white cta-pulse" target="_blank" rel="noopener noreferrer">
+                    <span>Entrar no grupo de WhatsApp</span>
+                    <i class="ph-bold ph-whatsapp-logo"></i>
+                </a>
+            </div>
         </div>
     </section>
 
@@ -186,10 +296,14 @@
     <footer class="footer">
         <div class="container text-center">
             <div class="footer-logo">Spin<span class="text-gradient">4</span>All</div>
-            <p class="footer-desc">Comunidade de Tênis de Mesa</p>
+            <p class="footer-desc">A maior Comunidade de Tênis de Mesa (Ping Pong) da Região</p>
             <div class="footer-location">
                 <i class="ph ph-map-pin"></i>
                 <span>Águas de São Pedro - SP</span>
+            </div>
+            <div class="social-share justify-center mt-4">
+               <a href="#" class="share-btn text-white"><i class="ph ph-instagram-logo"></i></a>
+               <a href="#" class="share-btn text-white"><i class="ph ph-facebook-logo"></i></a>
             </div>
             <p class="footer-copyright">© 2026 Spin4All. Todos os direitos reservados.</p>
         </div>

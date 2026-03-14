@@ -680,3 +680,227 @@ a {
   50% { transform: translateY(-8px); }
   100% { transform: translateY(0); }
 }
+
+/* --- Navigation & Header Actions --- */
+.desktop-nav {
+  display: none;
+  gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .desktop-nav {
+    display: flex;
+    align-items: center;
+  }
+  .desktop-nav a {
+    font-weight: 500;
+    color: var(--c-heading);
+    transition: color 0.2s;
+  }
+  .desktop-nav a:hover {
+    color: var(--c-blue);
+  }
+}
+
+.hero-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.social-share {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.share-text {
+  font-size: 0.9rem;
+  color: var(--c-text-light);
+  font-weight: 600;
+}
+
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--c-bg-off);
+  color: var(--c-green);
+  font-size: 20px;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.share-btn:hover {
+  transform: translateY(-2px);
+  background-color: var(--c-green);
+  color: white;
+}
+
+/* --- Gallery Section --- */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: 40px;
+}
+
+@media (min-width: 768px) {
+  .gallery-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+.gallery-item {
+  aspect-ratio: 1;
+  border-radius: var(--radius-md);
+  background-color: #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  color: #cbd5e1;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.3s ease;
+}
+
+.gallery-item:hover {
+  transform: scale(1.05);
+  box-shadow: var(--shadow-md);
+}
+
+.gallery-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* --- Testimonials --- */
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin-top: 40px;
+  max-width: 900px;
+  margin-inline: auto;
+}
+
+@media (min-width: 768px) {
+  .testimonials-grid { grid-template-columns: 1fr 1fr; }
+}
+
+.testimonial-card {
+  background: #fff;
+  padding: 32px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  text-align: left;
+  position: relative;
+}
+
+.testimonial-card::before {
+  content: '"';
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 80px;
+  font-family: serif;
+  color: rgba(14, 165, 233, 0.1);
+  line-height: 1;
+}
+
+.stars {
+  color: var(--c-yellow);
+  font-size: 1.25rem;
+  margin-bottom: 16px;
+}
+
+.testimonial-card p {
+  font-style: italic;
+  margin-bottom: 16px;
+  font-size: 1.1rem;
+}
+
+/* --- SEO Box --- */
+.seo-box {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* --- FAQ Accordion --- */
+.accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 40px;
+}
+
+.accordion-item {
+  background: #fff;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.accordion-header {
+  width: 100%;
+  text-align: left;
+  padding: 24px;
+  background: transparent;
+  border: none;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--c-heading);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: color 0.2s;
+}
+
+.accordion-header:hover {
+  color: var(--c-blue);
+}
+
+.accordion-header i {
+  transition: transform 0.3s ease;
+  color: var(--c-blue);
+}
+
+.accordion-header.active i {
+  transform: rotate(180deg);
+}
+
+.accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+  padding: 0 24px;
+}
+
+.accordion-content p {
+  padding-bottom: 24px;
+  margin: 0;
+  color: var(--c-text-light);
+}
+
+/* --- Map Container --- */
+.map-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 40px auto 0;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 4px solid #fff;
+}
