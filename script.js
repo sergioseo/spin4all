@@ -48,4 +48,23 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Lightbox Logic
+    window.openLightbox = function(src, alt) {
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxCaption = document.getElementById('lightbox-caption');
+        
+        lightboxImg.src = src;
+        lightboxImg.alt = alt;
+        lightboxCaption.textContent = alt;
+        lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Prevent scroll
+    };
+
+    window.closeLightbox = function() {
+        const lightbox = document.getElementById('lightbox');
+        lightbox.classList.remove('active');
+        document.body.style.overflow = 'auto'; // Restore scroll
+    };
+
 });

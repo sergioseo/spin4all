@@ -149,26 +149,40 @@
         </div>
     </section>
 
-    <!-- EXTRA FEATURE: GALLERY (Carousel Version) -->
+    <!-- EXTRA FEATURE: GALLERY (Static with Lightbox) -->
     <section id="galeria" class="section gallery-dynamic reveal">
-        <div class="carousel-container">
+        <div class="container">
             <h2 class="section-title text-center text-white">Nossa Dinâmica</h2>
-            <div class="carousel-track">
-                <!-- Set 1 -->
-                <div class="gallery-item"><img src="foto1.jpg" alt="Treino Spin4All" class="gallery-img"></div>
-                <div class="gallery-item"><img src="foto2.jpg" alt="Estrutura Spin4All" class="gallery-img"></div>
-                <div class="gallery-item"><img src="foto3.jpg" alt="Prática Spin4All" class="gallery-img"></div>
-                <div class="gallery-item"><img src="foto4.jpg" alt="Comunidade Spin4All" class="gallery-img"></div>
-                <!-- Set 2 (Duplicated for Infinite Loop) -->
-                <div class="gallery-item"><img src="foto1.jpg" alt="Treino Spin4All" class="gallery-img"></div>
-                <div class="gallery-item"><img src="foto2.jpg" alt="Estrutura Spin4All" class="gallery-img"></div>
-                <div class="gallery-item"><img src="foto3.jpg" alt="Prática Spin4All" class="gallery-img"></div>
-                <div class="gallery-item"><img src="foto4.jpg" alt="Comunidade Spin4All" class="gallery-img"></div>
+            <div class="gallery-grid">
+                <div class="gallery-item" onclick="openLightbox('foto1.jpg', 'Treino da Comunidade Spin4All')">
+                    <img src="foto1.jpg" alt="Treino Spin4All" class="gallery-img">
+                    <div class="gallery-caption">Treino Técnico de Segunda</div>
+                </div>
+                <div class="gallery-item" onclick="openLightbox('foto2.jpg', 'Estrutura Spin4All')">
+                    <img src="foto2.jpg" alt="Estrutura Spin4All" class="gallery-img">
+                    <div class="gallery-caption">Nossa Estrutura em Águas</div>
+                </div>
+                <div class="gallery-item" onclick="openLightbox('foto3.jpg', 'Prática Spin4All')">
+                    <img src="foto3.jpg" alt="Prática Spin4All" class="gallery-img">
+                    <div class="gallery-caption">Foco e Concentração</div>
+                </div>
+                <div class="gallery-item" onclick="openLightbox('foto4.jpg', 'Comunidade Spin4All')">
+                    <img src="foto4.jpg" alt="Comunidade Spin4All" class="gallery-img">
+                    <div class="gallery-caption">Integração dos Membros</div>
+                </div>
             </div>
-            <p class="text-center text-white opacity-80 mt-8">Acompanhe nossos treinos de ping pong semanais.</p>
+            <p class="text-center text-white opacity-80 mt-8">Clique nas fotos para ampliar.</p>
         </div>
     </section>
-    </section>
+
+    <!-- LIGHTBOX OVERLAY -->
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+        <div class="lightbox-content">
+            <img id="lightbox-img" src="" alt="Zoomed Image">
+            <p id="lightbox-caption" class="lightbox-caption-text"></p>
+        </div>
+    </div>
 
     <!-- INSTAGRAM -->
     <section id="instagram" class="section bg-light reveal">
