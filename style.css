@@ -703,6 +703,22 @@ a {
   .purpose-banner { padding: 80px 24px; }
   .purpose-banner .lead { font-size: 1.25rem; }
   .purpose-banner .highlight-text { font-size: 1.5rem; }
+  .instagram-icon-lg { font-size: 60px; }
+}
+
+.instagram-icon-lg {
+  font-size: 80px;
+  margin-bottom: 24px;
+  display: inline-block;
+  line-height: 1;
+  filter: drop-shadow(0 10px 20px rgba(220, 39, 67, 0.3));
+  animation: pulseInsta 2.5s ease-in-out infinite;
+}
+
+@keyframes pulseInsta {
+  0% { transform: scale(1); filter: drop-shadow(0 10px 20px rgba(220, 39, 67, 0.3)); }
+  50% { transform: scale(1.15); filter: drop-shadow(0 15px 30px rgba(220, 39, 67, 0.6)); }
+  100% { transform: scale(1); filter: drop-shadow(0 10px 20px rgba(220, 39, 67, 0.3)); }
 }
 
 /* CTA FINAL */
