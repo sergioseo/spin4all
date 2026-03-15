@@ -235,6 +235,17 @@ a {
   box-shadow: var(--shadow-glow);
 }
 
+.cta-whatsapp {
+  background: #25D366;
+  color: #fff;
+  box-shadow: 0 10px 30px -5px rgba(37, 211, 102, 0.4);
+}
+
+.cta-whatsapp:hover {
+  background: #128C7E;
+  box-shadow: 0 15px 40px -10px rgba(37, 211, 102, 0.6);
+}
+
 .instagram-gradient {
   background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
   color: #fff;
