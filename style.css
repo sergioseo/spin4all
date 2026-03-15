@@ -639,15 +639,70 @@ a {
   font-size: 1.5rem;
 }
 
-/* OBJETIVO */
-.purpose-icon {
-  font-size: 64px;
-  color: #ef4444;
-  margin-bottom: 24px;
+/* OBJETIVO (Purpose Banner) */
+.purpose-banner {
+  position: relative;
+  background-image: url('https://images.unsplash.com/photo-1534158914592-062992fbe900?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80'); /* Professional Table Tennis bg */
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  color: #fff;
+  padding: 120px 0;
+  text-align: center;
+  overflow: hidden;
 }
 
-.text-glow {
-  text-shadow: 0 0 20px rgba(14, 165, 233, 0.2);
+.purpose-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(14, 165, 233, 0.7));
+  z-index: 1;
+}
+
+.purpose-banner .container {
+  position: relative;
+  z-index: 2;
+  max-width: 900px;
+}
+
+.purpose-banner .section-title {
+  color: #fff;
+  margin-bottom: 32px;
+}
+
+.purpose-banner .lead {
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 1.5rem;
+  line-height: 1.4;
+  margin-bottom: 40px;
+  font-weight: 600;
+}
+
+.purpose-banner .highlight-text {
+  font-size: 1.75rem;
+  color: var(--c-yellow);
+  font-weight: 800;
+  text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.purpose-banner .purpose-icon {
+  font-size: 72px;
+  color: #ef4444;
+  margin-bottom: 32px;
+  filter: drop-shadow(0 0 20px rgba(239, 68, 68, 0.4));
+  animation: pulseTarget 3s ease-in-out infinite;
+}
+
+@keyframes pulseTarget {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@media (max-width: 768px) {
+  .purpose-banner { padding: 80px 24px; }
+  .purpose-banner .lead { font-size: 1.25rem; }
+  .purpose-banner .highlight-text { font-size: 1.5rem; }
 }
 
 /* CTA FINAL */
