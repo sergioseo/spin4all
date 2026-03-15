@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal do Membro | Spin4All</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-container::before {
+            content: "";
+            position: absolute;
+            top: -10%; left: -10%; width: 40%; height: 40%;
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.1) 0%, transparent 70%);
+            z-index: 1;
+        }
+
+        .auth-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            width: 100%;
+            max-width: 450px;
+            padding: 48px;
+            border-radius: var(--radius-xl);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            text-align: center;
+            z-index: 10;
+        }
+
+        .auth-logo {
+            font-size: 2.5rem;
+            font-family: var(--f-display);
+            margin-bottom: 24px;
+        }
+
+        .auth-title {
+            font-size: 1.5rem;
+            color: var(--c-heading);
+            margin-bottom: 8px;
+        }
+
+        .auth-subtitle {
+            color: var(--c-text-light);
+            margin-bottom: 32px;
+        }
+
+        .auth-form {
+            text-align: left;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--c-heading);
+            font-size: 0.9rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid #e2e8f0;
+            background: rgba(255, 255, 255, 0.5);
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .input-group input:focus {
+            border-color: var(--c-blue);
+            background: #fff;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
+        }
+
+        .btn-auth {
+            width: 100%;
+            background: var(--grad-cta);
+            color: #fff;
+            padding: 16px;
+            border-radius: var(--radius-pill);
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            margin-top: 8px;
+            box-shadow: var(--shadow-glow);
+            transition: transform 0.2s;
+        }
+
+        .btn-auth:hover {
+            transform: translateY(-2px);
+        }
+
+        .auth-divider {
+            margin: 32px 0;
+            position: relative;
+            text-align: center;
+        }
+
+        .auth-divider::before {
+            content: "";
+            position: absolute;
+            top: 50%; left: 0; width: 100%; height: 1px;
+            background: #e2e8f0;
+            z-index: 1;
+        }
+
+        .auth-divider span {
+            background: #f8fafc;
+            padding: 0 16px;
+            color: var(--c-text-light);
+            font-size: 0.85rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .btn-secondary {
+            width: 100%;
+            background: #fff;
+            color: var(--c-blue);
+            padding: 14px;
+            border-radius: var(--radius-pill);
+            font-weight: 600;
+            border: 2px solid var(--c-blue);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(14, 165, 233, 0.05);
+        }
+
+        .back-home {
+            margin-top: 32px;
+            display: inline-block;
+            color: var(--c-text-light);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .back-home:hover {
+            color: var(--c-blue);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <img src="logo.png" alt="Spin4All Logo" style="width: 80px; margin-bottom: 16px; display: block; margin-inline: auto;">
+            <div class="auth-logo">Spin<span class="text-gradient">4</span>All</div>
+            <h1 class="auth-title">Bem-vindo ao Portal</h1>
+            <p class="auth-subtitle">Acesse sua área exclusiva de membro</p>
+
+            <form class="auth-form" id="login-form">
+                <div class="input-group">
+                    <label>E-mail</label>
+                    <input type="email" id="login-email" placeholder="Seu e-mail de acesso" required>
+                </div>
+                <div class="input-group">
+                    <label>Senha</label>
+                    <input type="password" id="login-password" placeholder="Sua senha" required>
+                </div>
+                <div style="text-align: right; margin-bottom: 24px;">
+                    <a href="#" class="back-home" style="margin: 0; font-size: 0.85rem;">Esqueci minha senha</a>
+                </div>
+                <div id="login-error" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 12px; border-radius: var(--radius-md); font-size: 0.9rem; margin-bottom: 20px; display: none;">
+                   E-mail ou senha incorretos. Tente novamente.
+                </div>
+                <button type="submit" class="btn-auth" id="btn-login">Entrar no Portal</button>
+            </form>
+
+            <script>
+                const loginForm = document.getElementById('login-form');
+                const loginError = document.getElementById('login-error');
+                const btnLogin = document.getElementById('btn-login');
+
+                loginForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const email = document.getElementById('login-email').value;
+                    const password = document.getElementById('login-password').value;
+
+                    loginError.style.display = 'none';
+                    btnLogin.disabled = true;
+                    btnLogin.textContent = 'Autenticando...';
+
+                    const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+                        ? 'http://localhost:3000/api'
+                        : 'https://api.spin4all.com.br/api'; // <--- Ajuste para seu domínio real no Easypanel
+
+                    try {
+                        const response = await fetch(`${API_URL}/login`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ email, password })
+                        });
+
+                        const result = await response.json();
+
+                        if (result.success) {
+                            localStorage.setItem('spin4all_token', result.token);
+                            window.location.href = 'dashboard.html';
+                        } else {
+                            loginError.style.display = 'block';
+                            loginError.textContent = result.message || 'Erro ao fazer login.';
+                        }
+                    } catch (err) {
+                        loginError.style.display = 'block';
+                        loginError.textContent = 'Erro de conexão com o servidor.';
+                    } finally {
+                        btnLogin.disabled = false;
+                        btnLogin.textContent = 'Entrar no Portal';
+                    }
+                });
+            </script>
+
+            <div class="auth-divider">
+                <span>Ainda não é membro oficial?</span>
+            </div>
+
+            <a href="cadastro.html" class="btn-secondary">Criar Conta de Membro</a>
+
+            <a href="index_dev.html" class="back-home">
+                <i class="ph ph-arrow-left"></i> Voltar para o site
+            </a>
+        </div>
+    </div>
+</body>
+
+</html>

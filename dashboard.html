@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard do Membro | Spin4All</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .dashboard-container {
+            min-height: 100vh;
+            background: #f8fafc;
+            padding: 40px;
+        }
+        .welcome-card {
+            background: #fff;
+            padding: 40px;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-sm);
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="welcome-card">
+            <h1 class="text-gradient">Bem-vindo à sua área exclusiva! 🏓</h1>
+            <p>Estamos preparando seu plano de treino personalizado.</p>
+            <br>
+            <button onclick="logout()" class="btn-auth" style="width: auto; padding-inline: 40px;">Sair do Portal</button>
+        </div>
+    </div>
+
+    <script>
+        // Proteção de Rota Simples
+        const token = localStorage.getItem('spin4all_token');
+        if (!token) {
+            window.location.href = 'login.html';
+        }
+
+        function logout() {
+            localStorage.removeItem('spin4all_token');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>

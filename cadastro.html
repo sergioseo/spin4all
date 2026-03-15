@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Membro | Spin4All</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --step-active: var(--c-blue);
+            --step-next: #e2e8f0;
+        }
+
+        .onboarding-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 20px;
+        }
+
+        .form-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            width: 100%;
+            max-width: 650px;
+            padding: 48px;
+            border-radius: var(--radius-xl);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .step-progress {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .step-progress::before {
+            content: "";
+            position: absolute;
+            top: 15px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--step-next);
+            z-index: 1;
+        }
+
+        .step-item {
+            width: 32px;
+            height: 32px;
+            background: #fff;
+            border: 2px solid var(--step-next);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            z-index: 2;
+            transition: all 0.3s ease;
+            color: var(--c-text-light);
+        }
+
+        .step-item.active {
+            border-color: var(--step-active);
+            background: var(--step-active);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(14, 165, 233, 0.4);
+        }
+
+        .step-item.completed {
+            background: var(--c-green);
+            border-color: var(--c-green);
+            color: #fff;
+        }
+
+        .form-step {
+            display: none;
+        }
+
+        .form-step.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .input-group {
+            margin-bottom: 24px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--c-heading);
+        }
+
+        .input-group input, .input-group select, .input-group textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .input-group input:focus {
+            border-color: var(--c-blue);
+            outline: none;
+        }
+
+        .form-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 32px;
+        }
+
+        .btn-prev {
+            background: #f1f5f9;
+            color: var(--c-text);
+            padding: 14px 28px;
+            border-radius: var(--radius-pill);
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-next {
+            background: var(--grad-cta);
+            color: #fff;
+            padding: 14px 40px;
+            border-radius: var(--radius-pill);
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            box-shadow: var(--shadow-glow);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="onboarding-container">
+        <div class="form-card">
+            <div style="text-align: center; margin-bottom: 32px;">
+                <img src="logo.png" alt="Spin4All Logo" style="width: 70px; margin-bottom: 12px;">
+                <div style="font-size: 2rem; font-family: var(--f-display);">Spin<span class="text-gradient">4</span>All</div>
+            </div>
+
+            <div class="step-progress">
+                <div class="step-item active" id="step-1">1</div>
+                <div class="step-item" id="step-2">2</div>
+                <div class="step-item" id="step-3">3</div>
+                <div class="step-item" id="step-4">4</div>
+            </div>
+
+            <div id="api-status-banner" style="display: none; background: #fff7ed; border: 1px solid #fb923c; color: #9a3412; padding: 12px; border-radius: var(--radius-md); font-size: 0.85rem; margin-bottom: 24px; text-align: center;">
+                <i class="ph ph-warning-circle"></i> <strong>Atenção:</strong> O Motor (Backend) parece estar offline. O cadastro não funcionará até você ligar o servidor.
+            </div>
+
+            <form id="onboarding-form">
+                <!-- STEP 1: Bio-Mecânico -->
+                <div class="form-step active" id="content-1">
+                    <h2 class="section-title text-left mb-2">Perfil Bio-Mecânico</h2>
+                    <p class="mb-8 color-text-light">Conte-nos um pouco sobre você para começarmos.</p>
+                    
+                    <div class="input-group">
+                        <label>Nome Completo</label>
+                        <input type="text" id="reg-nome" placeholder="Seu nome" required>
+                    </div>
+                    <div class="input-group">
+                        <label>E-mail (Chave de Acesso)</label>
+                        <input type="email" id="reg-email" placeholder="exemplo@email.com" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Defina uma Senha</label>
+                        <input type="password" id="reg-password" placeholder="Mínimo 6 caracteres" required>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="input-group">
+                            <label>Altura (cm)</label>
+                            <input type="number" id="reg-altura" placeholder="Ex: 175">
+                        </div>
+                        <div class="input-group">
+                            <label>Peso (kg)</label>
+                            <input type="number" id="reg-peso" placeholder="Ex: 75">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 2: Sua Jornada -->
+                <div class="form-step" id="content-2">
+                    <h2 class="section-title text-left mb-2">Sua Jornada</h2>
+                    <p class="mb-8 color-text-light">Qual sua relação com a mesa hoje?</p>
+                    
+                    <div class="input-group">
+                        <label>Tempo de prática</label>
+                        <select id="reg-tempo">
+                            <option value="zero">Estou começando agora</option>
+                            <option value="6meses">Menos de 6 meses</option>
+                            <option value="1ano">Entre 6 meses e 1 ano</option>
+                            <option value="pro">Mais de 1 ano</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Frequência de jogo</label>
+                        <select id="reg-freq">
+                            <option value="1-2">1 a 2 vezes por semana</option>
+                            <option value="3-4">3 a 4 vezes por semana</option>
+                            <option value="daily">Todos os dias</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- STEP 3: Perfil Técnico -->
+                <div class="form-step" id="content-3">
+                    <h2 class="section-title text-left mb-2">Perfil Técnico</h2>
+                    <p class="mb-8 color-text-light">Como você joga tênis de mesa?</p>
+                    
+                    <div class="input-group">
+                        <label>Lateralidade</label>
+                        <select id="reg-lateralidade">
+                            <option value="Destro">Destro</option>
+                            <option value="Canhoto">Canhoto</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Estilo de Empunhadura</label>
+                        <select id="reg-empunhadura">
+                            <option value="Classico">Clássico</option>
+                            <option value="Caneteiro">Caneteiro</option>
+                            <option value="Classineta">Classineta</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Nível Avaliado (Baseado na sua percepção)</label>
+                        <select id="reg-nivel">
+                            <option value="Iniciante">Iniciante</option>
+                            <option value="Intermediario">Intermediário</option>
+                            <option value="Avancado">Avançado</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- STEP 4: Foco e Metas -->
+                <div class="form-step" id="content-4">
+                    <h2 class="section-title text-left mb-2">Foco e Metas</h2>
+                    <p class="mb-8 color-text-light">O que você busca alcançar na Spin4All?</p>
+                    
+                    <div class="input-group">
+                        <label>Objetivo Principal</label>
+                        <select id="reg-objetivo">
+                            <option value="Saude">Saúde e Bem-estar</option>
+                            <option value="Social">Socialização</option>
+                            <option value="Competicao">Competição Profissional</option>
+                            <option value="Aprendizado">Aprender o Básico</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Recado para os Mentores / Metas Trimestre</label>
+                        <textarea id="reg-metas" rows="4" placeholder="Ex: Quero melhorar meu Drive de Forehand e participar do torneio interno."></textarea>
+                    </div>
+                    
+                    <div id="register-message" style="padding: 12px; border-radius: var(--radius-md); font-size: 0.9rem; margin-top: 10px; display: none;"></div>
+                </div>
+
+                <div class="form-nav">
+                    <button type="button" class="btn-prev" id="btn-prev">Voltar p/ o Site</button>
+                    <button type="button" class="btn-next" id="btn-next">Próximo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:3000/api'
+            : 'https://api.spin4all.com.br/api'; // <--- Ajuste para seu domínio real no Easypanel
+        
+        // Verificar se o servidor está online ao carregar
+        async function checkApiStatus() {
+            try {
+                const response = await fetch(`${API_URL}/health`);
+                if (!response.ok) throw new Error();
+                console.log("✅ Motor Spin4All está online.");
+            } catch (err) {
+                document.getElementById('api-status-banner').style.display = 'block';
+            }
+        }
+        checkApiStatus();
+
+        let currentStep = 1;
+        const totalSteps = 4;
+
+        const nextBtn = document.getElementById('btn-next');
+        const prevBtn = document.getElementById('btn-prev');
+        const onboardingForm = document.getElementById('onboarding-form');
+        const registerMessage = document.getElementById('register-message');
+
+        nextBtn.addEventListener('click', async () => {
+            if (currentStep < totalSteps) {
+                // Validação básica do passo atual
+                const activeStepContent = document.getElementById(`content-${currentStep}`);
+                const inputs = activeStepContent.querySelectorAll('input[required]');
+                let valid = true;
+                inputs.forEach(input => {
+                    if (!input.value) {
+                        input.style.borderColor = '#ef4444';
+                        valid = false;
+                    } else {
+                        input.style.borderColor = '#e2e8f0';
+                    }
+                });
+
+                if (!valid) return;
+
+                document.getElementById(`content-${currentStep}`).classList.remove('active');
+                document.getElementById(`step-${currentStep}`).classList.add('completed');
+                currentStep++;
+                document.getElementById(`content-${currentStep}`).classList.add('active');
+                document.getElementById(`step-${currentStep}`).classList.add('active');
+                prevBtn.textContent = 'Voltar';
+                
+                if(currentStep === totalSteps) nextBtn.textContent = 'Finalizar Cadastro';
+            } else {
+                // Finalizar e enviar para API
+                await submitRegistration();
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentStep > 1) {
+                document.getElementById(`content-${currentStep}`).classList.remove('active');
+                document.getElementById(`step-${currentStep}`).classList.remove('active');
+                currentStep--;
+                document.getElementById(`content-${currentStep}`).classList.add('active');
+                document.getElementById(`step-${currentStep}`).classList.remove('completed');
+                if(currentStep === 1) {
+                    prevBtn.textContent = 'Voltar p/ o Site';
+                }
+                nextBtn.textContent = 'Próximo';
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+
+        async function submitRegistration() {
+            const data = {
+                email: document.getElementById('reg-email').value,
+                password: document.getElementById('reg-password').value,
+                profileData: {
+                    name: document.getElementById('reg-nome').value,
+                    height: parseInt(document.getElementById('reg-altura').value),
+                    weight: parseInt(document.getElementById('reg-peso').value),
+                    side: document.getElementById('reg-lateralidade').value,
+                    grip: document.getElementById('reg-empunhadura').value,
+                    level: document.getElementById('reg-nivel').value,
+                    objective: document.getElementById('reg-objetivo').value,
+                    goals: document.getElementById('reg-metas').value
+                }
+            };
+
+            nextBtn.disabled = true;
+            nextBtn.textContent = 'Processando...';
+
+            try {
+                const response = await fetch(`${API_URL}/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    registerMessage.style.display = 'block';
+                    registerMessage.style.background = 'rgba(34, 197, 94, 0.1)';
+                    registerMessage.style.color = '#166534';
+                    registerMessage.textContent = '🎉 Cadastro realizado! Redirecionando para o portal...';
+                    setTimeout(() => window.location.href = 'login.html', 2000);
+                } else {
+                    throw new Error(result.error || 'Erro ao registrar.');
+                }
+            } catch (err) {
+                registerMessage.style.display = 'block';
+                registerMessage.style.background = 'rgba(239, 68, 68, 0.1)';
+                registerMessage.style.color = '#ef4444';
+                registerMessage.textContent = '❌ ' + err.message;
+                nextBtn.disabled = false;
+                nextBtn.textContent = 'Tentar Novamente';
+            }
+        }
+    </script>
+</body>
+
+</html>

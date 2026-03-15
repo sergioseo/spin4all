@@ -1128,6 +1128,75 @@ a {
   color: var(--c-text-light);
 }
 
+/* --- Membership Section --- */
+.membership-section {
+  background: var(--c-bg-off);
+  position: relative;
+}
+
+.membership-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin-top: 48px;
+}
+
+@media (min-width: 768px) {
+  .membership-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.member-benefit-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  padding: 40px 32px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(14, 165, 233, 0.1);
+  box-shadow: var(--shadow-md);
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.member-benefit-card:hover {
+  transform: translateY(-8px);
+  background: #fff;
+  box-shadow: var(--shadow-lg);
+  border-color: var(--c-blue);
+}
+
+.benefit-icon-box {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 24px;
+  background: var(--grad-cta);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 2rem;
+  box-shadow: 0 8px 16px rgba(14, 165, 233, 0.2);
+}
+
+.benefit-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--c-heading);
+}
+
+.benefit-text {
+  font-size: 1rem;
+  color: var(--c-text-light);
+  line-height: 1.6;
+}
+
+.membership-cta {
+  margin-top: 56px;
+  text-align: center;
+}
+
 /* --- Map Container --- */
 /* --- Mentores Section Enhancement --- */
 #mentores {
