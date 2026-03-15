@@ -592,59 +592,6 @@ a {
 .badge-green { background-color: var(--c-green); }
 .badge-orange { background-color: var(--c-orange); }
 
-/* PARTICIPAR */
-.participate-box {
-  background: #fff;
-  padding: 48px 32px;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-}
-
-.highlight-text {
-  font-size: 1.75rem;
-  color: var(--c-blue);
-  margin-bottom: 32px;
-}
-
-.qna-list {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  text-align: left;
-}
-
-.qna-item {
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
-}
-
-.qna-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: var(--c-bg-off);
-  color: var(--c-green);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  flex-shrink: 0;
-}
-
-.qna-content strong {
-  display: block;
-  font-size: 1.125rem;
-  color: var(--c-heading);
-  margin-bottom: 4px;
-}
-
-.invite-text {
-  margin-top: 40px;
-  font-weight: 700;
-  color: var(--c-orange);
-  font-size: 1.5rem;
-}
 
 /* OBJETIVO (Purpose Banner) */
 .purpose-banner {
