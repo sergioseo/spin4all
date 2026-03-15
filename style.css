@@ -101,6 +101,10 @@ a {
 .color-yellow { color: var(--c-yellow); }
 .color-orange { color: var(--c-orange); }
 
+.mt-6 { margin-top: 1.5rem; }
+.premium-shadow { box-shadow: 0 30px 60px -15px rgba(0,0,0,0.2); }
+.text-left { text-align: left; }
+
 /* --- Typography FX --- */
 .text-gradient {
   background: var(--grad-logo);
@@ -348,15 +352,41 @@ a {
   .hero .subtitle { font-size: 2rem; }
 }
 
-/* SOBRE */
-.content-box {
-  padding: 40px;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+/* SOBRE (Split Layout) */
+.split-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 48px;
+  align-items: center;
+}
+
+@media (min-width: 992px) {
+  .split-layout {
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+  }
+}
+
+.split-image img {
+  width: 100%;
+  height: auto;
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
+  display: block;
+}
+
+.split-content {
+  text-align: left;
+}
+
+.highlight-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--c-blue);
+  line-height: 1.4;
+}
+
+.split-content .section-title {
+  margin-bottom: 24px;
 }
 
 /* VALORES Cards */
