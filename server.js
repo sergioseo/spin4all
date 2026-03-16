@@ -284,7 +284,13 @@ app.post('/api/checkin', async (req, res) => {
 app.get('/api/checkin-list', async (req, res) => {
   try {
     const result = await pool.query(`
-      SELECT p.id_usuario, p.dsc_nome_completo 
+      SELECT 
+        p.id_usuario, 
+        p.dsc_nome_completo,
+        EXISTS (
+          SELECT 1 FROM trusted.tb_checkins 
+          WHERE id_usuario = p.id_usuario AND dt_checkin = CURRENT_DATE
+        ) as flg_presente
       FROM trusted.tb_membros_perfil p
       JOIN trusted.tb_usuarios u ON p.id_usuario = u.id_usuario
       WHERE u.vlr_status_conta = 'ativo'
@@ -294,6 +300,26 @@ app.get('/api/checkin-list', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, error: 'Erro ao buscar lista de membros.' });
+  }
+});
+
+// Remover Check-in (Undo)
+app.delete('/api/checkin', async (req, res) => {
+  const { id_usuario } = req.body;
+  try {
+    const result = await pool.query(
+      'DELETE FROM trusted.tb_checkins WHERE id_usuario = $1 AND dt_checkin = CURRENT_DATE',
+      [id_usuario]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ success: false, message: 'Nenhum check-in encontrado para hoje.' });
+    }
+
+    res.json({ success: true, message: 'Presença removida com sucesso!' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: 'Erro ao remover check-in.' });
   }
 });
 

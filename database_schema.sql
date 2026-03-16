@@ -162,3 +162,35 @@ CREATE INDEX idx_trusted_usuarios_email ON trusted.tb_usuarios(dsc_email);
 CREATE INDEX idx_raw_status ON raw.tb_onboarding_submissions(vlr_status_processamento);
 CREATE INDEX idx_evolucao_usuario ON trusted.tb_membros_evolucao(id_usuario, dt_registro);
 CREATE INDEX idx_checkins_usuario_data ON trusted.tb_checkins(id_usuario, dt_checkin);
+
+-----------------------------------------------------------
+-- 5. DATA SEED (MEMBROS PARA TESTE - RATM)
+-----------------------------------------------------------
+-- Script para popular a lista de check-in visual
+
+INSERT INTO trusted.tb_usuarios (dsc_email, dsc_senha_hash, vlr_status_conta) VALUES
+('zack@ratm.com', '$2a$10$r8Q.kY0H8v.yW1d7fF.Eue7mB5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z', 'ativo'),
+('tom@ratm.com', '$2a$10$r8Q.kY0H8v.yW1d7fF.Eue7mB5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z', 'ativo'),
+('tim@ratm.com', '$2a$10$r8Q.kY0H8v.yW1d7fF.Eue7mB5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z', 'ativo'),
+('brad@ratm.com', '$2a$10$r8Q.kY0H8v.yW1d7fF.Eue7mB5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z', 'ativo')
+ON CONFLICT (dsc_email) DO NOTHING;
+
+INSERT INTO trusted.tb_membros_perfil 
+(id_usuario, dsc_nome_completo, dsc_lateralidade, dsc_empunhadura, dsc_nivel_tecnico, dsc_objetivo, num_altura_cm, num_peso_kg)
+SELECT id_usuario, 'Zack de la Rocha', 'Destro', 'Clássica', 'Avançado', 'Performance', 178, 75.0 FROM trusted.tb_usuarios WHERE dsc_email = 'zack@ratm.com'
+ON CONFLICT DO NOTHING;
+
+INSERT INTO trusted.tb_membros_perfil 
+(id_usuario, dsc_nome_completo, dsc_lateralidade, dsc_empunhadura, dsc_nivel_tecnico, dsc_objetivo, num_altura_cm, num_peso_kg)
+SELECT id_usuario, 'Tom Morello', 'Destro', 'Caneta', 'Profissional', 'Competição', 180, 78.0 FROM trusted.tb_usuarios WHERE dsc_email = 'tom@ratm.com'
+ON CONFLICT DO NOTHING;
+
+INSERT INTO trusted.tb_membros_perfil 
+(id_usuario, dsc_nome_completo, dsc_lateralidade, dsc_empunhadura, dsc_nivel_tecnico, dsc_objetivo, num_altura_cm, num_peso_kg)
+SELECT id_usuario, 'Tim Commerford', 'Canhoto', 'Clássica', 'Intermediário', 'Saúde', 185, 82.0 FROM trusted.tb_usuarios WHERE dsc_email = 'tim@ratm.com'
+ON CONFLICT DO NOTHING;
+
+INSERT INTO trusted.tb_membros_perfil 
+(id_usuario, dsc_nome_completo, dsc_lateralidade, dsc_empunhadura, dsc_nivel_tecnico, dsc_objetivo, num_altura_cm, num_peso_kg)
+SELECT id_usuario, 'Brad Wilk', 'Destro', 'Clássica', 'Iniciante', 'Lazer', 183, 80.0 FROM trusted.tb_usuarios WHERE dsc_email = 'brad@ratm.com'
+ON CONFLICT DO NOTHING;
