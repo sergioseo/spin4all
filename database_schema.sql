@@ -782,9 +782,22 @@ SET
   num_skill_movimentacao = (25 + floor(random() * 65))::int
 WHERE id_usuario > 0;
 
--- 7. Evolução Histórica (Ranking Mensal)
+-- 7. Evolução Histórica (Ranking Mensal) - Ajustado para o MÊS ATUAL
+-- Primeiro, criamos um ponto de partida para TODOS no início deste mês
 INSERT INTO trusted.tb_membros_evolucao (id_usuario, num_skill_avg_total, dt_registro)
-SELECT u.id_usuario, (40 + floor(random() * 15))::float, CURRENT_DATE - INTERVAL '1 month'
+SELECT u.id_usuario, (40 + floor(random() * 20))::float, DATE_TRUNC('month', CURRENT_DATE)
 FROM trusted.tb_usuarios u
-WHERE u.id_usuario % 3 = 0
 ON CONFLICT DO NOTHING;
+
+-- Garantir que o Hall da Fama tenha pelo menos 5 nomes com pontos variados
+DELETE FROM trusted.tb_torneios_resultados;
+INSERT INTO trusted.tb_torneios_resultados (id_usuario, num_posicao, dsc_torneio_nome, dt_torneio) VALUES
+(1, 1, 'Copa Spin4All Março', CURRENT_DATE - INTERVAL '10 days'),
+(99, 2, 'Copa Spin4All Março', CURRENT_DATE - INTERVAL '10 days'),
+(100, 3, 'Copa Spin4All Março', CURRENT_DATE - INTERVAL '10 days'),
+(101, 1, 'Open de Fevereiro', CURRENT_DATE - INTERVAL '40 days'),
+(102, 2, 'Open de Fevereiro', CURRENT_DATE - INTERVAL '40 days'),
+(103, 3, 'Open de Fevereiro', CURRENT_DATE - INTERVAL '40 days'),
+(104, 1, 'Inaugural Jan', CURRENT_DATE - INTERVAL '70 days'),
+(110, 2, 'Inaugural Jan', CURRENT_DATE - INTERVAL '70 days'),
+(113, 3, 'Inaugural Jan', CURRENT_DATE - INTERVAL '70 days');

@@ -83,6 +83,32 @@ const runMigrations = async () => {
       }
     }
 
+    // --- [SIMULAÇÃO] Popular Rankings do Mês Atual se estiverem vazios ---
+    const checkEvolution = await pool.query("SELECT 1 FROM trusted.tb_membros_evolucao WHERE dt_registro >= DATE_TRUNC('month', CURRENT_DATE) LIMIT 1");
+    if (checkEvolution.rowCount === 0) {
+      console.log('--- [SEED] Gerando base de evolução para o mês atual ---');
+      await pool.query(`
+        INSERT INTO trusted.tb_membros_evolucao (id_usuario, num_skill_avg_total, dt_registro)
+        SELECT u.id_usuario, (40 + floor(random() * 20))::float, DATE_TRUNC('month', CURRENT_DATE)
+        FROM trusted.tb_usuarios u
+        ON CONFLICT DO NOTHING;
+      `);
+    }
+
+    const checkTournaments = await pool.query('SELECT 1 FROM trusted.tb_torneios_resultados LIMIT 1');
+    if (checkTournaments.rowCount === 0) {
+      console.log('--- [SEED] Gerando resultados de torneios ---');
+      await pool.query(`
+        INSERT INTO trusted.tb_torneios_resultados (id_usuario, num_posicao, dsc_torneio_nome, dt_torneio) VALUES
+        (1, 1, 'Copa Spin4All Março', CURRENT_DATE - INTERVAL '10 days'),
+        (99, 2, 'Copa Spin4All Março', CURRENT_DATE - INTERVAL '10 days'),
+        (100, 3, 'Copa Spin4All Março', CURRENT_DATE - INTERVAL '10 days'),
+        (101, 1, 'Open de Fevereiro', CURRENT_DATE - INTERVAL '40 days'),
+        (102, 2, 'Open de Fevereiro', CURRENT_DATE - INTERVAL '40 days'),
+        (103, 3, 'Open de Fevereiro', CURRENT_DATE - INTERVAL '40 days');
+      `);
+    }
+
     console.log('--- Migrações Concluídas com Sucesso ---');
   } catch (err) {
     console.error('Erro nas migrações:', err.message);
