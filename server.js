@@ -59,6 +59,16 @@ const runMigrations = async () => {
       ADD COLUMN IF NOT EXISTS num_skill_bloqueio INTEGER DEFAULT 50,
       ADD COLUMN IF NOT EXISTS num_skill_controle INTEGER DEFAULT 50;
     `);
+
+    // Master Admin Bootstrap: Se houver um ADMIN_EMAIL no .env, garante que ele seja admin
+    if (process.env.ADMIN_EMAIL) {
+      console.log(`--- [BOOTSTRAP] Garantindo privilégios para: ${process.env.ADMIN_EMAIL} ---`);
+      await pool.query(
+        'UPDATE trusted.tb_usuarios SET flg_admin = TRUE WHERE dsc_email = $1',
+        [process.env.ADMIN_EMAIL]
+      );
+    }
+
     console.log('--- Migrações Concluídas com Sucesso ---');
   } catch (err) {
     console.error('Erro nas migrações:', err.message);

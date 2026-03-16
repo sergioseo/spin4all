@@ -216,3 +216,18 @@ INSERT INTO trusted.tb_membros_perfil
 (id_usuario, dsc_nome_completo, dsc_lateralidade, dsc_empunhadura, dsc_nivel_tecnico, dsc_objetivo, num_altura_cm, num_peso_kg)
 SELECT id_usuario, 'Brad Wilk', 'Destro', 'Clássica', 'Iniciante', 'Lazer', 183, 80.0 FROM trusted.tb_usuarios WHERE dsc_email = 'brad@ratm.com'
 ON CONFLICT DO NOTHING;
+
+-----------------------------------------------------------
+-- 6. ADMIN BOOTSTRAP (ESTRATÉGIA DE PERSISTÊNCIA)
+-----------------------------------------------------------
+-- Criar Usuário Admin (Senha padrão: admin123)
+INSERT INTO trusted.tb_usuarios (dsc_email, dsc_senha_hash, flg_admin, vlr_status_conta) 
+VALUES ('sjwseo@gmail.com', '$2b$10$GEYG//RHFKAzo.jp9LqAJOQ8njytWopqbWGpmNlOXX0IjvOYwqkE.', TRUE, 'ativo')
+ON CONFLICT (dsc_email) DO UPDATE SET flg_admin = TRUE;
+
+-- Criar Perfil para o Admin (Evita erro de JOIN no dashboard)
+INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico)
+SELECT id_usuario, 'Sergio SEO', 'Avançado' FROM trusted.tb_usuarios WHERE dsc_email = 'sjwseo@gmail.com'
+ON CONFLICT DO NOTHING;
+
+
