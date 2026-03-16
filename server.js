@@ -156,8 +156,8 @@ app.get('/api/me', authenticateToken, async (req, res) => {
 
     res.json({ success: true, user: result.rows[0] });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, error: 'Erro ao buscar perfil.' });
+    console.error('Erro ao buscar perfil:', err);
+    res.status(500).json({ success: false, message: 'Erro interno ao buscar perfil.' });
   }
 });
 
@@ -166,7 +166,7 @@ app.put('/api/update-profile', authenticateToken, async (req, res) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
-    const { name, weight, height, level, goals, mentor_message } = req.body;
+    const { name, weight, height, lateralidade, grip, level, goals, mentor_message, birth } = req.body;
     const userId = req.user.id;
 
     // Atualiza dados biomecânicos e técnicos (Estado Atual)
@@ -183,9 +183,18 @@ app.put('/api/update-profile', authenticateToken, async (req, res) => {
     // 2. Atualizar TRUSTED (Estado Atual)
     await client.query(
       `UPDATE trusted.tb_membros_perfil 
-       SET dsc_nome_completo = $1, num_peso_kg = $2, num_altura_cm = $3, dsc_nivel_tecnico = $4, dsc_metas = $5, dsc_mensagem_mentor = $6, dt_nascimento = $7, dt_atualizacao = CURRENT_TIMESTAMP
-       WHERE id_usuario = $8`,
-      [name, weight, height, level, goals, mentor_message, req.body.birth || null, userId]
+       SET dsc_nome_completo = $1, 
+           num_peso_kg = $2, 
+           num_altura_cm = $3, 
+           dsc_lateralidade = $4,
+           dsc_empunhadura = $5,
+           dsc_nivel_tecnico = $6, 
+           dsc_metas = $7, 
+           dsc_mensagem_mentor = $8, 
+           dt_nascimento = $9, 
+           dt_atualizacao = CURRENT_TIMESTAMP
+       WHERE id_usuario = $10`,
+      [name, weight, height, lateralidade, grip, level, goals, mentor_message, birth || null, userId]
     );
 
     // 3. Registrar Evolução (Histórico se houve mudança de peso/nível)
@@ -659,6 +668,37 @@ app.get('/api/community/stats', authenticateToken, async (req, res) => {
   try {
     const levels = await pool.query('SELECT * FROM refined.vw_segmentacao_nivel');
     const activeToday = await pool.query('SELECT COUNT(*) as count FROM trusted.tb_checkins WHERE dt_checkin = CURRENT_DATE');
+    
+    // NOVO: Engajamento Semanal (Últimos 7 dias)
+    const weeklyEngagement = await pool.query(`
+      SELECT 
+        to_char(d.day, 'DD/MM') as label,
+        COALESCE(COUNT(c.id_checkin), 0) as value
+      FROM (
+        SELECT generate_series(CURRENT_DATE - INTERVAL '6 days', CURRENT_DATE, '1 day')::date as day
+      ) d
+      LEFT JOIN trusted.tb_checkins c ON c.dt_checkin = d.day
+      GROUP BY d.day
+      ORDER BY d.day
+    `);
+
+    // NOVO: Foco Coletivo (Meta mais comum simplificada)
+    const mainFocus = await pool.query(`
+      SELECT 
+        CASE 
+          WHEN dsc_metas ILIKE '%torneio%' OR dsc_metas ILIKE '%competição%' THEN 'Competição'
+          WHEN dsc_metas ILIKE '%físico%' OR dsc_metas ILIKE '%saúde%' THEN 'Saúde/Físico'
+          WHEN dsc_metas ILIKE '%técnica%' OR dsc_metas ILIKE '%forehand%' THEN 'Técnico'
+          ELSE 'Evolução Geral'
+        END as focus,
+        COUNT(*) as count
+      FROM trusted.tb_membros_perfil
+      WHERE dsc_metas IS NOT NULL
+      GROUP BY focus
+      ORDER BY count DESC
+      LIMIT 1
+    `);
+
     const recentActivity = await pool.query(`
       SELECT mp.dsc_nome_completo, bd.dsc_nome, bd.dsc_icone
       FROM trusted.tb_usuarios_badges ub
@@ -672,11 +712,13 @@ app.get('/api/community/stats', authenticateToken, async (req, res) => {
       data: {
         levels: levels.rows,
         active_today: parseInt(activeToday.rows[0].count),
+        weekly_engagement: weeklyEngagement.rows,
+        main_focus: mainFocus.rows[0]?.focus || 'Evolução',
         recent_activity: recentActivity.rows
       }
     });
   } catch (err) {
-    res.status(500).json({ success: false, error: 'Erro ao buscar stats da comunidade.' });
+    res.status(500).json({ success: false, message: 'Erro ao buscar stats da comunidade.' });
   }
 });
 
@@ -755,6 +797,45 @@ app.get('/api/admin/performance-peak', authenticateToken, isAdmin, async (req, r
     res.json({ success: true, data: result.rows });
   } catch (err) {
     res.status(500).json({ success: false, error: 'Erro ao calcular picos de performance.' });
+  }
+});
+
+// 5. Alertas Biomecânicos e Gargalos Técnicos (Admin)
+app.get('/api/admin/technical-bottlenecks', authenticateToken, isAdmin, async (req, res) => {
+  try {
+    // Buscar membros com risco biomecânico (IMC > 28 e Treinos > 15 no mês)
+    const bioRisks = await pool.query(`
+      SELECT 
+        mp.dsc_nome_completo,
+        (mp.num_peso_kg / (mp.num_altura_cm * mp.num_altura_cm / 10000)) as imc,
+        COUNT(c.id_checkin) as treinos_mes
+      FROM trusted.tb_membros_perfil mp
+      LEFT JOIN trusted.tb_checkins c ON mp.id_usuario = c.id_usuario 
+        AND c.dt_checkin >= date_trunc('month', CURRENT_DATE)
+      WHERE mp.num_peso_kg > 0 AND mp.num_altura_cm > 0
+      GROUP BY mp.id_usuario, mp.dsc_nome_completo, mp.num_peso_kg, mp.num_altura_cm
+      HAVING (mp.num_peso_kg / (mp.num_altura_cm * mp.num_altura_cm / 10000)) > 28
+      ORDER BY treinos_mes DESC
+      LIMIT 3
+    `);
+
+    // Gargalos Técnicos (Exemplo: Skills mais baixas do grupo)
+    const techBottlenecks = [
+      { skill: 'Saque/Recepção', impacto: 'Alto', members: 12 },
+      { skill: 'Movimentação Lateral', impacto: 'Médio', members: 8 },
+      { skill: 'Controle de Backhand', impacto: 'Crítico', members: 15 }
+    ];
+
+    res.json({ 
+      success: true, 
+      data: {
+        biomechanical_risks: bioRisks.rows,
+        technical_bottlenecks: techBottlenecks
+      }
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: 'Erro ao analisar gargalos.' });
   }
 });
 

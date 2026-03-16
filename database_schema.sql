@@ -708,7 +708,6 @@ ON CONFLICT DO NOTHING;
 -----------------------------------------------------------
 
 -- 1. Check-ins para os últimos 30 dias (Simulação de Frequência)
--- Cada membro treina cerca de 3x por semana (ter, qui, sex)
 INSERT INTO trusted.tb_checkins (id_usuario, dt_checkin)
 SELECT u.id_usuario, d
 FROM trusted.tb_usuarios u
@@ -720,39 +719,54 @@ CROSS JOIN (
 WHERE u.id_usuario % 2 = 0 -- Metade da base é bem ativa
 ON CONFLICT DO NOTHING;
 
--- 2. Mais Resultados de Torneios para Popular Hall da Fama
-INSERT INTO trusted.tb_torneios_resultados (id_usuario, num_posicao, dsc_torneio_nome, dt_torneio)
-SELECT 
-    id_usuario, 
-    (1 + floor(random() * 10))::int as pos,
-    'Grand Slam Spin4All',
-    CURRENT_DATE - INTERVAL '1 month'
+-- 1.1 Check-ins para HOJE (Para validar o contador em tempo real)
+INSERT INTO trusted.tb_checkins (id_usuario, dt_checkin)
+SELECT id_usuario, CURRENT_DATE
 FROM trusted.tb_usuarios 
-WHERE id_usuario BETWEEN 100 AND 120
+WHERE id_usuario % 7 = 0 -- Simular ~28 pessoas ativas hoje de 200
 ON CONFLICT DO NOTHING;
 
--- 3. Badges Aleatórias para Atividades Recentes
-INSERT INTO trusted.tb_usuarios_badges (id_usuario, id_badge)
-SELECT id_usuario, (1 + floor(random() * 12))::int
-FROM trusted.tb_usuarios 
-WHERE id_usuario % 10 = 0
+-- 2. Demografia Realista (Para Média de Idade)
+UPDATE trusted.tb_membros_perfil mp
+SET dt_nascimento = CURRENT_DATE - (20 + floor(random() * 40))::int * INTERVAL '365 day'
+FROM trusted.tb_usuarios u
+WHERE mp.id_usuario = u.id_usuario;
+
+-- 3. Alertas Biomecânicos (Simular 3 casos críticos: IMC > 28 + Frequência Alta)
+-- Primeiro garantir peso/altura elevada para alguns
+UPDATE trusted.tb_membros_perfil 
+SET num_peso = 105, num_altura = 1.75 -- IMC ~34.3
+WHERE id_usuario IN (10, 50, 90);
+
+-- Garantir frequência alta para esses mesmos 3
+INSERT INTO trusted.tb_checkins (id_usuario, dt_checkin)
+SELECT u.id_usuario, d
+FROM (SELECT 10 as id_usuario UNION SELECT 50 UNION SELECT 90) u
+CROSS JOIN (
+    SELECT (CURRENT_DATE - i * INTERVAL '1 day')::date as d 
+    FROM generate_series(1, 20) i 
+) dates
 ON CONFLICT DO NOTHING;
 
--- 4. Metas e Objetivos (Para Insights do Admin)
+-- 4. Distribuição Técnica para o Gráfico DNA
+UPDATE trusted.tb_membros_perfil 
+SET dsc_nivel_tecnico = CASE 
+    WHEN id_usuario % 5 = 0 THEN 'Avançado'
+    WHEN id_usuario % 5 = 1 THEN 'Iniciante'
+    WHEN id_usuario % 5 = 2 THEN 'Intermediário'
+    ELSE 'Profissional'
+END;
+
+-- 5. Objetivos para Segmentação Inteligente
 UPDATE trusted.tb_membros_perfil 
 SET dsc_metas = CASE 
-    WHEN id_usuario % 3 = 0 THEN 'Melhorar o drive de forehand e reduzir erros não forçados'
-    WHEN id_usuario % 3 = 1 THEN 'Chegar ao nível avançado e participar de torneios estaduais'
-    ELSE 'Melhorar o preparo físico e a mobilidade na mesa'
-END,
-dsc_nivel_tecnico = CASE 
-    WHEN id_usuario < 150 THEN 'Intermediário'
-    WHEN id_usuario < 200 THEN 'Avançado'
-    ELSE 'Iniciante'
-END
-WHERE dsc_metas IS NULL;
+    WHEN id_usuario % 4 = 0 THEN 'Foco em torneios estaduais e competição profissional'
+    WHEN id_usuario % 4 = 1 THEN 'Melhorar flexibilidade e preparo físico para evitar lesões'
+    WHEN id_usuario % 4 = 2 THEN 'Aprimorar técnica de forehand e topspin'
+    ELSE 'Interação social e diversão aos finais de semana'
+END;
 
--- 5. Randomizar Skills para Radar de Gargalo Técnico
+-- 6. Randomizar Skills para Radar
 UPDATE trusted.tb_membros_perfil 
 SET 
   num_skill_forehand = (40 + floor(random() * 40))::int,
@@ -766,11 +780,11 @@ SET
   num_skill_bloqueio = (45 + floor(random() * 45))::int,
   num_skill_controle = (50 + floor(random() * 40))::int,
   num_skill_movimentacao = (25 + floor(random() * 65))::int
-WHERE id_usuario > 1;
+WHERE id_usuario > 0;
 
--- 6. Evolução Histórica (Para Vanguarda da Evolução)
+-- 7. Evolução Histórica (Ranking Mensal)
 INSERT INTO trusted.tb_membros_evolucao (id_usuario, num_skill_avg_total, dt_registro)
-SELECT u.id_usuario, (40 + floor(random() * 20))::float, CURRENT_DATE - INTERVAL '1 month'
+SELECT u.id_usuario, (40 + floor(random() * 15))::float, CURRENT_DATE - INTERVAL '1 month'
 FROM trusted.tb_usuarios u
-WHERE u.id_usuario % 5 = 0
+WHERE u.id_usuario % 3 = 0
 ON CONFLICT DO NOTHING;
