@@ -31,6 +31,23 @@ app.get('/api/setup-admin-emergency', async (req, res) => {
     const email = 'sjwseo@gmail.com';
     const tempPass = 'admin123';
     const hash = await bcrypt.hash(tempPass, 10);
+
+    // --- BLOCO DE MIGRAÇÃO DE EMERGÊNCIA ---
+    console.log('Rodando migrações de emergência...');
+    await testPool.query(`
+      -- Adicionar coluna flg_admin se não existir
+      DO $$ 
+      BEGIN 
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='trusted' AND table_name='tb_usuarios' AND column_name='flg_admin') THEN
+          ALTER TABLE trusted.tb_usuarios ADD COLUMN flg_admin BOOLEAN DEFAULT FALSE;
+        END IF;
+        
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='trusted' AND table_name='tb_membros_perfil' AND column_name='dt_nascimento') THEN
+          ALTER TABLE trusted.tb_membros_perfil ADD COLUMN dt_nascimento DATE;
+        END IF;
+      END $$;
+    `);
+
     const userRes = await testPool.query('SELECT id_usuario FROM trusted.tb_usuarios WHERE dsc_email = $1', [email]);
     if (userRes.rows.length > 0) {
       await testPool.query('UPDATE trusted.tb_usuarios SET dsc_senha_hash = $1, flg_admin = true, vlr_status_conta = $2 WHERE dsc_email = $3', [hash, 'ativo', email]);
