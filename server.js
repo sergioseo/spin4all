@@ -39,14 +39,14 @@ app.post('/api/register', async (req, res) => {
 
     // 1. Salvar na camada RAW (Auditoria)
     await client.query(
-      'INSERT INTO raw.onboarding_submissions (jsn_payload) VALUES ($1)',
+      'INSERT INTO raw.tb_onboarding_submissions (jsn_payload) VALUES ($1)',
       [JSON.stringify(req.body)]
     );
 
     // 2. Criar Usuário na TRUSTED
     const hashedPassword = await bcrypt.hash(password, 10);
     const userRes = await client.query(
-      'INSERT INTO trusted.usuarios (dsc_email, dsc_senha_hash) VALUES ($1, $2) RETURNING id_usuario',
+      'INSERT INTO trusted.tb_usuarios (dsc_email, dsc_senha_hash) VALUES ($1, $2) RETURNING id_usuario',
       [email, hashedPassword]
     );
 
@@ -54,7 +54,7 @@ app.post('/api/register', async (req, res) => {
 
     // 3. Criar Perfil na TRUSTED
     await client.query(
-      `INSERT INTO trusted.membros_perfil 
+      `INSERT INTO trusted.tb_membros_perfil 
        (id_usuario, dsc_nome_completo, dsc_lateralidade, dsc_empunhadura, dsc_nivel_tecnico, dsc_objetivo, dsc_metas, num_altura_cm, num_peso_kg) 
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
       [
@@ -85,7 +85,7 @@ app.post('/api/register', async (req, res) => {
 app.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
   try {
-    const result = await pool.query('SELECT * FROM trusted.usuarios WHERE dsc_email = $1', [email]);
+    const result = await pool.query('SELECT * FROM trusted.tb_usuarios WHERE dsc_email = $1', [email]);
     if (result.rows.length === 0) {
       return res.status(401).json({ success: false, message: 'E-mail ou senha inválidos' });
     }
@@ -101,7 +101,7 @@ app.post('/api/login', async (req, res) => {
     const token = jwt.sign({ id: user.id_usuario }, process.env.JWT_SECRET, { expiresIn: '8h' });
 
     // Atualizar último login
-    await pool.query('UPDATE trusted.usuarios SET dt_ultimo_login = CURRENT_TIMESTAMP WHERE id_usuario = $1', [user.id_usuario]);
+    await pool.query('UPDATE trusted.tb_usuarios SET dt_ultimo_login = CURRENT_TIMESTAMP WHERE id_usuario = $1', [user.id_usuario]);
 
     res.json({ success: true, token });
   } catch (err) {

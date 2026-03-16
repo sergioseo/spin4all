@@ -1,4 +1,6 @@
--- EXCLUIR SCHEMAS SE EXISTIREM (Para resetar em ambiente dev)
+-- =========================================================
+-- COMANDO DE RESET TOTAL (USE COM CUIDADO)
+-- =========================================================
 -- DROP SCHEMA IF EXISTS raw CASCADE;
 -- DROP SCHEMA IF EXISTS trusted CASCADE;
 -- DROP SCHEMA IF EXISTS refined CASCADE;
@@ -11,7 +13,7 @@ CREATE SCHEMA IF NOT EXISTS refined;
 -----------------------------------------------------------
 -- 1. CAMADA RAW (Ingestão Direta)
 -----------------------------------------------------------
-CREATE TABLE IF NOT EXISTS raw.onboarding_submissions (
+CREATE TABLE IF NOT EXISTS raw.tb_onboarding_submissions (
     id_submissao SERIAL PRIMARY KEY,
     jsn_payload JSONB NOT NULL,
     vlr_status_processamento VARCHAR(20) DEFAULT 'pendente',
@@ -22,7 +24,7 @@ CREATE TABLE IF NOT EXISTS raw.onboarding_submissions (
 -- 2. CAMADA TRUSTED (Single Source of Truth)
 -----------------------------------------------------------
 -- Autenticação
-CREATE TABLE IF NOT EXISTS trusted.usuarios (
+CREATE TABLE IF NOT EXISTS trusted.tb_usuarios (
     id_usuario SERIAL PRIMARY KEY,
     dsc_email VARCHAR(255) UNIQUE NOT NULL,
     dsc_senha_hash VARCHAR(255) NOT NULL,
@@ -32,9 +34,9 @@ CREATE TABLE IF NOT EXISTS trusted.usuarios (
 );
 
 -- Dados de Perfil Estruturados
-CREATE TABLE IF NOT EXISTS trusted.membros_perfil (
+CREATE TABLE IF NOT EXISTS trusted.tb_membros_perfil (
     id_perfil SERIAL PRIMARY KEY,
-    id_usuario INTEGER REFERENCES trusted.usuarios(id_usuario) ON DELETE CASCADE,
+    id_usuario INTEGER REFERENCES trusted.tb_usuarios(id_usuario) ON DELETE CASCADE,
     dsc_nome_completo VARCHAR(255) NOT NULL,
     dsc_lateralidade VARCHAR(20),
     dsc_empunhadura VARCHAR(50),
@@ -51,7 +53,7 @@ CREATE TABLE IF NOT EXISTS trusted.membros_perfil (
 -- 3. CAMADA REFINED (Consumo/Dashboard)
 -----------------------------------------------------------
 
--- SGESTÃO 1: Perfil Biomecânico e IMC (Análise de Saúde/Físico)
+-- VIEW 1: Perfil Biomecânico e IMC (Análise de Saúde/Físico)
 CREATE OR REPLACE VIEW refined.vw_analise_biomecanica AS
 SELECT 
     id_perfil,
@@ -64,39 +66,38 @@ SELECT
         WHEN num_peso_kg / ((num_altura_cm/100.0)^2) BETWEEN 18.5 AND 24.9 THEN 'Peso ideal'
         ELSE 'Acima do peso'
     END as dsc_status_imc
-FROM trusted.membros_perfil;
+FROM trusted.tb_membros_perfil;
 
--- SUGESTÃO 2: Matriz de Equipamento (Lateratidade x Empunhadura)
+-- VIEW 2: Matriz de Equipamento (Lateratidade x Empunhadura)
 CREATE OR REPLACE VIEW refined.vw_matriz_tecnica AS
 SELECT 
     dsc_lateralidade,
     dsc_empunhadura,
     COUNT(*) as num_total,
     ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER(), 2) as pct_representatividade
-FROM trusted.membros_perfil
+FROM trusted.tb_membros_perfil
 GROUP BY dsc_lateralidade, dsc_empunhadura;
 
--- SUGESTÃO 3: Funil de Nível Técnico (Segmentação de Comunidade)
+-- VIEW 3: Funil de Nível Técnico (Segmentação de Comunidade)
 CREATE OR REPLACE VIEW refined.vw_segmentacao_nivel AS
 SELECT 
     dsc_nivel_tecnico,
     COUNT(*) as num_membros,
     MAX(dt_atualizacao) as dt_ultima_entrada
-FROM trusted.membros_perfil
+FROM trusted.tb_membros_perfil
 GROUP BY dsc_nivel_tecnico
 ORDER BY num_membros DESC;
 
--- SUGESTÃO 4: Tendência de Crescimento Mensal (Sazonalidade)
+-- VIEW 4: Tendência de Crescimento Mensal (Sazonalidade)
 CREATE OR REPLACE VIEW refined.vw_crescimento_mensal AS
 SELECT 
     DATE_TRUNC('month', dt_criacao_registro) as dt_mes,
     COUNT(*) as num_novos_membros
-FROM trusted.usuarios
+FROM trusted.tb_usuarios
 GROUP BY dt_mes
 ORDER BY dt_mes DESC;
 
--- SUGESTÃO 5: Master View de Alunos (Export para Excel/BI)
--- Consolida login e perfil para um report completo
+-- VIEW 5: Master View de Alunos (Export para Excel/BI)
 CREATE OR REPLACE VIEW refined.vw_master_report_alunos AS
 SELECT 
     u.id_usuario,
@@ -107,9 +108,9 @@ SELECT
     p.num_altura_cm,
     p.num_peso_kg,
     u.dt_criacao_registro
-FROM trusted.usuarios u
-JOIN trusted.membros_perfil p ON u.id_usuario = p.id_usuario;
+FROM trusted.tb_usuarios u
+JOIN trusted.tb_membros_perfil p ON u.id_usuario = p.id_usuario;
 
 -- INDEXES PARA PERFORMANCE
-CREATE INDEX idx_trusted_usuarios_email ON trusted.usuarios(dsc_email);
-CREATE INDEX idx_raw_status ON raw.onboarding_submissions(vlr_status_processamento);
+CREATE INDEX idx_trusted_usuarios_email ON trusted.tb_usuarios(dsc_email);
+CREATE INDEX idx_raw_status ON raw.tb_onboarding_submissions(vlr_status_processamento);
