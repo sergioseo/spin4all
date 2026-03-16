@@ -18,6 +18,11 @@ const pool = new Pool({
   port: process.env.DB_PORT,
 });
 
+// Rota Raiz (Evita o "Cannot GET /")
+app.get('/', (req, res) => {
+  res.send('🚀 Spin4All API está ativa! Acesse o portal em <a href="https://www.spin4all.com.br">www.spin4all.com.br</a>');
+});
+
 // Rota de Teste de Conexão
 app.get('/api/health', (req, res) => {
   res.json({ status: 'API Online', message: 'Spin4All Portal API rodando com sucesso!' });
