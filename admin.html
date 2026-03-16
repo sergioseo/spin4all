@@ -340,8 +340,10 @@
                 const reports = await reportRes.json();
 
                 if (reports.success) {
-                    updateMetrics(reports.data);
-                    renderCharts(reports.data);
+                    const data = reports.data;
+                    updateMetrics(data);
+                    renderCheckinChart(data.historico_checkins);
+                    renderLevelChart(data.distribuicao_niveis);
                 }
 
                 // 2. Membros
@@ -379,26 +381,6 @@
                     }
                 });
                 document.getElementById('avg-age').textContent = totalPessoas > 0 ? Math.round(totalIdade / totalPessoas) : '--';
-            }
-        }
-        async function loadDashboardStats() {
-            const token = localStorage.getItem('spin4all_token');
-            try {
-                const response = await fetch(`${API_URL}/admin/reports`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const data = await response.json();
-                
-                if (data.success) {
-                    document.getElementById('total-members').textContent = data.totals.total_membros;
-                    document.getElementById('active-today').textContent = data.totals.ativos_hoje;
-                    document.getElementById('avg-age').textContent = Math.round(data.totals.media_idade) + ' anos';
-                    
-                    renderCheckinChart(data.checkins);
-                    renderLevelChart(data.levels);
-                }
-            } catch (err) {
-                console.error('Erro ao carregar dashboard:', err);
             }
         }
 
@@ -442,8 +424,8 @@
         function renderLevelChart(data) {
             // Chart de Níveis
             const levelCtx = document.getElementById('levelChart').getContext('2d');
-            const levelLabels = data.distribuicao_niveis.map(l => l.dsc_nivel_tecnico);
-            const levelCounts = data.distribuicao_niveis.map(l => l.num_membros);
+            const levelLabels = data.map(l => l.dsc_nivel_tecnico);
+            const levelCounts = data.map(l => l.num_membros);
 
             new Chart(levelCtx, {
                 type: 'doughnut',
