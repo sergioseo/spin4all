@@ -10,42 +10,43 @@
     <style>
         body {
             background: #0f172a;
-            min-height: 100vh; /* Mudado de height para min-height */
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 2rem;
+            padding: 4rem 2rem; /* Aumentado padding superior */
             font-family: 'Outfit', sans-serif;
             color: #fff;
             margin: 0;
         }
 
-        .header {
+        .checkin-header {
             text-align: center;
-            margin-bottom: 4rem; /* Mais espaço */
+            margin-bottom: 4rem;
             width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 5px;
+            gap: 15px; /* Aumentado gap entre título e subtítulo */
+            position: relative; /* Garante que segue o fluxo normal */
         }
 
-        .header h1 {
-            font-size: 3.5rem; /* Um pouco maior */
+        .checkin-header h1 {
+            font-size: 3.5rem;
             font-weight: 800;
             margin: 0;
-            line-height: 1.1;
+            line-height: 1.2;
         }
 
-        .header h1 span { color: #38bdf8; }
+        .checkin-header h1 span { color: #38bdf8; }
         
-        .header .subtitle {
-            font-size: 1.1rem;
+        .checkin-header .subtitle {
+            font-size: 1.2rem;
             font-weight: 400;
             color: #64748b;
-            letter-spacing: 4px;
+            letter-spacing: 5px;
             text-transform: uppercase;
-            margin-top: 5px;
+            margin: 0;
         }
 
         /* Search Bar */
@@ -230,7 +231,7 @@
 </head>
 <body>
 
-    <header class="header">
+    <header class="checkin-header">
         <h1>Spin<span>4All</span></h1>
         <div class="subtitle">CHECK-IN PRESENCIAL</div>
     </header>
