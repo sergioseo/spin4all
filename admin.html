@@ -199,13 +199,31 @@
             </div>
         </section>
 
-        <section class="dashboard-grid" style="grid-template-columns: 2fr 1fr;">
+        <section class="dashboard-grid" style="grid-template-columns: 2fr 1fr; gap: 30px; margin-bottom: 30px;">
+            <!-- Volume de Presença -->
+            <div class="glass-card">
+                <h3 style="margin-bottom: 20px; color: #38bdf8;"><i class="fas fa-calendar-check"></i> Volume de Presença (14 dias)</h3>
+                <div style="height: 300px;">
+                    <canvas id="checkinChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Distribuição por Nível -->
+            <div class="glass-card">
+                <h3 style="margin-bottom: 20px; color: #fbbf24;"><i class="fas fa-users"></i> Distribuição por Nível</h3>
+                <div style="height: 300px;">
+                    <canvas id="levelChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section class="dashboard-grid" style="grid-template-columns: 2fr 1fr; gap: 30px;">
             <!-- Pico de Performance -->
-            <div class="glass-card" style="margin-top: 30px;">
+            <div class="glass-card">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
                     <div>
                         <h3 style="margin-bottom: 5px; color: #4ade80;"><i class="fas fa-chart-line"></i> Evolução de Performance</h3>
-                        <p style="font-size: 0.8rem; color: #64748b;">Acompanhamento dos top 5 membros mais ativos (últimos 30 dias)</p>
+                        <p style="font-size: 0.8rem; color: #64748b;">Acompanhamento dos top 5 membros (últimos 30 dias)</p>
                     </div>
                     <div id="performance-filters" style="display: flex; gap: 5px;">
                         <!-- Gerado via JS -->
@@ -217,7 +235,7 @@
             </div>
 
             <!-- Foco Coletivo -->
-            <div class="glass-card" style="margin-top: 30px;">
+            <div class="glass-card">
                 <h3 style="margin-bottom: 20px; color: #a855f7;"><i class="fas fa-bullseye"></i> Foco e Objetivos do Grupo</h3>
                 
                 <div style="background: rgba(168, 85, 247, 0.05); border: 1px solid rgba(168, 85, 247, 0.1); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
@@ -293,24 +311,6 @@
                 </div>
             </div>
 
-            <!-- Pico de Performance -->
-            <div class="glass-card" style="margin-top: 30px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-                    <h3 style="color: #4ade80; margin: 0;"><i class="fas fa-chart-line"></i> Evolução de Performance (Top 5 Ativos)</h3>
-                    <div style="font-size: 0.7rem; color: #64748b; text-transform: uppercase;">Acompanhamento Histórico</div>
-                </div>
-                <div style="height: 300px;">
-                    <canvas id="performanceLineChart"></canvas>
-                </div>
-            </div>
-
-            <!-- Resumo de Objetivos da Comunidade -->
-            <div class="glass-card" style="margin-top: 30px; border-top: 4px solid #38bdf8;">
-                <h3 style="margin-bottom: 20px; color: #fff;"><i class="fas fa-bullseye"></i> Foco e Objetivos do Grupo</h3>
-                <div id="objectives-summary-list" style="display: flex; flex-wrap: wrap; gap: 15px;">
-                    <div style="color: #64748b; font-size: 0.8rem;">Compilando objetivos dos membros...</div>
-                </div>
-            </div>
         </section>
 
         <section id="membros" class="glass-card" style="margin-top: 40px;">
