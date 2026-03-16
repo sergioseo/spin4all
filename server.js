@@ -32,6 +32,20 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
+// Middleware para verificar se o usuário é ADMIN
+const isAdmin = async (req, res, next) => {
+  try {
+    const result = await pool.query('SELECT flg_admin FROM trusted.tb_usuarios WHERE id_usuario = $1', [req.user.id]);
+    if (result.rows.length > 0 && result.rows[0].flg_admin) {
+      next();
+    } else {
+      res.status(403).json({ success: false, message: 'Acesso negado. Apenas administradores.' });
+    }
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Erro ao verificar privilégios.' });
+  }
+};
+
 // --- ROTAS DA API ---
 
 // Perfil do Usuário Logado
@@ -48,6 +62,8 @@ app.get('/api/me', authenticateToken, async (req, res) => {
         p.dsc_metas, 
         p.num_altura_cm, 
         p.num_peso_kg,
+        p.dt_nascimento,
+        u.flg_admin,
         u.dt_criacao_registro
       FROM trusted.tb_usuarios u
       JOIN trusted.tb_membros_perfil p ON u.id_usuario = p.id_usuario
@@ -88,9 +104,9 @@ app.put('/api/update-profile', authenticateToken, async (req, res) => {
     // 2. Atualizar TRUSTED (Estado Atual)
     await client.query(
       `UPDATE trusted.tb_membros_perfil 
-       SET dsc_nome_completo = $1, num_peso_kg = $2, num_altura_cm = $3, dsc_nivel_tecnico = $4, dsc_metas = $5, dt_atualizacao = CURRENT_TIMESTAMP
-       WHERE id_usuario = $6`,
-      [name, weight, height, level, goals, userId]
+       SET dsc_nome_completo = $1, num_peso_kg = $2, num_altura_cm = $3, dsc_nivel_tecnico = $4, dsc_metas = $5, dt_nascimento = $6, dt_atualizacao = CURRENT_TIMESTAMP
+       WHERE id_usuario = $7`,
+      [name, weight, height, level, goals, req.body.birth || null, userId]
     );
 
     // 3. Registrar Evolução (Histórico se houve mudança de peso/nível)
@@ -177,11 +193,12 @@ app.post('/api/register', async (req, res) => {
     // 3. Criar Perfil na TRUSTED (Estado Atual)
     await client.query(
       `INSERT INTO trusted.tb_membros_perfil 
-       (id_usuario, dsc_nome_completo, dsc_lateralidade, dsc_empunhadura, dsc_nivel_tecnico, dsc_objetivo, dsc_metas, num_altura_cm, num_peso_kg) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+       (id_usuario, dsc_nome_completo, dt_nascimento, dsc_lateralidade, dsc_empunhadura, dsc_nivel_tecnico, dsc_objetivo, dsc_metas, num_altura_cm, num_peso_kg) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
       [
         userId, 
         profileData.name, 
+        profileData.birthDate || null,
         profileData.side, 
         profileData.grip, 
         profileData.level,
@@ -227,7 +244,7 @@ app.post('/api/login', async (req, res) => {
     }
 
     // Gerar Token JWT
-    const token = jwt.sign({ id: user.id_usuario }, process.env.JWT_SECRET, { expiresIn: '8h' });
+    const token = jwt.sign({ id: user.id_usuario, admin: user.flg_admin }, process.env.JWT_SECRET, { expiresIn: '8h' });
 
     // Atualizar último login
     await pool.query('UPDATE trusted.tb_usuarios SET dt_ultimo_login = CURRENT_TIMESTAMP WHERE id_usuario = $1', [user.id_usuario]);
@@ -331,9 +348,6 @@ app.get('/api/my-attendance', authenticateToken, async (req, res) => {
     // 1. Dados consolidado de frequência
     const statsRes = await pool.query('SELECT * FROM refined.vw_frequencia_mensal WHERE id_usuario = $1', [userId]);
     
-    // 2. Lista de datas para o calendário
-    const datesRes = await pool.query('SELECT dt_checkin FROM trusted.tb_checkins WHERE id_usuario = $1 ORDER BY dt_checkin DESC', [userId]);
-
     res.json({ 
       success: true, 
       stats: statsRes.rows[0] || { num_presencas: 0, pct_frequencia: 0, dsc_status_torneio: 'Pendente ❌' },
@@ -342,6 +356,60 @@ app.get('/api/my-attendance', authenticateToken, async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, error: 'Erro ao buscar dados de frequência.' });
+  }
+});
+
+// --- ÁREA ADMINISTRATIVA (ADMIN ONLY) ---
+
+// Relatório Consolidado (Dash Admin)
+app.get('/api/admin/reports', authenticateToken, isAdmin, async (req, res) => {
+  try {
+    // 1. Total de Membros
+    const totalMembros = await pool.query('SELECT COUNT(*) FROM trusted.tb_membros_perfil');
+    
+    // 2. Check-ins de hoje
+    const checkinsHoje = await pool.query('SELECT COUNT(*) FROM trusted.tb_checkins WHERE dt_checkin = CURRENT_DATE');
+    
+    // 3. Distribuição por Nível (View Refined)
+    const niveisDist = await pool.query('SELECT * FROM refined.vw_segmentacao_nivel');
+    
+    // 4. Histórico de Check-ins (View Refined)
+    const checkinsHist = await pool.query('SELECT * FROM refined.vw_checkins_stats LIMIT 7');
+
+    // 5. Demografia (View Refined)
+    const demografia = await pool.query('SELECT * FROM refined.vw_analytics_demografico');
+
+    res.json({
+      success: true,
+      data: {
+        total_membros: parseInt(totalMembros.rows[0].count),
+        ativos_hoje: parseInt(checkinsHoje.rows[0].count),
+        distribuicao_niveis: niveisDist.rows,
+        historico_checkins: checkinsHist.rows,
+        demografia: demografia.rows
+      }
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: 'Erro ao gerar relatórios administrativos.' });
+  }
+});
+
+// Listar Todos os Membros (Gestão)
+app.get('/api/admin/members', authenticateToken, isAdmin, async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT 
+        u.id_usuario, u.dsc_email, u.flg_admin, u.vlr_status_conta,
+        p.dsc_nome_completo, p.dsc_nivel_tecnico, p.dt_nascimento
+      FROM trusted.tb_usuarios u
+      JOIN trusted.tb_membros_perfil p ON u.id_usuario = p.id_usuario
+      ORDER BY p.dsc_nome_completo ASC
+    `);
+    res.json({ success: true, members: result.rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: 'Erro ao listar membros.' });
   }
 });
 

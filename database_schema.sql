@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS trusted.tb_usuarios (
     dsc_email VARCHAR(255) UNIQUE NOT NULL,
     dsc_senha_hash VARCHAR(255) NOT NULL,
     vlr_status_conta VARCHAR(20) DEFAULT 'ativo',
+    flg_admin BOOLEAN DEFAULT FALSE, -- Flag para acesso administrativo
     dt_criacao_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     dt_ultimo_login TIMESTAMP
 );
@@ -51,14 +52,16 @@ CREATE TABLE IF NOT EXISTS trusted.tb_membros_perfil (
     id_perfil SERIAL PRIMARY KEY,
     id_usuario INTEGER REFERENCES trusted.tb_usuarios(id_usuario) ON DELETE CASCADE,
     dsc_nome_completo VARCHAR(255) NOT NULL,
+    dt_nascimento DATE, -- Necessário para analytics de idade
     dsc_lateralidade VARCHAR(20),
     dsc_empunhadura VARCHAR(50),
     dsc_nivel_tecnico VARCHAR(50),
     dsc_objetivo VARCHAR(100),
     dsc_metas TEXT,
     num_altura_cm INTEGER,
-    num_peso_kg NUMERIC(5,2), -- Suporta decimais (ex: 85.5)
+    num_peso_kg NUMERIC(5,2),
     dt_criacao_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    dt_atual_medicao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     dt_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -152,8 +155,24 @@ SELECT
         WHEN (s.num_presencas / s.num_treinos_esperados) * 100 >= 70 THEN 'Qualificado ✅'
         ELSE 'Pendente ❌'
     END as dsc_status_torneio
-FROM stats s
-JOIN trusted.tb_membros_perfil p ON s.id_usuario = p.id_usuario;
+-- VIEW 6: Analytics Demográfico (Idade e Nível)
+CREATE OR REPLACE VIEW refined.vw_analytics_demografico AS
+SELECT 
+    p.dsc_nivel_tecnico,
+    EXTRACT(YEAR FROM AGE(p.dt_nascimento)) as num_idade,
+    COUNT(*) as num_membros
+FROM trusted.tb_membros_perfil p
+GROUP BY p.dsc_nivel_tecnico, num_idade
+ORDER BY p.dsc_nivel_tecnico, num_idade;
+
+-- VIEW 7: Resumo de Check-ins por Dia (Volume)
+CREATE OR REPLACE VIEW refined.vw_checkins_stats AS
+SELECT 
+    dt_checkin,
+    COUNT(*) as num_checkins
+FROM trusted.tb_checkins
+GROUP BY dt_checkin
+ORDER BY dt_checkin DESC;
 
 -----------------------------------------------------------
 -- INDEXES PARA PERFORMANCE

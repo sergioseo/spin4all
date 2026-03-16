@@ -299,6 +299,12 @@
                     <span>Check-in (Presencial)</span>
                 </a>
             </div>
+            <div class="nav-item" id="admin-nav-item" style="display: none;">
+                <a href="admin.html" class="nav-link" style="color: #fbbf24;">
+                    <i class="fas fa-shield-halved"></i>
+                    <span>Administração</span>
+                </a>
+            </div>
             <div class="nav-item">
                 <a href="javascript:void(0)" onclick="switchTab('profile')" class="nav-link" id="nav-profile">
                     <i class="fas fa-user-cog"></i>
@@ -434,6 +440,10 @@
                                 <input type="number" id="edit-height" style="background: rgba(255,255,255,0.05); color: #fff; padding: 10px; text-align: left; width: 100%; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;">
                             </div>
                             <div class="stat-item">
+                                <label class="data-label">Data de Nascimento</label>
+                                <input type="date" id="edit-birth" style="background: rgba(255,255,255,0.05); color: #fff; padding: 10px; text-align: left; width: 100%; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;">
+                            </div>
+                            <div class="stat-item">
                                 <label class="data-label">Nível Técnico</label>
                                 <select id="edit-level" style="background: rgba(30, 41, 59, 1); color: #fff; padding: 10px; text-align: left; width: 100%; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;">
                                     <option value="Iniciante">Iniciante</option>
@@ -512,6 +522,11 @@
                 document.getElementById('user-objective').textContent = userData.dsc_objetivo;
                 document.getElementById('user-goals').textContent = userData.dsc_metas;
 
+                // Mostrar menu admin se o usuário for administrador
+                if (userData.flg_admin) {
+                    document.getElementById('admin-nav-item').style.display = 'block';
+                }
+
                 const imc = (userData.num_peso_kg / Math.pow(userData.num_altura_cm / 100, 2)).toFixed(2);
                 document.getElementById('user-imc').textContent = imc;
 
@@ -524,6 +539,9 @@
                 document.getElementById('edit-height').value = userData.num_altura_cm;
                 document.getElementById('edit-level').value = userData.dsc_nivel_tecnico;
                 document.getElementById('edit-goals').value = userData.dsc_metas;
+                if (userData.dt_nascimento) {
+                    document.getElementById('edit-birth').value = userData.dt_nascimento.split('T')[0];
+                }
 
             } catch (err) {
                 console.error(err);
@@ -587,7 +605,8 @@
                 weight: parseFloat(document.getElementById('edit-weight').value),
                 height: parseInt(document.getElementById('edit-height').value),
                 level: document.getElementById('edit-level').value,
-                goals: document.getElementById('edit-goals').value
+                goals: document.getElementById('edit-goals').value,
+                birth: document.getElementById('edit-birth').value
             };
 
             try {

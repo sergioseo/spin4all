@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo | Spin4All</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --sidebar-width: 280px;
+        }
+
+        body {
+            background: #0f172a;
+            color: #f8fafc;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex-grow: 1;
+            padding: 40px;
+            max-width: 1400px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 25px;
+        }
+
+        .metric-card {
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #38bdf8;
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            color: #94a3b8;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        .chart-container {
+            height: 300px;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th {
+            text-align: left;
+            padding: 12px;
+            color: #38bdf8;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: #cbd5e1;
+        }
+
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-active { background: rgba(34, 197, 94, 0.1); color: #4ade80; }
+        .status-admin { background: rgba(251, 191, 36, 0.1); color: #fbbf24; }
+
+        .loader {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #0f172a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .nav-link.active {
+            background: rgba(56, 189, 248, 0.1);
+            color: #38bdf8;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loader" class="loader">
+        <i class="fas fa-circle-notch fa-spin fa-3x" style="color: #38bdf8;"></i>
+    </div>
+
+    <aside class="sidebar">
+        <div class="sidebar-logo" style="margin-bottom: 40px; text-align: center;">
+            <span style="font-weight: 800; font-size: 1.5rem;">ADMIN<span style="color:#38bdf8">SHIELD</span></span>
+        </div>
+        <nav class="nav-menu" style="flex-grow: 1;">
+            <a href="dashboard.html" class="nav-link" style="margin-bottom: 10px; display: flex; align-items: center; gap: 12px; padding: 12px; color: #94a3b8; text-decoration: none;">
+                <i class="fas fa-arrow-left"></i> Voltar ao Portal
+            </a>
+            <a href="#" class="nav-link active" style="margin-bottom: 10px; display: flex; align-items: center; gap: 12px; padding: 12px; color: #fff; text-decoration: none; border-radius: 8px;">
+                <i class="fas fa-chart-pie"></i> Dashboard
+            </a>
+            <a href="#membros" class="nav-link" style="margin-bottom: 10px; display: flex; align-items: center; gap: 12px; padding: 12px; color: #94a3b8; text-decoration: none;">
+                <i class="fas fa-users"></i> Gestão de Membros
+            </a>
+        </nav>
+        <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+            <p style="font-size: 0.8rem; color: #64748b;">Acesso Restrito</p>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header style="margin-bottom: 40px;">
+            <h1 style="font-size: 2rem; margin-bottom: 10px;">Relatórios Analíticos</h1>
+            <p style="color: #94a3b8;">Visão consolidada da comunidade Spin4All</p>
+        </header>
+
+        <section class="dashboard-grid">
+            <div class="glass-card metric-card">
+                <div class="metric-value" id="total-members">--</div>
+                <div class="metric-label">Total de Membros</div>
+            </div>
+            <div class="glass-card metric-card">
+                <div class="metric-value" id="active-today" style="color: #4ade80;">--</div>
+                <div class="metric-label">Check-ins Hoje</div>
+            </div>
+            <div class="glass-card metric-card">
+                <div class="metric-value" id="avg-age">--</div>
+                <div class="metric-label">Média de Idade</div>
+            </div>
+        </section>
+
+        <section class="dashboard-grid" style="grid-template-columns: 2fr 1fr;">
+            <!-- Gráfico de Volume -->
+            <div class="glass-card">
+                <h3 style="margin-bottom: 20px; color: #38bdf8;">Volume de Presença (7 dias)</h3>
+                <div class="chart-container">
+                    <canvas id="checkinChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Gráfico de Níveis -->
+            <div class="glass-card">
+                <h3 style="margin-bottom: 20px; color: #38bdf8;">Distribuição de Nível</h3>
+                <div class="chart-container">
+                    <canvas id="levelChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="membros" class="glass-card" style="margin-top: 40px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="color: #38bdf8;">Lista de Membros</h3>
+                <input type="text" placeholder="Buscar membro..." id="search-membros" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 8px 15px; border-radius: 8px; width: 300px;">
+            </div>
+            <div style="overflow-x: auto;">
+                <table id="members-table">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Nível</th>
+                            <th>Idade</th>
+                            <th>Status</th>
+                            <th>Admin</th>
+                        </tr>
+                    </thead>
+                    <tbody id="members-list">
+                        <!-- Gerado via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:3000/api'
+            : 'https://spin4all-motor.h5rvsp.easypanel.host/api';
+
+        async function checkAdmin() {
+            const token = localStorage.getItem('spin4all_token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/me`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                
+                if (!data.success || !data.user.flg_admin) {
+                    alert('Acesso negado. Apenas administradores.');
+                    window.location.href = 'dashboard.html';
+                    return;
+                }
+
+                initDashboard();
+            } catch (err) {
+                window.location.href = 'dashboard.html';
+            }
+        }
+
+        async function initDashboard() {
+            const token = localStorage.getItem('spin4all_token');
+            
+            try {
+                // 1. Relatórios
+                const reportRes = await fetch(`${API_URL}/admin/reports`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const reports = await reportRes.json();
+
+                if (reports.success) {
+                    updateMetrics(reports.data);
+                    renderCharts(reports.data);
+                }
+
+                // 2. Membros
+                const memberRes = await fetch(`${API_URL}/admin/members`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const members = await memberRes.json();
+                
+                if (members.success) {
+                    renderMembers(members.members);
+                }
+
+                document.getElementById('loader').style.display = 'none';
+            } catch (err) {
+                console.error('Erro ao carregar admin:', err);
+                document.getElementById('loader').style.display = 'none';
+            }
+        }
+
+        function updateMetrics(data) {
+            document.getElementById('total-members').textContent = data.total_membros;
+            document.getElementById('active-today').textContent = data.ativos_hoje;
+            
+            // Média de idade simples
+            if (data.demografia.length > 0) {
+                let totalIdade = 0;
+                let totalPessoas = 0;
+                data.demografia.forEach(d => {
+                    if (d.num_idade) {
+                        totalIdade += (d.num_idade * parseInt(d.num_membros));
+                        totalPessoas += parseInt(d.num_membros);
+                    }
+                });
+                document.getElementById('avg-age').textContent = totalPessoas > 0 ? Math.round(totalIdade / totalPessoas) : '--';
+            }
+        }
+
+        function renderCharts(data) {
+            // Chart de Check-ins (Histórico)
+            const checkinCtx = document.getElementById('checkinChart').getContext('2d');
+            const dates = data.historico_checkins.map(h => new Date(h.dt_checkin).toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'})).reverse();
+            const counts = data.historico_checkins.map(h => h.num_checkins).reverse();
+
+            new Chart(checkinCtx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: 'Check-ins',
+                        data: counts,
+                        borderColor: '#38bdf8',
+                        backgroundColor: 'rgba(56, 189, 248, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // Chart de Níveis
+            const levelCtx = document.getElementById('levelChart').getContext('2d');
+            const levelLabels = data.distribuicao_niveis.map(l => l.dsc_nivel_tecnico);
+            const levelCounts = data.distribuicao_niveis.map(l => l.num_membros);
+
+            new Chart(levelCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: levelLabels,
+                    datasets: [{
+                        data: levelCounts,
+                        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: '#94a3b8', padding: 20 } }
+                    }
+                }
+            });
+        }
+
+        function renderMembers(members) {
+            const list = document.getElementById('members-list');
+            list.innerHTML = '';
+
+            members.forEach(m => {
+                const age = m.dt_nascimento ? calculateAge(m.dt_nascimento) : '--';
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td style="font-weight: 600;">${m.dsc_nome_completo}</td>
+                    <td>${m.dsc_nivel_tecnico}</td>
+                    <td>${age}</td>
+                    <td><span class="status-badge ${m.vlr_status_conta === 'ativo' ? 'status-active' : ''}">${m.vlr_status_conta}</span></td>
+                    <td>${m.flg_admin ? '<i class="fas fa-crown status-admin"></i>' : '--'}</td>
+                `;
+                list.appendChild(row);
+            });
+        }
+
+        function calculateAge(birthDate) {
+            const today = new Date();
+            const birth = new Date(birthDate);
+            let age = today.getFullYear() - birth.getFullYear();
+            const m = today.getMonth() - birth.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+            return age;
+        }
+
+        // Filtro de Busca
+        document.getElementById('search-membros').addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#members-list tr');
+            rows.forEach(row => {
+                const name = row.cells[0].textContent.toLowerCase();
+                row.style.display = name.includes(term) ? '' : 'none';
+            });
+        });
+
+        checkAdmin();
+    </script>
+</body>
+</html>
