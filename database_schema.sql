@@ -284,20 +284,10 @@ INSERT INTO trusted.tb_usuarios_badges (id_usuario, id_badge) VALUES
 (99, 1), (99, 2), (99, 13) -- Primeiro Passo, Ritmo Inicial, Mestre do Saque
 ON CONFLICT DO NOTHING;
 
--- Resultados de Torneio para o Ranking
-INSERT INTO trusted.tb_torneios_resultados (id_usuario, num_posicao, dsc_torneio_nome, dt_torneio) VALUES
-(1, 1, 'Torneio Inaugural', CURRENT_DATE - INTERVAL '2 months'),
-(99, 2, 'Torneio Inaugural', CURRENT_DATE - INTERVAL '2 months'),
-(100, 3, 'Torneio Inaugural', CURRENT_DATE - INTERVAL '2 months'),
-(101, 4, 'Torneio Inaugural', CURRENT_DATE - INTERVAL '2 months');
-
 -----------------------------------------------------------
 -- 6. SEEDING DE DADOS (200 ROCKSTARS)
 -----------------------------------------------------------
--- Membro Comum de Teste (Senha: tester123)
-INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash, flg_admin) VALUES (99, 'user@tester.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty', FALSE) ON CONFLICT DO NOTHING;
-INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico) VALUES (99, 'Tester Member', 'IntermediÃ¡rio') ON CONFLICT DO NOTHING;
-
+-- Rockstar list starts from 100 (1 and 99 are seeded above)
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (100, 'rockstar100@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (100, 'Star 100 Nirvana', 'IntermediÃ¡rio', 187, 63, 'https://i.pravatar.cc/150?u=100') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (101, 'rockstar101@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
@@ -698,3 +688,11 @@ INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (
 INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (298, 'Star 298 Radiohead', 'Iniciante', 174, 84, 'https://i.pravatar.cc/150?u=298') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (299, 'rockstar299@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (299, 'Star 299 The Strokes', 'AvanÃ§ado', 185, 82, 'https://i.pravatar.cc/150?u=299') ON CONFLICT DO NOTHING;
+
+-- Resultados de Torneio para o Ranking
+INSERT INTO trusted.tb_torneios_resultados (id_usuario, num_posicao, dsc_torneio_nome, dt_torneio) VALUES
+(1, 1, 'Torneio Inaugural', CURRENT_DATE - INTERVAL '2 months'),
+(99, 2, 'Torneio Inaugural', CURRENT_DATE - INTERVAL '2 months'),
+(100, 3, 'Torneio Inaugural', CURRENT_DATE - INTERVAL '2 months'),
+(101, 4, 'Torneio Inaugural', CURRENT_DATE - INTERVAL '2 months')
+ON CONFLICT DO NOTHING;
