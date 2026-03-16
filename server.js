@@ -123,6 +123,7 @@ app.get('/api/me', authenticateToken, async (req, res) => {
     const query = `
       SELECT 
         u.dsc_email, 
+        u.flg_admin,
         p.dsc_nome_completo, 
         p.dsc_lateralidade, 
         p.dsc_empunhadura, 
