@@ -313,6 +313,19 @@
 
         </section>
 
+        <!-- Demografia por Faixas -->
+        <section class="glass-card" style="margin-top: 30px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <div>
+                    <h3 style="margin-bottom: 5px; color: #fbbf24;"><i class="fas fa-id-card"></i> Demografia: Faixas Etárias por Nível</h3>
+                    <p style="font-size: 0.8rem; color: #64748b;">Distribuição de membros em 5 faixas etárias segmentadas por nível técnico</p>
+                </div>
+            </div>
+            <div style="height: 350px;">
+                <canvas id="ageDemographicChart"></canvas>
+            </div>
+        </section>
+
         <section id="membros" class="glass-card" style="margin-top: 40px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h3 style="color: #38bdf8;">Lista de Membros</h3>
@@ -408,6 +421,7 @@
                     updateMetrics(data);
                     renderCheckinChart(data.historico_checkins);
                     renderLevelChart(data.distribuicao_niveis);
+                    renderAgeDemographicChart(data.demografia_faixas);
                 }
 
                 // 2. Membros
@@ -546,8 +560,8 @@
                                 const val = data.datasets[i].data[index];
                                 const percent = ((val / total) * 100).toFixed(0) + '%';
                                 
-                                ctx.fillStyle = '#fff';
-                                ctx.font = 'bold 10px sans-serif';
+                                ctx.fillStyle = '#0f172a'; // Escurecido para melhor contraste
+                                ctx.font = 'bold 11px sans-serif';
                                 ctx.textAlign = 'center';
                                 ctx.textBaseline = 'middle';
                                 ctx.fillText(percent, x, y);
@@ -580,6 +594,50 @@
                     </td>
                 `;
                 list.appendChild(row);
+            });
+        }
+
+        function renderAgeDemographicChart(data) {
+            const ctx = document.getElementById('ageDemographicChart').getContext('2d');
+            if (!ctx) return;
+
+            // Faixas fixas para garantir ordenação visual
+            const faixas = ['< 20', '20-29', '30-39', '40-49', '50+'];
+            const niveis = ['Iniciante', 'Intermediário', 'Avançado'];
+            const colors = {
+                'Iniciante': '#f43f5e',
+                'Intermediário': '#fbbf24',
+                'Avançado': '#38bdf8'
+            };
+
+            const datasets = niveis.map(nivel => ({
+                label: nivel,
+                data: faixas.map(faixa => {
+                    const item = data.find(d => normalizeLevel(d.dsc_nivel_tecnico) === nivel && d.faixa_etaria === faixa);
+                    return item ? parseInt(item.count) : 0;
+                }),
+                backgroundColor: colors[nivel],
+                borderRadius: 4
+            }));
+
+            // Destruir instância anterior se existir
+            Chart.getChart(ctx.canvas)?.destroy();
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: { labels: faixas, datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { stacked: true, grid: { display: false }, ticks: { color: '#94a3b8' } },
+                        y: { stacked: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' }, beginAtZero: true }
+                    },
+                    plugins: {
+                        legend: { position: 'top', labels: { color: '#94a3b8', boxWidth: 12, font: { size: 11 } } },
+                        tooltip: { mode: 'index', intersect: false }
+                    }
+                }
             });
         }
 

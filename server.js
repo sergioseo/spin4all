@@ -508,11 +508,28 @@ app.get('/api/admin/reports', authenticateToken, isAdmin, async (req, res) => {
     // 3. Distribuição por Nível (View Refined)
     const niveisDist = await pool.query('SELECT * FROM refined.vw_segmentacao_nivel');
     
-    // 4. Histórico de Check-ins (View Refined)
-    const checkinsHist = await pool.query('SELECT * FROM refined.vw_checkins_stats LIMIT 7');
+    // 4. Histórico de Check-ins (View Refined) - Aumentado para 14 dias
+    const checkinsHist = await pool.query('SELECT * FROM refined.vw_checkins_stats LIMIT 14');
 
     // 5. Demografia (View Refined)
     const demografia = await pool.query('SELECT * FROM refined.vw_analytics_demografico');
+
+    // 6. Demografia por Faixas Etárias (NOVO)
+    const demografiaFaixas = await pool.query(`
+      SELECT 
+        dsc_nivel_tecnico,
+        CASE 
+          WHEN EXTRACT(YEAR FROM AGE(dt_nascimento)) < 20 THEN '< 20'
+          WHEN EXTRACT(YEAR FROM AGE(dt_nascimento)) BETWEEN 20 AND 29 THEN '20-29'
+          WHEN EXTRACT(YEAR FROM AGE(dt_nascimento)) BETWEEN 30 AND 39 THEN '30-39'
+          WHEN EXTRACT(YEAR FROM AGE(dt_nascimento)) BETWEEN 40 AND 49 THEN '40-49'
+          ELSE '50+'
+        END as faixa_etaria,
+        COUNT(*) as count
+      FROM trusted.tb_membros_perfil
+      GROUP BY dsc_nivel_tecnico, faixa_etaria
+      ORDER BY faixa_etaria
+    `);
 
     res.json({
       success: true,
@@ -521,7 +538,8 @@ app.get('/api/admin/reports', authenticateToken, isAdmin, async (req, res) => {
         ativos_hoje: parseInt(checkinsHoje.rows[0].count),
         distribuicao_niveis: niveisDist.rows,
         historico_checkins: checkinsHist.rows,
-        demografia: demografia.rows
+        demografia: demografia.rows,
+        demografia_faixas: demografiaFaixas.rows
       }
     });
   } catch (err) {

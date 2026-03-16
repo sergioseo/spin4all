@@ -736,27 +736,29 @@ ON CONFLICT DO NOTHING;
 -----------------------------------------------------------
 
 -- 1. Check-ins para os últimos 30 dias (Simulação de Frequência)
+-- 1. Check-ins Históricos (60 dias para volume consistente no dashboard)
 INSERT INTO trusted.tb_checkins (id_usuario, dt_checkin)
-SELECT u.id_usuario, d
-FROM trusted.tb_usuarios u
-CROSS JOIN (
-    SELECT (CURRENT_DATE - i * INTERVAL '1 day')::date as d 
-    FROM generate_series(0, 30) i 
-    WHERE EXTRACT(DOW FROM (CURRENT_DATE - i * INTERVAL '1 day')) IN (2, 4, 5) -- Ter, Qui, Sex
-) dates
-WHERE u.id_usuario % 2 = 0 -- Metade da base é bem ativa
+SELECT u.id_usuario, (CURRENT_DATE - i * INTERVAL '1 day')::date
+FROM trusted.tb_usuarios u, generate_series(0, 60) i
+WHERE (u.id_usuario + i) % 4 = 0 OR (u.id_usuario % 10 = 0)
 ON CONFLICT DO NOTHING;
 
--- 1.1 Check-ins para HOJE (Para validar o contador em tempo real)
+-- 1.1 Check-ins para HOJE (Contador em tempo real)
 INSERT INTO trusted.tb_checkins (id_usuario, dt_checkin)
 SELECT id_usuario, CURRENT_DATE
 FROM trusted.tb_usuarios 
-WHERE id_usuario % 7 = 0 -- Simular ~28 pessoas ativas hoje de 200
+WHERE id_usuario % 5 = 0
 ON CONFLICT DO NOTHING;
 
--- 2. Demografia Realista (Para Média de Idade)
+-- 2. Demografia Realista (5 Faixas Etárias para o novo gráfico)
 UPDATE trusted.tb_membros_perfil mp
-SET dt_nascimento = CURRENT_DATE - (20 + floor(random() * 40))::int * INTERVAL '365 day'
+SET dt_nascimento = CASE
+    WHEN id_usuario % 5 = 0 THEN CURRENT_DATE - (14 + floor(random() * 5))::int * INTERVAL '365 day' -- < 20
+    WHEN id_usuario % 5 = 1 THEN CURRENT_DATE - (20 + floor(random() * 10))::int * INTERVAL '365 day' -- 20-29
+    WHEN id_usuario % 5 = 2 THEN CURRENT_DATE - (30 + floor(random() * 10))::int * INTERVAL '365 day' -- 30-39
+    WHEN id_usuario % 5 = 3 THEN CURRENT_DATE - (40 + floor(random() * 10))::int * INTERVAL '365 day' -- 40-49
+    ELSE CURRENT_DATE - (50 + floor(random() * 20))::int * INTERVAL '365 day' -- 50+
+END
 FROM trusted.tb_usuarios u
 WHERE mp.id_usuario = u.id_usuario;
 
