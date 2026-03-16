@@ -256,6 +256,40 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
+// --- ROTA DE EMERGÊNCIA (DELETAR APÓS USO) ---
+app.get('/api/setup-admin-emergency', async (req, res) => {
+  try {
+    const email = 'sjwseo@gmail.com';
+    const tempPass = 'admin123';
+    const hash = await bcrypt.hash(tempPass, 10);
+
+    // 1. Verificar se usuário existe
+    const userRes = await pool.query('SELECT id_usuario FROM trusted.tb_usuarios WHERE dsc_email = $1', [email]);
+    
+    if (userRes.rows.length > 0) {
+      await pool.query(
+        'UPDATE trusted.tb_usuarios SET dsc_senha_hash = $1, flg_admin = true, vlr_status_conta = $2 WHERE dsc_email = $3',
+        [hash, 'ativo', email]
+      );
+      res.send(`<h1>✅ Usuário ${email} ATUALIZADO!</h1><p>Senha: <b>${tempPass}</b></p><br><a href="/login.html">Ir para Login</a>`);
+    } else {
+      const newRes = await pool.query(
+        'INSERT INTO trusted.tb_usuarios (dsc_email, dsc_senha_hash, flg_admin, vlr_status_conta) VALUES ($1, $2, true, $3) RETURNING id_usuario',
+        [email, hash, 'ativo']
+      );
+      const newId = newRes.rows[0].id_usuario;
+      await pool.query(
+        'INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico) VALUES ($1, $2, $3)',
+        [newId, 'Admin Sergio', 'Avançado']
+      );
+      res.send(`<h1>✅ Novo usuário ADMIN ${email} CRIADO!</h1><p>Senha: <b>${tempPass}</b></p><br><a href="/login.html">Ir para Login</a>`);
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('<h1>❌ Erro ao criar admin</h1>' + err.message);
+  }
+});
+
 // --- SISTEMA DE CHECK-IN ---
 
 // Realizar Check-in (Tablet)
