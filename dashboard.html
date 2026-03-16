@@ -834,7 +834,6 @@
                 // Mostrar menus restritos se o usuário for administrador
                 if (userData.flg_admin) {
                     document.getElementById('admin-nav-item').style.display = 'block';
-                    document.getElementById('checkin-nav-item').style.display = 'block';
                 }
 
                 const imc = (userData.num_peso_kg / Math.pow(userData.num_altura_cm / 100, 2)).toFixed(2);

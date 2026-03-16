@@ -63,13 +63,18 @@ const runMigrations = async () => {
       ADD COLUMN IF NOT EXISTS num_skill_movimentacao INTEGER DEFAULT 50;
     `);
 
-    // Master Admin Bootstrap: Se houver um ADMIN_EMAIL no .env, garante que ele seja admin
+    // Master Admin Bootstrap: Se houver um ADMIN_EMAIL no .env, garante que ele seja admin (Case-Insensitive)
     if (process.env.ADMIN_EMAIL) {
-      console.log(`--- [BOOTSTRAP] Garantindo privilégios para: ${process.env.ADMIN_EMAIL} ---`);
-      await pool.query(
-        'UPDATE trusted.tb_usuarios SET flg_admin = TRUE WHERE dsc_email = $1',
+      console.log(`--- [BOOTSTRAP] Verificando privilégios para: ${process.env.ADMIN_EMAIL} ---`);
+      const updateRes = await pool.query(
+        'UPDATE trusted.tb_usuarios SET flg_admin = TRUE WHERE LOWER(dsc_email) = LOWER($1)',
         [process.env.ADMIN_EMAIL]
       );
+      if (updateRes.rowCount > 0) {
+        console.log(`--- [BOOTSTRAP] SUCESSO: ${updateRes.rowCount} conta(s) elevada(s) para ADMIN ---`);
+      } else {
+        console.log(`--- [BOOTSTRAP] AVISO: Nenhum usuário encontrado com o e-mail informado no .env ---`);
+      }
     }
 
     console.log('--- Migrações Concluídas com Sucesso ---');
