@@ -66,6 +66,60 @@ app.get('/api/me', authenticateToken, async (req, res) => {
   }
 });
 
+// Atualizar Perfil do Usuário
+app.put('/api/update-profile', authenticateToken, async (req, res) => {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const { name, weight, height, level, goals } = req.body;
+    const userId = req.user.id;
+
+    // Atualiza dados biomecânicos e técnicos
+    await client.query(
+      `UPDATE trusted.tb_membros_perfil 
+       SET dsc_nome_completo = $1, num_peso_kg = $2, num_altura_cm = $3, dsc_nivel_tecnico = $4, dsc_metas = $5
+       WHERE id_usuario = $6`,
+      [name, weight, height, level, goals, userId]
+    );
+
+    await client.query('COMMIT');
+    res.json({ success: true, message: 'Perfil atualizado com sucesso!' });
+  } catch (err) {
+    await client.query('ROLLBACK');
+    console.error(err);
+    res.status(500).json({ success: false, error: 'Erro ao atualizar perfil.' });
+  } finally {
+    client.release();
+  }
+});
+
+// Alterar Senha
+app.put('/api/update-password', authenticateToken, async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    const userId = req.user.id;
+
+    // 1. Buscar a senha atual
+    const userRes = await pool.query('SELECT dsc_senha_hash FROM trusted.tb_usuarios WHERE id_usuario = $1', [userId]);
+    const user = userRes.rows[0];
+
+    // 2. Validar senha atual
+    const isMatch = await bcrypt.compare(currentPassword, user.dsc_senha_hash);
+    if (!isMatch) {
+      return res.status(401).json({ success: false, message: 'Senha atual incorreta.' });
+    }
+
+    // 3. Gerar novo hash e salvar
+    const newHashedPassword = await bcrypt.hash(newPassword, 10);
+    await pool.query('UPDATE trusted.tb_usuarios SET dsc_senha_hash = $1 WHERE id_usuario = $2', [newHashedPassword, userId]);
+
+    res.json({ success: true, message: 'Senha alterada com sucesso!' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: 'Erro ao alterar senha.' });
+  }
+});
+
 // Rota Raiz (Evita o "Cannot GET /")
 app.get('/', (req, res) => {
   res.send('🚀 Spin4All API está ativa! Acesse o portal em <a href="https://www.spin4all.com.br">www.spin4all.com.br</a>');
