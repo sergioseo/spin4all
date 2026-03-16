@@ -74,13 +74,33 @@ app.put('/api/update-profile', authenticateToken, async (req, res) => {
     const { name, weight, height, level, goals } = req.body;
     const userId = req.user.id;
 
-    // Atualiza dados biomecânicos e técnicos
+    // Atualiza dados biomecânicos e técnicos (Estado Atual)
+    const oldProfileRes = await client.query('SELECT * FROM trusted.tb_membros_perfil WHERE id_usuario = $1', [userId]);
+    const oldData = oldProfileRes.rows[0];
+
+    // 1. Registrar no RAW (Auditoria Obrigatória)
+    await client.query(
+      `INSERT INTO raw.tb_perfil_atualizacoes (id_usuario, jsn_payload_antigo, jsn_payload_novo) 
+       VALUES ($1, $2, $3)`,
+      [userId, JSON.stringify(oldData), JSON.stringify(req.body)]
+    );
+
+    // 2. Atualizar TRUSTED (Estado Atual)
     await client.query(
       `UPDATE trusted.tb_membros_perfil 
-       SET dsc_nome_completo = $1, num_peso_kg = $2, num_altura_cm = $3, dsc_nivel_tecnico = $4, dsc_metas = $5
+       SET dsc_nome_completo = $1, num_peso_kg = $2, num_altura_cm = $3, dsc_nivel_tecnico = $4, dsc_metas = $5, dt_atualizacao = CURRENT_TIMESTAMP
        WHERE id_usuario = $6`,
       [name, weight, height, level, goals, userId]
     );
+
+    // 3. Registrar Evolução (Histórico se houve mudança de peso/nível)
+    if (oldData.num_peso_kg !== weight || oldData.dsc_nivel_tecnico !== level) {
+      await client.query(
+        `INSERT INTO trusted.tb_membros_evolucao (id_usuario, num_peso_kg, num_altura_cm, dsc_nivel_tecnico) 
+         VALUES ($1, $2, $3, $4)`,
+        [userId, weight, height, level]
+      );
+    }
 
     await client.query('COMMIT');
     res.json({ success: true, message: 'Perfil atualizado com sucesso!' });
@@ -154,7 +174,7 @@ app.post('/api/register', async (req, res) => {
 
     const userId = userRes.rows[0].id_usuario;
 
-    // 3. Criar Perfil na TRUSTED
+    // 3. Criar Perfil na TRUSTED (Estado Atual)
     await client.query(
       `INSERT INTO trusted.tb_membros_perfil 
        (id_usuario, dsc_nome_completo, dsc_lateralidade, dsc_empunhadura, dsc_nivel_tecnico, dsc_objetivo, dsc_metas, num_altura_cm, num_peso_kg) 
@@ -170,6 +190,13 @@ app.post('/api/register', async (req, res) => {
         profileData.height, 
         profileData.weight
       ]
+    );
+
+    // 4. Iniciar Histórico de Evolução (Ponto de Partida)
+    await client.query(
+      `INSERT INTO trusted.tb_membros_evolucao (id_usuario, num_peso_kg, num_altura_cm, dsc_nivel_tecnico) 
+       VALUES ($1, $2, $3, $4)`,
+      [userId, profileData.weight, profileData.height, profileData.level]
     );
 
     await client.query('COMMIT');

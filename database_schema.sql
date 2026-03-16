@@ -20,6 +20,15 @@ CREATE TABLE IF NOT EXISTS raw.tb_onboarding_submissions (
     dt_criacao_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Nova tabela para auditoria de alterações de perfil
+CREATE TABLE IF NOT EXISTS raw.tb_perfil_atualizacoes (
+    id_atualizacao SERIAL PRIMARY KEY,
+    id_usuario INTEGER NOT NULL,
+    jsn_payload_antigo JSONB,
+    jsn_payload_novo JSONB NOT NULL,
+    dt_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -----------------------------------------------------------
 -- 2. CAMADA TRUSTED (Single Source of Truth)
 -----------------------------------------------------------
@@ -44,9 +53,19 @@ CREATE TABLE IF NOT EXISTS trusted.tb_membros_perfil (
     dsc_objetivo VARCHAR(100),
     dsc_metas TEXT,
     num_altura_cm INTEGER,
-    num_peso_kg INTEGER,
+    num_peso_kg NUMERIC(5,2), -- Mudado para NUMERIC para precisão decimal
     dt_criacao_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     dt_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Nova tabela para histórico de evolução do membro
+CREATE TABLE IF NOT EXISTS trusted.tb_membros_evolucao (
+    id_evolucao SERIAL PRIMARY KEY,
+    id_usuario INTEGER REFERENCES trusted.tb_usuarios(id_usuario) ON DELETE CASCADE,
+    num_peso_kg NUMERIC(5,2),
+    num_altura_cm INTEGER,
+    dsc_nivel_tecnico VARCHAR(50),
+    dt_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -----------------------------------------------------------
@@ -108,8 +127,17 @@ SELECT
     p.num_altura_cm,
     p.num_peso_kg,
     u.dt_criacao_registro
-FROM trusted.tb_usuarios u
-JOIN trusted.tb_membros_perfil p ON u.id_usuario = p.id_usuario;
+-- VIEW 6: Histórico de Evolução (para gráficos)
+CREATE OR REPLACE VIEW refined.vw_evolucao_membro AS
+SELECT 
+    id_usuario,
+    num_peso_kg,
+    num_altura_cm,
+    ROUND(num_peso_kg / ((num_altura_cm/100.0)^2), 2) as num_imc,
+    dsc_nivel_tecnico,
+    dt_registro as dt_evento
+FROM trusted.tb_membros_evolucao
+ORDER BY id_usuario, dt_registro ASC;
 
 -- INDEXES PARA PERFORMANCE
 CREATE INDEX idx_trusted_usuarios_email ON trusted.tb_usuarios(dsc_email);
