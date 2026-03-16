@@ -120,6 +120,30 @@
             background: rgba(56, 189, 248, 0.1);
             color: #38bdf8;
         }
+        .radar-filter {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .radar-filter:hover {
+            background: rgba(56, 189, 248, 0.1);
+            color: #38bdf8;
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+
+        .radar-filter.active {
+            background: #38bdf8;
+            color: #0f172a;
+            border-color: #38bdf8;
+            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
+        }
     </style>
 </head>
 <body>
@@ -200,30 +224,26 @@
             </div>
             
             <div class="dashboard-grid" style="grid-template-columns: 1fr 1fr; gap: 30px;">
-                <!-- Gargalo Técnico Coletivo -->
+                <!-- Gargalo Técnico Coletivo Unificado -->
                 <div class="glass-card">
-                    <h3 style="margin-bottom: 10px; color: #38bdf8;">Gargalo Técnico Coletivo</h3>
-                    <div style="height: 350px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3 style="margin: 0; color: #38bdf8;">DNA Técnico do Grupo</h3>
+                        <div class="filter-group" style="display: flex; gap: 8px;">
+                            <button onclick="changeRadarFilter('all')" class="radar-filter active" id="btn-radar-all">Geral</button>
+                            <button onclick="changeRadarFilter('Iniciante')" class="radar-filter" id="btn-radar-ini">Iniciante</button>
+                            <button onclick="changeRadarFilter('Intermediário')" class="radar-filter" id="btn-radar-int">Intermediário</button>
+                            <button onclick="changeRadarFilter('Avançado')" class="radar-filter" id="btn-radar-ava">Avançado</button>
+                        </div>
+                    </div>
+                    <div style="height: 400px; position: relative;">
                         <canvas id="groupRadarChart"></canvas>
                     </div>
-                    <!-- Sub-radares por Nível -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px;">
-                        <div style="text-align: center;">
-                            <div style="font-size: 0.65rem; color: #94a3b8; font-weight: 700; margin-bottom: 5px;">INICIANTE</div>
-                            <div style="height: 120px;"><canvas id="radarIniciante"></canvas></div>
-                        </div>
-                        <div style="text-align: center;">
-                            <div style="font-size: 0.65rem; color: #94a3b8; font-weight: 700; margin-bottom: 5px;">INTERMEDIÁRIO</div>
-                            <div style="height: 120px;"><canvas id="radarIntermediario"></canvas></div>
-                        </div>
-                        <div style="text-align: center;">
-                            <div style="font-size: 0.65rem; color: #94a3b8; font-weight: 700; margin-bottom: 5px;">AVANÇADO</div>
-                            <div style="height: 120px;"><canvas id="radarAvancado"></canvas></div>
-                        </div>
+                    <div style="margin-top: 20px; padding: 15px; background: rgba(56,189,248,0.05); border-radius: 12px; border: 1px solid rgba(56,189,248,0.1);">
+                        <p style="font-size: 0.8rem; color: #94a3b8; margin: 0; line-height: 1.5;">
+                            <i class="fas fa-chart-line" style="color: #38bdf8; margin-right: 8px;"></i>
+                            <b>Análise de Gap:</b> O radar acima consolida as competências técnicas da comunidade. Use os filtros para identificar gargalos específicos em cada nível de jogo.
+                        </p>
                     </div>
-                    <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 15px; background: rgba(56,189,248,0.05); padding: 10px; border-radius: 8px;">
-                        <i class="fas fa-info-circle" style="color: #38bdf8;"></i> Radares segmentados auxiliam no planejamento de treinos específicos por turma.
-                    </p>
                 </div>
 
                 <!-- Alertas Biomecânicos & Sparring -->
@@ -304,6 +324,9 @@
         const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
             ? 'http://localhost:3000/api'
             : 'https://spin4all-motor.h5rvsp.easypanel.host/api';
+
+        let radarChartInstance = null;
+        let cachedBottleneckData = null;
 
         async function checkAdmin() {
             const token = localStorage.getItem('spin4all_token');
@@ -517,18 +540,8 @@
                 });
                 const bottleneck = await bottleneckRes.json();
                 if (bottleneck.success) {
-                    renderGroupRadar('groupRadarChart', bottleneck.data, '#38bdf8');
-                    
-                    // Renderizar sub-radares
-                    if (bottleneck.by_level) {
-                        const ini = bottleneck.by_level.find(l => l.level === 'Iniciante');
-                        const int = bottleneck.by_level.find(l => l.level === 'Intermediário');
-                        const ava = bottleneck.by_level.find(l => l.level === 'Avançado');
-                        
-                        if (ini) renderGroupRadar('radarIniciante', ini, '#f43f5e', true);
-                        if (int) renderGroupRadar('radarIntermediario', int, '#fbbf24', true);
-                        if (ava) renderGroupRadar('radarAvancado', ava, '#4ade80', true);
-                    }
+                    cachedBottleneckData = bottleneck;
+                    changeRadarFilter('all'); // Inicializa com Geral
                 }
 
                 // 2. Risco Biomecânico
@@ -564,14 +577,48 @@
             }
         }
 
-        function renderGroupRadar(canvasId, data, color, isMini = false) {
+        function changeRadarFilter(level) {
+            if (!cachedBottleneckData) return;
+
+            // Atualizar UI dos botões
+            document.querySelectorAll('.radar-filter').forEach(btn => btn.classList.remove('active'));
+            const btnId = level === 'all' ? 'btn-radar-all' : 
+                         level === 'Iniciante' ? 'btn-radar-ini' :
+                         level === 'Intermediário' ? 'btn-radar-int' : 'btn-radar-ava';
+            document.getElementById(btnId).classList.add('active');
+
+            let plotData = level === 'all' ? cachedBottleneckData.data : 
+                          cachedBottleneckData.by_level.find(l => l.level === level);
+
+            if (!plotData) return;
+
+            const colorMap = {
+                'all': '#38bdf8',
+                'Iniciante': '#f43f5e',
+                'Intermediário': '#fbbf24',
+                'Avançado': '#4ade80'
+            };
+
+            renderGroupRadar('groupRadarChart', plotData, colorMap[level] || '#38bdf8');
+        }
+
+        function renderGroupRadar(canvasId, data, color) {
             const ctx = document.getElementById(canvasId).getContext('2d');
-            new Chart(ctx, {
+            
+            if (radarChartInstance) {
+                radarChartInstance.destroy();
+            }
+
+            radarChartInstance = new Chart(ctx, {
                 type: 'radar',
                 data: {
-                    labels: ['FOR', 'BAC', 'COZ', 'TOP', 'SAQ', 'RAL', 'ATA', 'DEF', 'BLO', 'CON', 'MOV'],
+                    labels: [
+                        'Forehand', 'Backhand', 'Cozinhada', 'Topspin', 
+                        'Saque', 'Rally', 'Ataque', 'Defesa', 
+                        'Bloqueio', 'Controle', 'Movimentação'
+                    ],
                     datasets: [{
-                        label: 'Média',
+                        label: 'Média Técnica',
                         data: [
                             data.forehand, data.backhand, data.cozinhada, data.topspin, 
                             data.saque, data.rally, data.ataque, data.defesa, 
@@ -580,26 +627,47 @@
                         backgroundColor: color + '20',
                         borderColor: color,
                         pointBackgroundColor: color,
-                        borderWidth: isMini ? 1 : 2,
-                        pointRadius: isMini ? 0 : 3
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: color,
+                        borderWidth: 3,
+                        pointRadius: 4
                     }]
                 },
                 options: {
+                    responsive: true,
                     maintainAspectRatio: false,
                     scales: {
                         r: {
-                            angleLines: { color: 'rgba(255,255,255,0.05)' },
-                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            angleLines: { color: 'rgba(255,255,255,0.1)' },
+                            grid: { color: 'rgba(255,255,255,0.1)' },
                             pointLabels: { 
-                                color: '#64748b', 
-                                font: { size: isMini ? 7 : 10 },
-                                display: !isMini // Opcional: ocultar labels em mini radars se ficar muito poluído
+                                color: '#94a3b8', 
+                                font: { 
+                                    size: 11,
+                                    weight: '600',
+                                    family: "'Inter', sans-serif"
+                                }
                             },
-                            ticks: { display: false, stepSize: 20 },
-                            suggestedMin: 0, suggestedMax: 100
+                            ticks: { 
+                                display: false, 
+                                stepSize: 20 
+                            },
+                            suggestedMin: 0, 
+                            suggestedMax: 100
                         }
                     },
-                    plugins: { legend: { display: false } }
+                    plugins: { 
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            titleColor: '#38bdf8',
+                            bodyColor: '#fff',
+                            padding: 12,
+                            cornerRadius: 10,
+                            displayColors: false
+                        }
+                    }
                 }
             });
         }
