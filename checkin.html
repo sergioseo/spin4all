@@ -10,7 +10,7 @@
     <style>
         body {
             background: #0f172a;
-            height: 100vh;
+            min-height: 100vh; /* Mudado de height para min-height */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -22,34 +22,39 @@
 
         .header {
             text-align: center;
-            margin-bottom: 3rem; /* Aumentado para dar espaço */
+            margin-bottom: 4rem; /* Mais espaço */
             width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
         }
 
         .header h1 {
-            font-size: 2.8rem;
+            font-size: 3.5rem; /* Um pouco maior */
             font-weight: 800;
             margin: 0;
-            line-height: 1;
+            line-height: 1.1;
         }
 
         .header h1 span { color: #38bdf8; }
         
-        .header small {
-            display: block; /* Garante que fique em uma nova linha */
-            font-size: 1rem;
+        .header .subtitle {
+            font-size: 1.1rem;
             font-weight: 400;
             color: #64748b;
-            margin-top: 10px;
-            letter-spacing: 2px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-top: 5px;
         }
 
         /* Search Bar */
         .search-container {
             width: 100%;
             max-width: 600px;
-            margin-bottom: 2.5rem;
+            margin-bottom: 3rem;
             position: relative;
+            z-index: 10; /* Garante que não fique atrás de nada */
         }
 
         .search-container input {
@@ -57,11 +62,12 @@
             padding: 1.2rem 1.5rem 1.2rem 3.5rem;
             border-radius: 50px;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(30, 41, 59, 0.8); /* Fundo mais sólido */
             color: #fff;
             font-size: 1.2rem;
             backdrop-filter: blur(10px);
             box-sizing: border-box;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
 
         .search-container i {
@@ -225,7 +231,8 @@
 <body>
 
     <header class="header">
-        <h1>Spin<span>4All</span> <small>CHECK-IN PRESENCIAL</small></h1>
+        <h1>Spin<span>4All</span></h1>
+        <div class="subtitle">CHECK-IN PRESENCIAL</div>
     </header>
 
     <div class="search-container">
