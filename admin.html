@@ -200,19 +200,35 @@
         </section>
 
         <section class="dashboard-grid" style="grid-template-columns: 2fr 1fr;">
-            <!-- Gráfico de Volume -->
-            <div class="glass-card">
-                <h3 style="margin-bottom: 20px; color: #38bdf8;">Volume de Presença (Últimos 14 dias)</h3>
-                <div class="chart-container">
-                    <canvas id="checkinChart"></canvas>
+            <!-- Pico de Performance -->
+            <div class="glass-card" style="margin-top: 30px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                    <div>
+                        <h3 style="margin-bottom: 5px; color: #4ade80;"><i class="fas fa-chart-line"></i> Evolução de Performance</h3>
+                        <p style="font-size: 0.8rem; color: #64748b;">Acompanhamento dos top 5 membros mais ativos (últimos 30 dias)</p>
+                    </div>
+                    <div id="performance-filters" style="display: flex; gap: 5px;">
+                        <!-- Gerado via JS -->
+                    </div>
+                </div>
+                <div style="height: 350px;">
+                    <canvas id="performanceLineChart"></canvas>
                 </div>
             </div>
 
-            <!-- Gráfico de Níveis -->
-            <div class="glass-card">
-                <h3 style="margin-bottom: 20px; color: #38bdf8;">Distribuição de Nível</h3>
-                <div class="chart-container">
-                    <canvas id="levelChart"></canvas>
+            <!-- Foco Coletivo -->
+            <div class="glass-card" style="margin-top: 30px;">
+                <h3 style="margin-bottom: 20px; color: #a855f7;"><i class="fas fa-bullseye"></i> Foco e Objetivos do Grupo</h3>
+                
+                <div style="background: rgba(168, 85, 247, 0.05); border: 1px solid rgba(168, 85, 247, 0.1); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                    <div style="font-size: 0.7rem; color: #a855f7; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px;">Síntese da Comunidade</div>
+                    <p id="objectives-synthesis" style="font-size: 1.1rem; font-weight: 500; color: #e2e8f0; line-height: 1.6; margin: 0;">
+                        Analisando metas e objetivos dos membros...
+                    </p>
+                </div>
+
+                <div id="objectives-tags" style="display: flex; flex-wrap: wrap; gap: 10px;">
+                    <!-- Gerado via JS -->
                 </div>
             </div>
         </section>
@@ -227,7 +243,7 @@
                 <!-- Gargalo Técnico Coletivo Unificado -->
                 <div class="glass-card">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <h3 style="margin: 0; color: #38bdf8;">DNA Técnico do Grupo</h3>
+                        <h3 style="margin: 0; font-size: 1.2rem; color: #38bdf8;">DNA Técnico do Grupo</h3>
                         <div class="filter-group" style="display: flex; gap: 8px;">
                             <button onclick="changeRadarFilter('all')" class="radar-filter active" id="btn-radar-all">Geral</button>
                             <button onclick="changeRadarFilter('Iniciante')" class="radar-filter" id="btn-radar-ini">Iniciante</button>
@@ -235,13 +251,24 @@
                             <button onclick="changeRadarFilter('Avançado')" class="radar-filter" id="btn-radar-ava">Avançado</button>
                         </div>
                     </div>
-                    <div style="height: 400px; position: relative;">
+                    <div style="height: 380px; position: relative;">
                         <canvas id="groupRadarChart"></canvas>
                     </div>
-                    <div style="margin-top: 20px; padding: 15px; background: rgba(56,189,248,0.05); border-radius: 12px; border: 1px solid rgba(56,189,248,0.1);">
-                        <p style="font-size: 0.8rem; color: #94a3b8; margin: 0; line-height: 1.5;">
-                            <i class="fas fa-chart-line" style="color: #38bdf8; margin-right: 8px;"></i>
-                            <b>Análise de Gap:</b> O radar acima consolida as competências técnicas da comunidade. Use os filtros para identificar gargalos específicos em cada nível de jogo.
+                    
+                    <!-- Central de Inteligência Técnica (Espaço preenchido) -->
+                    <div style="margin-top: 25px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div style="background: rgba(74, 222, 128, 0.1); border: 1px solid rgba(74, 222, 128, 0.2); padding: 15px; border-radius: 12px;">
+                            <div style="font-size: 0.7rem; color: #4ade80; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 1px;">Top Força</div>
+                            <div id="top-strength" style="font-size: 1.1rem; font-weight: 700;">--</div>
+                        </div>
+                        <div style="background: rgba(244, 63, 94, 0.1); border: 1px solid rgba(244, 63, 94, 0.2); padding: 15px; border-radius: 12px;">
+                            <div style="font-size: 0.7rem; color: #f43f5e; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 1px;">Gargalo Crítico</div>
+                            <div id="top-weakness" style="font-size: 1.1rem; font-weight: 700;">--</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px; padding: 12px; background: rgba(56,189,248,0.05); border-radius: 10px;">
+                        <p id="radar-analysis-text" style="font-size: 0.75rem; color: #94a3b8; margin: 0; line-height: 1.4;">
+                            Selecione um nível para análise preditiva.
                         </p>
                     </div>
                 </div>
@@ -327,6 +354,9 @@
 
         let radarChartInstance = null;
         let cachedBottleneckData = null;
+        let performanceChartInstance = null;
+        let cachedPerformanceData = null;
+        let activePerfIndex = 'all';
 
         async function checkAdmin() {
             const token = localStorage.getItem('spin4all_token');
@@ -379,9 +409,9 @@
                 if (members.success) {
                     renderMembers(members.members);
                 }
-+
-+                // 3. Insights do Técnico
-+                loadCoachInsights();
+
+                // 3. Insights do Técnico
+                loadCoachInsights();
 
                 document.getElementById('loader').style.display = 'none';
             } catch (err) {
@@ -577,10 +607,16 @@
             }
         }
 
+        const technicalLabels = {
+            forehand: 'Forehand', backhand: 'Backhand', cozinhada: 'Cozinhada',
+            topspin: 'Topspin', saque: 'Saque', rally: 'Rally',
+            ataque: 'Ataque', defesa: 'Defesa', bloqueio: 'Bloqueio',
+            controle: 'Controle', movimentacao: 'Movimentação'
+        };
+
         function changeRadarFilter(level) {
             if (!cachedBottleneckData) return;
 
-            // Atualizar UI dos botões
             document.querySelectorAll('.radar-filter').forEach(btn => btn.classList.remove('active'));
             const btnId = level === 'all' ? 'btn-radar-all' : 
                          level === 'Iniciante' ? 'btn-radar-ini' :
@@ -591,6 +627,23 @@
                           cachedBottleneckData.by_level.find(l => l.level === level);
 
             if (!plotData) return;
+
+            // Analise de Força e Fraqueza
+            const scores = Object.entries(plotData)
+                .filter(([key]) => technicalLabels[key])
+                .map(([key, val]) => ({ key, name: technicalLabels[key], val }));
+            
+            scores.sort((a, b) => b.val - a.val);
+            const strength = scores[0];
+            const weakness = scores[scores.length - 1];
+
+            document.getElementById('top-strength').innerText = strength.name;
+            document.getElementById('top-weakness').innerText = weakness.name;
+
+            const analysisText = level === 'all' 
+                ? `A comunidade possui ${strength.name} como principal diferencial, mas precisa focar em treinos de ${weakness.name} para elevar o nível médio.`
+                : `No nível ${level}, o grupo domina ${strength.name}. Sugerimos sessões intensivas de ${weakness.name} para transição ao próximo nível.`;
+            document.getElementById('radar-analysis-text').innerText = analysisText;
 
             const colorMap = {
                 'all': '#38bdf8',
@@ -643,32 +696,91 @@
                             grid: { color: 'rgba(255,255,255,0.1)' },
                             pointLabels: { 
                                 color: '#94a3b8', 
-                                font: { 
-                                    size: 11,
-                                    weight: '600',
-                                    family: "'Inter', sans-serif"
-                                }
+                                font: { size: 10, weight: '600' }
                             },
-                            ticks: { 
-                                display: false, 
-                                stepSize: 20 
-                            },
-                            suggestedMin: 0, 
-                            suggestedMax: 100
+                            ticks: { display: false, stepSize: 20 },
+                            suggestedMin: 0, suggestedMax: 100
                         }
                     },
                     plugins: { 
                         legend: { display: false },
-                        tooltip: {
-                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
-                            titleColor: '#38bdf8',
-                            bodyColor: '#fff',
-                            padding: 12,
-                            cornerRadius: 10,
-                            displayColors: false
-                        }
+                        tooltip: { enabled: true }
                     }
                 }
+            });
+        }
+
+        async function loadMembers() {
+            const token = localStorage.getItem('spin4all_token');
+            try {
+                const response = await fetch(`${API_URL}/admin/members`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (data.success && data.members) {
+                    renderMembers(data.members);
+                    const levels = data.members.reduce((acc, m) => {
+                        acc[m.dsc_nivel_tecnico] = (acc[m.dsc_nivel_tecnico] || 0) + 1;
+                        return acc;
+                    }, {});
+                    renderLevelChart(levels);
+                }
+            } catch (err) {
+                console.error('Erro ao carregar membros:', err);
+            }
+        }
+
+        function renderLevelChart(levels) {
+            const ctx = document.getElementById('levelChart').getContext('2d');
+            const total = Object.values(levels).reduce((a, b) => a + b, 0);
+            
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(levels),
+                    datasets: [{
+                        data: Object.values(levels),
+                        backgroundColor: ['#38bdf8', '#4ade80', '#fbbf24', '#f43f5e'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    cutout: '65%',
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 10 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => {
+                                    const val = context.raw;
+                                    const percent = ((val / total) * 100).toFixed(1);
+                                    return `${context.label}: ${val} (${percent}%)`;
+                                }
+                            }
+                        }
+                    }
+                },
+                plugins: [{
+                    id: 'percentageLabels',
+                    afterDraw: (chart) => {
+                        const { ctx, data } = chart;
+                        ctx.save();
+                        chart.data.datasets.forEach((dataset, i) => {
+                            chart.getDatasetMeta(i).data.forEach((datapoint, index) => {
+                                const { x, y } = datapoint.tooltipPosition();
+                                const val = data.datasets[i].data[index];
+                                const percent = ((val / total) * 100).toFixed(0) + '%';
+                                
+                                ctx.fillStyle = '#fff';
+                                ctx.font = 'bold 10px sans-serif';
+                                ctx.textAlign = 'center';
+                                ctx.textBaseline = 'middle';
+                                ctx.fillText(percent, x, y);
+                            });
+                        });
+                        ctx.restore();
+                    }
+                }]
             });
         }
 
@@ -715,33 +827,58 @@
             }
         }
 
+        function changePerformanceFilter(index) {
+            activePerfIndex = index;
+            renderPerformancePeak(cachedPerformanceData);
+        }
+
         function renderPerformancePeak(data) {
+            if (!data) return;
+            cachedPerformanceData = data;
+
+            const filterContainer = document.getElementById('performance-filters');
+            if (filterContainer.children.length === 0) {
+                let html = `<button onclick="changePerformanceFilter('all')" class="radar-filter ${activePerfIndex === 'all' ? 'active' : ''}">Geral</button>`;
+                data.forEach((m, i) => {
+                    html += `<button onclick="changePerformanceFilter(${i})" class="radar-filter ${activePerfIndex === i ? 'active' : ''}">${i+1}º ${m.name.split(' ')[0]}</button>`;
+                });
+                filterContainer.innerHTML = html;
+            } else {
+                Array.from(filterContainer.children).forEach((btn, i) => {
+                    const idx = i === 0 ? 'all' : i - 1;
+                    btn.classList.toggle('active', activePerfIndex === idx);
+                });
+            }
+
             const ctx = document.getElementById('performanceLineChart').getContext('2d');
             const colors = ['#4ade80', '#38bdf8', '#fbbf24', '#f43f5e', '#a855f7'];
             
-            // Extrair labels (datas únicas de todos os históricos)
             const allDates = new Set();
             data.forEach(m => m.history.forEach(h => allDates.add(new Date(h.dt_registro).toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'}))));
             const labels = Array.from(allDates).sort();
 
-            const datasets = data.map((m, i) => ({
+            let datasets = data.map((m, i) => ({
                 label: m.name,
                 data: m.history.map(h => h.val),
                 borderColor: colors[i % colors.length],
                 backgroundColor: colors[i % colors.length] + '20',
                 fill: false,
                 tension: 0.3,
-                pointRadius: 4
+                pointRadius: activePerfIndex === 'all' || activePerfIndex === i ? 4 : 0,
+                borderWidth: activePerfIndex === 'all' || activePerfIndex === i ? 2 : 1,
+                hidden: activePerfIndex !== 'all' && activePerfIndex !== i
             }));
 
-            new Chart(ctx, {
+            if (performanceChartInstance) performanceChartInstance.destroy();
+
+            performanceChartInstance = new Chart(ctx, {
                 type: 'line',
                 data: { labels, datasets },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 10 } } }
+                        legend: { display: false }
                     },
                     scales: {
                         y: { 
@@ -759,44 +896,52 @@
         }
 
         function renderObjectivesSummary(data) {
-            const list = document.getElementById('objectives-summary-list');
+            const tagsList = document.getElementById('objectives-tags');
+            const synthesisEl = document.getElementById('objectives-synthesis');
+
             if (data && data.length > 0) {
-                const categories = {
-                    'Técnico': { color: '#38bdf8' },
-                    'Físico': { color: '#f43f5e' },
-                    'Competição': { color: '#fbbf24' },
-                    'Social/Lazer': { color: '#a855f7' }
+                const categoriesColors = {
+                    'Técnico': '#38bdf8',
+                    'Físico': '#f43f5e',
+                    'Competição': '#fbbf24',
+                    'Social/Lazer': '#a855f7'
                 };
 
                 const tagCloud = [];
                 data.forEach(obj => {
                     const text = (obj.amostra_metas || '').toLowerCase();
+                    let category = 'Geral';
                     let color = '#94a3b8';
 
                     if (text.includes('técnica') || text.includes('forehand') || text.includes('backhand') || text.includes('saque') || text.includes('fundamentos')) {
-                        color = categories['Técnico'].color;
+                        category = 'Técnico'; color = categoriesColors['Técnico'];
                     } else if (text.includes('físico') || text.includes('lesão') || text.includes('resistência') || text.includes('peso')) {
-                        color = categories['Físico'].color;
+                        category = 'Físico'; color = categoriesColors['Físico'];
                     } else if (text.includes('torneio') || text.includes('competição') || text.includes('ranking') || text.includes('confiança')) {
-                        color = categories['Competição'].color;
+                        category = 'Competição'; color = categoriesColors['Competição'];
                     } else if (text.includes('social') || text.includes('amigos') || text.includes('diversão') || text.includes('hobby')) {
-                        color = categories['Social/Lazer'].color;
+                        category = 'Social/Lazer'; color = categoriesColors['Social/Lazer'];
                     }
 
-                    const tags = obj.amostra_metas.split(/[,.]/).map(t => t.trim()).filter(t => t.length > 5 && t.length < 50);
-                    tags.forEach(tag => tagCloud.push({ text: tag, color }));
+                    const tags = obj.amostra_metas.split(/[,.]/).map(t => t.trim()).filter(t => t.length > 3 && t.length < 50);
+                    tags.forEach(tag => tagCloud.push({ text: tag, color, category }));
                 });
 
-                // Mostrar apenas as 10 primeiras (simplificando conforme pedido)
                 const topTags = tagCloud.slice(0, 10);
+                
+                // Gerar frase síntese
+                const topCategories = [...new Set(topTags.map(t => t.category))].slice(0, 2);
+                const sampleTags = topTags.slice(0, 3).map(t => t.text).join(', ');
+                synthesisEl.innerText = `O grupo está fortemente engajado em objetivos de ${topCategories.join(' e ')}, destacando-se o interesse por "${sampleTags}".`;
 
-                list.innerHTML = topTags.map(tag => `
-                    <div style="background: ${tag.color}15; color: ${tag.color}; border: 1px solid ${tag.color}30; padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; cursor: default; transition: all 0.2s;" onmouseover="this.style.background='${tag.color}25'" onmouseout="this.style.background='${tag.color}15'">
+                tagsList.innerHTML = topTags.map(tag => `
+                    <div style="background: ${tag.color}15; color: ${tag.color}; border: 1px solid ${tag.color}30; padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">
                          ${tag.text}
                     </div>
-                `).join('') || '<div style="color: #64748b; font-size: 0.8rem;">Sem tags detalhadas.</div>';
+                `).join('') || '<div style="color: #64748b; font-size: 0.8rem;">Sem detalhes.</div>';
             } else {
-                list.innerHTML = '<div style="color: #64748b; font-size: 0.8rem;">Sem dados de objetivos.</div>';
+                tagsList.innerHTML = '<div style="color: #64748b; font-size: 0.8rem;">Sem dados.</div>';
+                synthesisEl.innerText = "Nenhuma meta coletiva identificada no momento.";
             }
         }
 
@@ -809,7 +954,7 @@
             
             if (!result.success) return alert('Erro ao exportar dados.');
 
-            const members = result.data;
+            const members = result.members || result.data;
             let content = '';
             let fileName = `membros_spin4all_${new Date().toISOString().split('T')[0]}`;
 
