@@ -1,9 +1,10 @@
 -- =========================================================
 -- COMANDO DE RESET TOTAL (USE COM CUIDADO)
+-- Este script apaga TUDO e reconstrói as 3 camadas do zero.
 -- =========================================================
--- DROP SCHEMA IF EXISTS raw CASCADE;
--- DROP SCHEMA IF EXISTS trusted CASCADE;
--- DROP SCHEMA IF EXISTS refined CASCADE;
+DROP SCHEMA IF EXISTS raw CASCADE;
+DROP SCHEMA IF EXISTS trusted CASCADE;
+DROP SCHEMA IF EXISTS refined CASCADE;
 
 -- CRIAÇÃO DAS CAMADAS (SCHEMAS)
 CREATE SCHEMA IF NOT EXISTS raw;     
@@ -11,8 +12,10 @@ CREATE SCHEMA IF NOT EXISTS trusted;
 CREATE SCHEMA IF NOT EXISTS refined; 
 
 -----------------------------------------------------------
--- 1. CAMADA RAW (Ingestão Direta)
+-- 1. CAMADA RAW (Ingestão e Auditoria)
 -----------------------------------------------------------
+
+-- Tabela de Ingestão do Onboarding (Caminho inicial)
 CREATE TABLE IF NOT EXISTS raw.tb_onboarding_submissions (
     id_submissao SERIAL PRIMARY KEY,
     jsn_payload JSONB NOT NULL,
@@ -20,7 +23,7 @@ CREATE TABLE IF NOT EXISTS raw.tb_onboarding_submissions (
     dt_criacao_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Nova tabela para auditoria de alterações de perfil
+-- Tabela de Auditoria Obrigatória (Para alterações de perfil)
 CREATE TABLE IF NOT EXISTS raw.tb_perfil_atualizacoes (
     id_atualizacao SERIAL PRIMARY KEY,
     id_usuario INTEGER NOT NULL,
@@ -32,6 +35,7 @@ CREATE TABLE IF NOT EXISTS raw.tb_perfil_atualizacoes (
 -----------------------------------------------------------
 -- 2. CAMADA TRUSTED (Single Source of Truth)
 -----------------------------------------------------------
+
 -- Autenticação
 CREATE TABLE IF NOT EXISTS trusted.tb_usuarios (
     id_usuario SERIAL PRIMARY KEY,
@@ -42,7 +46,7 @@ CREATE TABLE IF NOT EXISTS trusted.tb_usuarios (
     dt_ultimo_login TIMESTAMP
 );
 
--- Dados de Perfil Estruturados
+-- Dados de Perfil Estruturados (Estado Atual)
 CREATE TABLE IF NOT EXISTS trusted.tb_membros_perfil (
     id_perfil SERIAL PRIMARY KEY,
     id_usuario INTEGER REFERENCES trusted.tb_usuarios(id_usuario) ON DELETE CASCADE,
@@ -53,12 +57,12 @@ CREATE TABLE IF NOT EXISTS trusted.tb_membros_perfil (
     dsc_objetivo VARCHAR(100),
     dsc_metas TEXT,
     num_altura_cm INTEGER,
-    num_peso_kg NUMERIC(5,2), -- Mudado para NUMERIC para precisão decimal
+    num_peso_kg NUMERIC(5,2), -- Suporta decimais (ex: 85.5)
     dt_criacao_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     dt_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Nova tabela para histórico de evolução do membro
+-- Tabela de Evolução do Membro (Histórico de medidas)
 CREATE TABLE IF NOT EXISTS trusted.tb_membros_evolucao (
     id_evolucao SERIAL PRIMARY KEY,
     id_usuario INTEGER REFERENCES trusted.tb_usuarios(id_usuario) ON DELETE CASCADE,
@@ -69,10 +73,10 @@ CREATE TABLE IF NOT EXISTS trusted.tb_membros_evolucao (
 );
 
 -----------------------------------------------------------
--- 3. CAMADA REFINED (Consumo/Dashboard)
+-- 3. CAMADA REFINED (Consumo/Dashboards)
 -----------------------------------------------------------
 
--- VIEW 1: Perfil Biomecânico e IMC (Análise de Saúde/Físico)
+-- VIEW 1: Perfil Biomecânico e IMC Atual
 CREATE OR REPLACE VIEW refined.vw_analise_biomecanica AS
 SELECT 
     id_perfil,
@@ -87,47 +91,7 @@ SELECT
     END as dsc_status_imc
 FROM trusted.tb_membros_perfil;
 
--- VIEW 2: Matriz de Equipamento (Lateratidade x Empunhadura)
-CREATE OR REPLACE VIEW refined.vw_matriz_tecnica AS
-SELECT 
-    dsc_lateralidade,
-    dsc_empunhadura,
-    COUNT(*) as num_total,
-    ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER(), 2) as pct_representatividade
-FROM trusted.tb_membros_perfil
-GROUP BY dsc_lateralidade, dsc_empunhadura;
-
--- VIEW 3: Funil de Nível Técnico (Segmentação de Comunidade)
-CREATE OR REPLACE VIEW refined.vw_segmentacao_nivel AS
-SELECT 
-    dsc_nivel_tecnico,
-    COUNT(*) as num_membros,
-    MAX(dt_atualizacao) as dt_ultima_entrada
-FROM trusted.tb_membros_perfil
-GROUP BY dsc_nivel_tecnico
-ORDER BY num_membros DESC;
-
--- VIEW 4: Tendência de Crescimento Mensal (Sazonalidade)
-CREATE OR REPLACE VIEW refined.vw_crescimento_mensal AS
-SELECT 
-    DATE_TRUNC('month', dt_criacao_registro) as dt_mes,
-    COUNT(*) as num_novos_membros
-FROM trusted.tb_usuarios
-GROUP BY dt_mes
-ORDER BY dt_mes DESC;
-
--- VIEW 5: Master View de Alunos (Export para Excel/BI)
-CREATE OR REPLACE VIEW refined.vw_master_report_alunos AS
-SELECT 
-    u.id_usuario,
-    u.dsc_email,
-    p.dsc_nome_completo,
-    p.dsc_nivel_tecnico,
-    p.dsc_empunhadura,
-    p.num_altura_cm,
-    p.num_peso_kg,
-    u.dt_criacao_registro
--- VIEW 6: Histórico de Evolução (para gráficos)
+-- VIEW 2: Histórico de Evolução (Pronto para Gráficos)
 CREATE OR REPLACE VIEW refined.vw_evolucao_membro AS
 SELECT 
     id_usuario,
@@ -139,6 +103,28 @@ SELECT
 FROM trusted.tb_membros_evolucao
 ORDER BY id_usuario, dt_registro ASC;
 
+-- VIEW 3: Segmentação de Nível Técnico
+CREATE OR REPLACE VIEW refined.vw_segmentacao_nivel AS
+SELECT 
+    dsc_nivel_tecnico,
+    COUNT(*) as num_membros,
+    MAX(dt_atualizacao) as dt_ultima_entrada
+FROM trusted.tb_membros_perfil
+GROUP BY dsc_nivel_tecnico
+ORDER BY num_membros DESC;
+
+-- VIEW 4: Crescimento Mensal
+CREATE OR REPLACE VIEW refined.vw_crescimento_mensal AS
+SELECT 
+    DATE_TRUNC('month', dt_criacao_registro) as dt_mes,
+    COUNT(*) as num_novos_membros
+FROM trusted.tb_usuarios
+GROUP BY dt_mes
+ORDER BY dt_mes DESC;
+
+-----------------------------------------------------------
 -- INDEXES PARA PERFORMANCE
+-----------------------------------------------------------
 CREATE INDEX idx_trusted_usuarios_email ON trusted.tb_usuarios(dsc_email);
 CREATE INDEX idx_raw_status ON raw.tb_onboarding_submissions(vlr_status_processamento);
+CREATE INDEX idx_evolucao_usuario ON trusted.tb_membros_evolucao(id_usuario, dt_registro);
