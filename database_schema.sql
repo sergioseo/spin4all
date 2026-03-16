@@ -155,6 +155,9 @@ SELECT
         WHEN (s.num_presencas / s.num_treinos_esperados) * 100 >= 70 THEN 'Qualificado ✅'
         ELSE 'Pendente ❌'
     END as dsc_status_torneio
+FROM stats s
+JOIN trusted.tb_membros_perfil p ON s.id_usuario = p.id_usuario;
+
 -- VIEW 6: Analytics Demográfico (Idade e Nível)
 CREATE OR REPLACE VIEW refined.vw_analytics_demografico AS
 SELECT 

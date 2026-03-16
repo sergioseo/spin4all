@@ -257,6 +257,80 @@
         .status-ok { background: rgba(34, 197, 94, 0.1); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.2); }
         .status-pending { background: rgba(245, 158, 11, 0.1); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.2); }
 
+        /* Modal Pop-up */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: #1e293b;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            position: relative;
+            animation: modalIn 0.3s ease-out;
+        }
+
+        @keyframes modalIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        /* Skill Slider Labels */
+        .skill-slider-container {
+            margin-bottom: 20px;
+        }
+        .skill-slider-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+        .skill-slider-header span:last-child {
+            color: #38bdf8;
+            font-weight: 700;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            background: #38bdf8;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+        }
+
         @media (max-width: 1024px) {
             .sidebar {
                 width: 80px;
@@ -322,89 +396,88 @@
     </aside>
 
     <main class="main-content">
-        <header class="header-actions" style="background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(10px); padding: 20px 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 40px;">
-            <div class="user-greeting">
-                <h1 id="user-welcome" style="font-size: 1.5rem; letter-spacing: -0.5px;">Carregando...</h1>
-                <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
-                    <div style="width: 8px; height: 8px; background: #4ade80; border-radius: 50%; box-shadow: 0 0 8px #4ade80;"></div>
-                    <p id="user-email" style="font-size: 0.85rem; color: #94a3b8; font-family: 'Inter', sans-serif;">Aguarde um momento</p>
-                </div>
-            </div>
-            <div style="display: flex; align-items: center; gap: 15px;">
-                <div class="glass-card" style="padding: 8px 20px; border-radius: 50px; border: 1px solid rgba(56, 189, 248, 0.2); background: rgba(56, 189, 248, 0.05);">
-                    <span id="user-level-badge" style="font-weight: 700; color: #38bdf8; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px;">--</span>
-                </div>
-                <!-- Container de Foto com Upload -->
-                <div id="user-profile-img-container" onclick="document.getElementById('photo-upload').click()" style="width: 45px; height: 45px; border-radius: 50%; border: 2px solid #38bdf8; overflow: hidden; background: #1e293b; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; transition: all 0.3s ease;">
-                    <i class="fas fa-user" style="color: #94a3b8; font-size: 1.2rem;"></i>
+        <header class="header-actions" style="background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(15px); padding: 15px 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 40px; display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <!-- Foto de Perfil Compacta -->
+                <div id="user-profile-img-container" onclick="document.getElementById('photo-upload').click()" style="width: 55px; height: 55px; border-radius: 50%; border: 2px solid #38bdf8; overflow: hidden; background: #1e293b; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; transition: all 0.3s ease; box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);">
+                    <i class="fas fa-user" style="color: #94a3b8; font-size: 1.5rem;"></i>
                     <img id="user-photo-img" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
-                    <div style="position: absolute; bottom: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">
-                        <i class="fas fa-camera" style="color: #fff; font-size: 0.8rem;"></i>
+                    <div style="position: absolute; bottom: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">
+                        <i class="fas fa-camera" style="color: #fff; font-size: 0.9rem;"></i>
                     </div>
                 </div>
                 <input type="file" id="photo-upload" style="display: none;" accept="image/*" onchange="uploadPhoto(this)">
+
+                <div class="user-greeting">
+                    <h1 id="user-welcome" style="font-size: 1.3rem; color: #fff; margin: 0; font-weight: 700;">Carregando...</h1>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <span id="user-email" style="font-size: 0.8rem; color: #38bdf8; opacity: 0.9;">Aguarde...</span>
+                        <div style="width: 4px; height: 4px; background: rgba(255,255,255,0.3); border-radius: 50%;"></div>
+                        <span id="user-level-badge" style="font-weight: 800; color: #fbbf24; text-transform: uppercase; font-size: 0.65rem; letter-spacing: 0.5px;">--</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 10px;">
+                <button class="nav-link" onclick="switchTab('profile')" style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2); height: 40px; padding: 0 15px; border-radius: 10px;">
+                    <i class="fas fa-cog" style="font-size: 1rem; margin: 0;"></i>
+                </button>
             </div>
         </header>
 
-        <!-- SEÇÃO DE BANNER ESTRATÉGICO -->
-        <section id="promotion-banner" class="glass-card" style="margin-bottom: 30px; padding: 0; min-height: 120px; overflow: hidden; display: flex; align-items: center; border: 1px dashed rgba(56, 189, 248, 0.3); background: linear-gradient(90deg, rgba(30,41,59,0.4) 0%, rgba(56,189,248,0.05) 100%);">
-            <div style="flex: 1; padding: 25px; display: flex; align-items: center; gap: 20px;">
-                <div style="width: 60px; height: 60px; background: rgba(56,189,248,0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #38bdf8; font-size: 1.5rem;">
-                    <i class="fas fa-bullhorn"></i>
-                </div>
-                <div>
-                    <h3 style="font-size: 1.1rem; color: #fff; margin-bottom: 5px;">Próximo Torneio Interno</h3>
-                    <p style="font-size: 0.85rem; color: #94a3b8;">Inscrições abertas para o Torneio da Amizade - Junho 2024. Não perca!</p>
-                </div>
-            </div>
-            <div style="padding-right: 25px;">
-                <button class="btn-auth" style="width: auto; padding: 10px 25px; font-size: 0.8rem;">Saber Mais</button>
-            </div>
-        </section>
-
         <!-- ABA: INÍCIO (DASHBOARD) -->
         <div id="tab-home" class="tab-content">
+            <!-- SEÇÃO DE BANNER ESTRATÉGICO -->
+            <section id="promotion-banner" class="glass-card" style="margin-bottom: 30px; padding: 0; min-height: 120px; overflow: hidden; display: flex; align-items: center; border: 1px dashed rgba(56, 189, 248, 0.3); background: linear-gradient(90deg, rgba(30,41,59,0.4) 0%, rgba(56,189,248,0.05) 100%);">
+                <div style="flex: 1; padding: 25px; display: flex; align-items: center; gap: 20px;">
+                    <div style="width: 60px; height: 60px; background: rgba(56,189,248,0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #38bdf8; font-size: 1.5rem;">
+                        <i class="fas fa-bullhorn"></i>
+                    </div>
+                    <div>
+                        <h3 style="font-size: 1.1rem; color: #fff; margin-bottom: 5px;">Próximo Torneio Interno</h3>
+                        <p style="font-size: 0.85rem; color: #94a3b8;">Não esqueça de fazer o check-in toda vez para poder participar do próximo torneio.</p>
+                    </div>
+                </div>
+                <div style="padding-right: 25px;">
+                    <button class="btn-auth" onclick="openTournamentModal()" style="width: auto; padding: 10px 25px; font-size: 0.8rem;">Saber Mais</button>
+                </div>
+            </section>
             <section class="dashboard-grid">
-                <!-- Camada Biomecânica -->
+                <!-- Camada de Engajamento / Frequência -->
                 <div class="glass-card">
                     <div class="card-title">
-                        <i class="fas fa-heartbeat"></i>
-                        Perfil Físico
+                        <i class="fas fa-calendar-check"></i>
+                        Minha Frequência
                     </div>
-                    <div class="stats-row">
-                        <div class="stat-item">
-                            <div class="data-value"><span id="user-height">--</span><small>cm</small></div>
-                            <div class="data-label">Altura</div>
+                    
+                    <div style="display: flex; align-items: center; gap: 30px;">
+                        <div class="frequency-circle">
+                            <svg>
+                                <circle class="circle-bg" cx="60" cy="60" r="56"></circle>
+                                <circle class="circle-progress" cx="60" cy="60" r="56" id="frequency-progress"></circle>
+                            </svg>
+                            <div class="percentage-text"><span id="frequency-pct">0</span>%</div>
                         </div>
-                        <div class="stat-item">
-                            <div class="data-value"><span id="user-weight">--</span><small>kg</small></div>
-                            <div class="data-label">Peso</div>
+                        <div style="flex: 1;">
+                            <div class="qualification-status" id="tournament-status">Calculando...</div>
+                            <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 10px; line-height: 1.4;">
+                                Necessário <span style="color: #38bdf8; font-weight: 700;">60% de participação</span> no mês atual para validar sua inscrição em eventos oficiais.
+                            </p>
                         </div>
                     </div>
-                    <div class="stat-item" style="margin-top: 15px; text-align: center;">
-                        <div class="data-value" style="color: #4ade80;" id="user-imc">--</div>
-                        <div class="data-label">IMC Estimado</div>
+
+                    <div id="calendar-header" style="display: flex; justify-content: space-between; align-items: center; margin-top: 25px; padding: 0 5px;">
+                        <button onclick="changeMonth(-1)" style="background: none; border: none; color: #38bdf8; cursor: pointer; padding: 5px;"><i class="fas fa-chevron-left"></i></button>
+                        <span id="calendar-month-year" style="font-weight: 800; font-size: 0.8rem; text-transform: uppercase; color: #cbd5e1;">--</span>
+                        <button onclick="changeMonth(1)" style="background: none; border: none; color: #38bdf8; cursor: pointer; padding: 5px;"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+
+                    <div class="attendance-calendar" id="attendance-calendar-grid">
+                        <div class="day-label">D</div><div class="day-label">S</div><div class="day-label">T</div><div class="day-label">Q</div><div class="day-label">Q</div><div class="day-label">S</div><div class="day-label">S</div>
                     </div>
                 </div>
 
-                <!-- Camada Técnica (Radar) -->
-                <div class="glass-card">
-                    <div class="card-title">
-                        <i class="fas fa-dharmachakra"></i>
-                        Habilidades Técnicas
-                    </div>
-                    <div style="height: 250px; position: relative;">
-                        <canvas id="skillsRadarChart"></canvas>
-                    </div>
-                    <div style="display: flex; justify-content: space-around; margin-top: 15px; font-size: 0.75rem; color: #94a3b8;">
-                        <div style="text-align: center;"><div class="data-value" id="user-side" style="font-size: 0.8rem; color: #38bdf8;">--</div>Lateralidade</div>
-                        <div style="text-align: center;"><div class="data-value" id="user-grip" style="font-size: 0.8rem; color: #38bdf8;">--</div>Empunhadura</div>
-                    </div>
-                </div>
-
-                </div>
-
-                <!-- Camada de Comunidade & Engajamento -->
+                <!-- Camada de Comunidade -->
                 <div class="glass-card">
                     <div class="card-title">
                         <i class="fas fa-trophy"></i>
@@ -418,110 +491,192 @@
                 <div class="glass-card">
                     <div class="card-title">
                         <i class="fas fa-medal"></i>
-                        Minhas Conquistas
+                        Conquistas
                     </div>
                     <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
                         <div class="badge-item" title="Membro Ativo" style="width: 45px; height: 45px; background: rgba(56,189,248,0.1); border: 1px solid rgba(56,189,248,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #38bdf8;">
                             <i class="fas fa-check"></i>
                         </div>
-                        <div class="badge-item" title="Participante de Torneio" style="width: 45px; height: 45px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #64748b; opacity: 0.5;">
-                            <i class="fas fa-trophy"></i>
+                        <div class="badge-item" title="Membro Fundador" style="width: 45px; height: 45px; background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fbbf24;">
+                            <i class="fas fa-star"></i>
                         </div>
                     </div>
-                    <p style="font-size: 0.65rem; color: #64748b; text-align: center; margin-top: 15px;">Treine para desbloquear novos selos!</p>
+                    <p style="font-size: 0.65rem; color: #64748b; text-align: center; margin-top: 15px;">Frequente mais para ganhar novos selos!</p>
                 </div>
-
-                <!-- Camada Estratégica & Performance -->
-                <div class="glass-card focus-section">
+                
+                <!-- Card de Motivação -->
+                <div class="glass-card" style="background: linear-gradient(135deg, rgba(56, 189, 248, 0.1) 0%, rgba(30, 41, 59, 0.4) 100%); border: 1px solid rgba(56, 189, 248, 0.2);">
                     <div class="card-title">
-                        <i class="fas fa-bullseye"></i>
-                        Objetivos e Metas
+                        <i class="fas fa-lightbulb"></i>
+                        Mindset Vencedor
                     </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
-                        <div>
-                            <div class="data-label" style="margin-bottom: 15px;">Percepção de Movimentação</div>
-                            <div style="position: relative; padding: 10px 0;">
-                                <input type="range" id="mobility-slider" min="0" max="100" value="50" oninput="updateMobilityUI(this.value)" style="width: 100%; cursor: pointer; -webkit-appearance: none; height: 8px; border-radius: 5px; background: linear-gradient(to right, #ef4444, #fbbf24, #22c55e); outline: none;">
-                                <div style="display: flex; justify-content: space-between; margin-top: 10px; font-size: 0.7rem; color: #94a3b8; font-weight: 600;">
-                                    <span>RUIM</span>
-                                    <span id="mobility-value" style="color: #fff; font-size: 1rem; background: rgba(56, 189, 248, 0.1); padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(56, 189, 248, 0.2);">50%</span>
-                                    <span>EXCELENTE</span>
-                                </div>
-                            </div>
-                            <button onclick="saveMobilityScore()" class="nav-link" style="margin-top: 20px; font-size: 0.8rem; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2); width: 100%; justify-content: center; padding: 10px;">
-                                <i class="fas fa-camera" style="font-size: 0.9rem;"></i> Salvar Percepção de Hoje
-                            </button>
-                        </div>
-                        <div>
-                            <div class="data-label" style="margin-bottom: 10px;">Foco & Recado para Mentores</div>
-                            <div style="font-size: 1.1rem; font-weight: 600; color: #38bdf8; margin-bottom: 10px;" id="user-objective">--</div>
-                            <div class="goals-text" id="user-goals" style="font-size: 0.9rem; max-height: 120px; overflow-y: auto;">
-                                Carregando suas metas...
-                            </div>
-                        </div>
+                    <div id="motivational-quote" style="font-style: italic; color: #cbd5e1; line-height: 1.6; font-size: 0.95rem; text-align: center; padding: 10px 0;">
+                        "O sucesso é a soma de pequenos esforços repetidos dia após dia."
+                    </div>
+                    <div style="text-align: right; color: #38bdf8; font-size: 0.7rem; font-weight: 700; margin-top: 10px;">
+                        — SPIN4ALL MENTORS
                     </div>
                 </div>
             </section>
 
-            <div class="glass-card" style="text-align: center; border-style: dashed; background: transparent;">
-                <p style="color: #64748b;">Novos módulos de treino serão liberados em breve.</p>
+        </div>
+
+        <!-- Pop-up Torneio (Global) -->
+        <div id="tournamentModal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal" onclick="closeTournamentModal()">&times;</span>
+                <div style="text-align: center; margin-bottom: 25px;">
+                    <i class="fas fa-trophy" style="font-size: 3rem; color: #fbbf24; margin-bottom: 15px;"></i>
+                    <h2 style="color: #fff;">Torneio Interno</h2>
+                </div>
+                <div style="color: #cbd5e1; line-height: 1.6; font-size: 0.95rem;">
+                    <p style="margin-bottom: 15px;">A <span style="color: #38bdf8; font-weight: 700;">última sexta-feira de todo mês</span> é destinada ao nosso emocionante torneio interno.</p>
+                    <p style="margin-bottom: 15px;">Prepare-se e <span style="color: #fbbf24; font-weight: 700;">Save the Date</span> para não perder o dia da disputa!</p>
+                    <div style="background: rgba(56,189,248,0.1); padding: 15px; border-radius: 10px; border-left: 4px solid #38bdf8; margin-top: 20px;">
+                        <i class="fab fa-whatsapp" style="color: #25d366; margin-right: 8px;"></i>
+                        Qualquer modificação ou informações adicionais serão divulgadas em nosso grupo oficial.
+                    </div>
+                </div>
+                <button onclick="closeTournamentModal()" class="btn-auth" style="margin-top: 30px; width: 100%;">Entendido!</button>
             </div>
         </div>
 
-        <!-- ABA: MEU PERFIL (EDIÇÃO) -->
+        <!-- ABA: MEU PERFIL (Evolução & Configurações) -->
         <div id="tab-profile" class="tab-content" style="display: none;">
             <div class="dashboard-grid">
-                <div class="glass-card" style="grid-column: span 2;">
-                    <div class="card-title"><i class="fas fa-user-edit"></i> Editar Informações</div>
-                    <form id="profile-form" onsubmit="updateProfile(event)">
+                <!-- Seção de Evolução Técnica -->
+                <div class="glass-card focus-section">
+                    <div class="card-title"><i class="fas fa-chart-line"></i> Evolução das Habilidades</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                            <div class="stat-item" style="grid-column: span 2;">
-                                <label class="data-label">Nome Completo</label>
-                                <input type="text" id="edit-name" style="background: rgba(255,255,255,0.05); color: #fff; padding: 10px; text-align: left; width: 100%; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;">
+                            <div class="skill-slider-container">
+                                <div class="skill-slider-header"><span>ForeHand</span><span id="label-forehand">50</span></div>
+                                <input type="range" id="skill-forehand" min="0" max="100" value="50" oninput="updateSkillUI()">
                             </div>
-                            <div class="stat-item">
-                                <label class="data-label">Peso (kg)</label>
-                                <input type="number" step="0.1" id="edit-weight" style="background: rgba(255,255,255,0.05); color: #fff; padding: 10px; text-align: left; width: 100%; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;">
+                            <div class="skill-slider-container">
+                                <div class="skill-slider-header"><span>BackHand</span><span id="label-backhand">50</span></div>
+                                <input type="range" id="skill-backhand" min="0" max="100" value="50" oninput="updateSkillUI()">
                             </div>
-                            <div class="stat-item">
-                                <label class="data-label">Altura (cm)</label>
-                                <input type="number" id="edit-height" style="background: rgba(255,255,255,0.05); color: #fff; padding: 10px; text-align: left; width: 100%; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;">
+                            <div class="skill-slider-container">
+                                <div class="skill-slider-header"><span>Cozinhada</span><span id="label-cozinhada">50</span></div>
+                                <input type="range" id="skill-cozinhada" min="0" max="100" value="50" oninput="updateSkillUI()">
                             </div>
-                            <div class="stat-item">
-                                <label class="data-label">Data de Nascimento</label>
-                                <input type="date" id="edit-birth" style="background: rgba(255,255,255,0.05); color: #fff; padding: 10px; text-align: left; width: 100%; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;">
+                            <div class="skill-slider-container">
+                                <div class="skill-slider-header"><span>Topspin</span><span id="label-topspin">50</span></div>
+                                <input type="range" id="skill-topspin" min="0" max="100" value="50" oninput="updateSkillUI()">
                             </div>
-                            <div class="stat-item">
-                                <label class="data-label">Nível Técnico</label>
-                                <select id="edit-level" style="background: rgba(30, 41, 59, 1); color: #fff; padding: 10px; text-align: left; width: 100%; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;">
-                                    <option value="Iniciante">Iniciante</option>
-                                    <option value="Intermediário">Intermediário</option>
-                                    <option value="Avançado">Avançado</option>
-                                    <option value="Profissional">Profissional</option>
-                                </select>
+                            <div class="skill-slider-container">
+                                <div class="skill-slider-header"><span>Saque</span><span id="label-saque">50</span></div>
+                                <input type="range" id="skill-saque" min="0" max="100" value="50" oninput="updateSkillUI()">
                             </div>
-                            <div class="stat-item" style="grid-column: span 2;">
-                                <label class="data-label">Metas e Recados</label>
-                                <textarea id="edit-goals" style="background: rgba(255,255,255,0.05); color: #fff; padding: 10px; text-align: left; width: 100%; border: 1px solid rgba(255,255,255,0.1); min-height: 100px; border-radius: 8px;"></textarea>
+                            <div class="skill-slider-container">
+                                <div class="skill-slider-header"><span>Rally</span><span id="label-rally">50</span></div>
+                                <input type="range" id="skill-rally" min="0" max="100" value="50" oninput="updateSkillUI()">
+                            </div>
+                            <div class="skill-slider-container">
+                                <div class="skill-slider-header"><span>Ataque</span><span id="label-ataque">50</span></div>
+                                <input type="range" id="skill-ataque" min="0" max="100" value="50" oninput="updateSkillUI()">
+                            </div>
+                            <div class="skill-slider-container">
+                                <div class="skill-slider-header"><span>Defesa</span><span id="label-defesa">50</span></div>
+                                <input type="range" id="skill-defesa" min="0" max="100" value="50" oninput="updateSkillUI()">
+                            </div>
+                            <div class="skill-slider-container">
+                                <div class="skill-slider-header"><span>Bloqueio</span><span id="label-bloqueio">50</span></div>
+                                <input type="range" id="skill-bloqueio" min="0" max="100" value="50" oninput="updateSkillUI()">
+                            </div>
+                            <div class="skill-slider-container">
+                                <div class="skill-slider-header"><span>Controle</span><span id="label-controle">50</span></div>
+                                <input type="range" id="skill-controle" min="0" max="100" value="50" oninput="updateSkillUI()">
+                            </div>
+                            <button onclick="saveTechnicalSkills()" class="btn-auth" style="grid-column: span 2; width: 100%; background: #38bdf8; color: #0f172a; font-weight: 800;">
+                                <i class="fas fa-save" style="margin-right: 8px;"></i> SALVAR STATUS TÉCNICO
+                            </button>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.02); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; align-items: center;">
+                            <div class="card-title" style="margin-bottom: 30px;"><i class="fas fa-dharmachakra"></i> Rede de Habilidades</div>
+                            <div style="width: 100%; height: 350px;">
+                                <canvas id="skillsRadarChart"></canvas>
+                            </div>
+                            <div style="display: flex; justify-content: space-around; width: 100%; margin-top: 20px;">
+                                <div style="text-align: center;">
+                                    <div class="data-label">Lateralidade</div>
+                                    <div class="data-value" id="user-side" style="color: #38bdf8; font-size: 1rem;">--</div>
+                                </div>
+                                <div style="width: 1px; background: rgba(255,255,255,0.1);"></div>
+                                <div style="text-align: center;">
+                                    <div class="data-label">Empunhadura</div>
+                                    <div class="data-value" id="user-grip" style="color: #38bdf8; font-size: 1rem;">--</div>
+                                </div>
                             </div>
                         </div>
-                        <button type="submit" class="btn-auth" style="margin-top: 20px; width: 200px;">Salvar Alterações</button>
-                    </form>
+                    </div>
                 </div>
 
+                <!-- Perfil Físico & Objetivos -->
                 <div class="glass-card">
-                    <div class="card-title"><i class="fas fa-lock"></i> Segurança</div>
-                    <form id="password-form" onsubmit="updatePassword(event)">
-                        <div class="stat-item" style="margin-bottom: 15px;">
-                            <label class="data-label">Senha Atual</label>
-                            <input type="password" id="current-password" style="background: rgba(255,255,255,0.05); color: #fff; padding: 10px; text-align: left; width: 100%; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;" required>
+                    <div class="card-title"><i class="fas fa-bullseye"></i> Objetivos e Metas</div>
+                    <div style="margin-bottom: 25px;">
+                        <div class="data-label" style="margin-bottom: 10px;">Foco Principal</div>
+                        <div id="user-objective" style="font-size: 1.2rem; font-weight: 700; color: #fff;">--</div>
+                    </div>
+                    <div class="goals-text" id="user-goals" style="min-height: 100px;">Carregando...</div>
+                    
+                    <div class="stats-row" style="margin-top: 30px;">
+                        <div class="stat-item">
+                            <div class="data-label">Altura</div>
+                            <div class="data-value"><span id="user-height">--</span><small>cm</small></div>
                         </div>
                         <div class="stat-item">
-                            <label class="data-label">Nova Senha</label>
-                            <input type="password" id="new-password" style="background: rgba(255,255,255,0.05); color: #fff; padding: 10px; text-align: left; width: 100%; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;" required>
+                            <div class="data-label">Peso</div>
+                            <div class="data-value"><span id="user-weight">--</span><small>kg</small></div>
                         </div>
-                        <button type="submit" class="btn-auth" style="margin-top: 20px; width: 100%; background: transparent; border: 1px solid #38bdf8; color: #38bdf8;">Alterar Senha</button>
+                    </div>
+                    <div class="stat-item" style="margin-top: 15px; text-align: center;">
+                        <div class="data-label">IMC</div>
+                        <div class="data-value" id="user-imc" style="color: #4ade80;">--</div>
+                    </div>
+
+                    <!-- Slider de Movimentação Diária (Resumo no Perfil) -->
+                    <div style="margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 25px;">
+                        <div class="data-label" style="margin-bottom: 15px;">Percepção de Movimentação (Hoje)</div>
+                        <input type="range" id="mobility-slider" min="0" max="100" value="50" oninput="updateMobilityUI(this.value)" style="background: linear-gradient(to right, #ef4444, #fbbf24, #22c55e);">
+                        <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                            <span style="font-size: 0.7rem; color: #94a3b8;">RUIM</span>
+                            <span id="mobility-value" style="color: #38bdf8; font-weight: 800;">50%</span>
+                            <span style="font-size: 0.7rem; color: #94a3b8;">EXCELENTE</span>
+                        </div>
+                        <button onclick="saveMobilityScore()" class="btn-auth" style="margin-top: 15px; width: 100%; font-size: 0.8rem; background: rgba(255,255,255,0.05);">Salvar Percepção</button>
+                    </div>
+                </div>
+
+                <!-- Edição & Segurança -->
+                <div class="glass-card">
+                    <div class="card-title"><i class="fas fa-user-edit"></i> Dados Cadastrais</div>
+                    <form id="profile-form" onsubmit="updateProfile(event)" style="display: flex; flex-direction: column; gap: 15px;">
+                        <input type="text" id="edit-name" placeholder="Nome Completo" style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; color: #fff;">
+                        <div style="display: flex; gap: 10px;">
+                            <input type="number" step="0.1" id="edit-weight" placeholder="Peso (kg)" style="flex: 1; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; color: #fff;">
+                            <input type="number" id="edit-height" placeholder="Altura (cm)" style="flex: 1; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; color: #fff;">
+                        </div>
+                        <input type="date" id="edit-birth" style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; color: #fff;">
+                        <select id="edit-level" style="background: #1e293b; border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; color: #fff;">
+                            <option value="Iniciante">Iniciante</option>
+                            <option value="Intermediário">Intermediário</option>
+                            <option value="Avançado">Avançado</option>
+                        </select>
+                        <textarea id="edit-goals" placeholder="Minhas Metas..." style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; color: #fff; min-height: 80px;"></textarea>
+                        <button type="submit" class="btn-auth" style="width: 100%;">Salvar Dados</button>
                     </form>
+
+                    <div style="margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 25px;">
+                        <div class="card-title" style="font-size: 0.7rem;"><i class="fas fa-lock"></i> Alterar Senha</div>
+                        <form id="password-form" onsubmit="updatePassword(event)" style="display: flex; flex-direction: column; gap: 10px;">
+                            <input type="password" id="current-password" placeholder="Senha Atual" style="background: rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; color: #fff;">
+                            <input type="password" id="new-password" placeholder="Nova Senha" style="background: rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; color: #fff;">
+                            <button type="submit" class="btn-auth" style="background: transparent; border: 1px solid #38bdf8; color: #38bdf8;">Trocar Senha</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -538,8 +693,20 @@
             document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             
-            document.getElementById(`tab-${tab === 'home' ? 'home' : 'profile'}`).style.display = 'block';
-            document.getElementById(tab === 'home' ? 'nav-home' : 'nav-profile').classList.add('active');
+            document.getElementById(`tab-${tab}`).style.display = 'block';
+            document.getElementById(`nav-${tab}`).classList.add('active');
+        }
+
+        // --- Modais de Torneio ---
+        function openTournamentModal() {
+            document.getElementById('tournamentModal').style.display = 'flex';
+        }
+        function closeTournamentModal() {
+            document.getElementById('tournamentModal').style.display = 'none';
+        }
+        window.onclick = function(event) {
+            const modal = document.getElementById('tournamentModal');
+            if (event.target == modal) closeTournamentModal();
         }
 
         async function loadUserData() {
@@ -562,13 +729,24 @@
                 // Preencher Dashboard
                 document.getElementById('user-welcome').textContent = `Olá, ${userData.dsc_nome_completo.split(' ')[0]}!`;
                 document.getElementById('user-email').textContent = userData.dsc_email;
-                document.getElementById('user-level-badge').textContent = userData.dsc_nivel_tecnico;
-                document.getElementById('user-height').textContent = userData.num_altura_cm;
-                document.getElementById('user-weight').textContent = userData.num_peso_kg;
-                document.getElementById('user-side').textContent = userData.dsc_lateralidade;
-                document.getElementById('user-grip').textContent = userData.dsc_empunhadura;
-                document.getElementById('user-objective').textContent = userData.dsc_objetivo;
-                document.getElementById('user-goals').textContent = userData.dsc_metas;
+                document.getElementById('user-level-badge').textContent = userData.dsc_level || 'MEMBRO';
+                document.getElementById('user-height').textContent = userData.num_altura_cm || '--';
+                document.getElementById('user-weight').textContent = userData.num_peso_kg || '--';
+                document.getElementById('user-side').textContent = userData.dsc_lateralidade || '--';
+                document.getElementById('user-grip').textContent = userData.dsc_empunhadura || '--';
+                document.getElementById('user-objective').textContent = userData.dsc_objetivos || 'Sem objetivo definido';
+                document.getElementById('user-goals').textContent = userData.dsc_metas || 'Defina suas metas no perfil!';
+
+                // Popular Sliders Técnicos
+                const skills = ['forehand', 'backhand', 'cozinhada', 'topspin', 'saque', 'rally', 'ataque', 'defesa', 'bloqueio', 'controle'];
+                skills.forEach(s => {
+                    const val = userData[`num_skill_${s}`] || 50;
+                    const slider = document.getElementById(`skill-${s}`);
+                    if (slider) {
+                        slider.value = val;
+                        document.getElementById(`label-${s}`).textContent = val;
+                    }
+                });
 
                 // Mostrar menus restritos se o usuário for administrador
                 if (userData.flg_admin) {
@@ -595,7 +773,9 @@
                 // Mostrar foto se existir
                 if (userData.dsc_foto_perfil) {
                     const img = document.getElementById('user-photo-img');
-                    img.src = userData.dsc_foto_perfil;
+                    img.src = userData.dsc_foto_perfil.startsWith('http') 
+                        ? userData.dsc_foto_perfil 
+                        : `${API_URL.replace('/api', '')}${userData.dsc_foto_perfil}`;
                     img.style.display = 'block';
                     document.querySelector('#user-profile-img-container i').style.display = 'none';
                 }
@@ -605,6 +785,9 @@
 
                 // Carregar Ranking de Membros
                 loadRanking();
+
+                // Definir Frase Motivacional
+                setMotivationalQuote();
 
             } catch (err) {
                 console.error(err);
@@ -707,6 +890,32 @@
             loadAttendanceData(currentViewMonth, currentViewYear);
         }
 
+        async function uploadPhoto(input) {
+            if (!input.files || !input.files[0]) return;
+            const token = localStorage.getItem('spin4all_token');
+            const formData = new FormData();
+            formData.append('photo', input.files[0]);
+
+            try {
+                const response = await fetch(`${API_URL}/user/upload-photo`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+                const result = await response.json();
+                if (result.success) {
+                    const img = document.getElementById('user-photo-img');
+                    img.src = result.url + '?t=' + new Date().getTime(); // Anti-cache
+                    img.style.display = 'block';
+                    document.querySelector('#user-profile-img-container i').style.display = 'none';
+                    alert('Foto atualizada!');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Erro ao carregar foto.');
+            }
+        }
+
         async function updateProfile(e) {
             e.preventDefault();
             const token = localStorage.getItem('spin4all_token');
@@ -742,23 +951,34 @@
             }
         }
 
+        let skillsChart = null;
         function initRadarChart() {
             const ctx = document.getElementById('skillsRadarChart').getContext('2d');
             
-            // Mock de valores por enquanto (poderia vir do banco)
-            const values = [70, 65, 80, 50, 60, 75]; 
+            const skills = ['forehand', 'backhand', 'cozinhada', 'topspin', 'saque', 'rally', 'ataque', 'defesa', 'bloqueio', 'controle'];
+            const labels = ['Forehand', 'Backhand', 'Cozinha', 'Topspin', 'Saque', 'Rally', 'Ataque', 'Defesa', 'Bloqueio', 'Controle'];
+            const dataValues = skills.map(s => {
+                const slider = document.getElementById(`skill-${s}`);
+                return slider ? parseInt(slider.value) : 50;
+            });
             
-            new Chart(ctx, {
+            if (skillsChart) skillsChart.destroy();
+
+            skillsChart = new Chart(ctx, {
                 type: 'radar',
                 data: {
-                    labels: ['Saque', 'Ataque', 'Bloqueio', 'Controle', 'Efeito', 'Pernas'],
+                    labels: labels,
                     datasets: [{
-                        label: 'Nível Atual',
-                        data: values,
+                        label: 'Nível Técnico',
+                        data: dataValues,
                         backgroundColor: 'rgba(56, 189, 248, 0.2)',
                         borderColor: '#38bdf8',
                         pointBackgroundColor: '#38bdf8',
-                        borderWidth: 2
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#38bdf8',
+                        borderWidth: 3,
+                        tension: 0.1
                     }]
                 },
                 options: {
@@ -767,9 +987,9 @@
                     plugins: { legend: { display: false } },
                     scales: {
                         r: {
-                            angleLines: { color: 'rgba(255,255,255,0.05)' },
-                            grid: { color: 'rgba(255,255,255,0.05)' },
-                            pointLabels: { color: '#94a3b8', font: { size: 10 } },
+                            angleLines: { color: 'rgba(255,255,255,0.1)' },
+                            grid: { color: 'rgba(255,255,255,0.1)' },
+                            pointLabels: { color: '#94a3b8', font: { size: 10, weight: '600' } },
                             ticks: { display: false, count: 5 },
                             suggestedMin: 0,
                             suggestedMax: 100
@@ -777,6 +997,52 @@
                     }
                 }
             });
+        }
+
+        function updateSkillUI() {
+            const skills = ['forehand', 'backhand', 'cozinhada', 'topspin', 'saque', 'rally', 'ataque', 'defesa', 'bloqueio', 'controle'];
+            const dataValues = [];
+            
+            skills.forEach(s => {
+                const val = document.getElementById(`skill-${s}`).value;
+                document.getElementById(`label-${s}`).textContent = val;
+                dataValues.push(parseInt(val));
+            });
+
+            if (skillsChart) {
+                skillsChart.data.datasets[0].data = dataValues;
+                skillsChart.update();
+            }
+        }
+
+        async function saveTechnicalSkills() {
+            const token = localStorage.getItem('spin4all_token');
+            const skills = ['forehand', 'backhand', 'cozinhada', 'topspin', 'saque', 'rally', 'ataque', 'defesa', 'bloqueio', 'controle'];
+            const skillData = {};
+            
+            skills.forEach(s => {
+                skillData[s] = parseInt(document.getElementById(`skill-${s}`).value);
+            });
+
+            try {
+                const response = await fetch(`${API_URL}/user/save-skills`, {
+                    method: 'POST',
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(skillData)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    alert('Status técnico atualizado com sucesso! 🏆');
+                } else {
+                    alert('Erro ao salvar: ' + result.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Falha ao conectar ao servidor.');
+            }
         }
 
         function updateMobilityUI(val) {
@@ -808,7 +1074,87 @@
             }
         }
 
+        async function loadRanking() {
+            try {
+                const response = await fetch(`${API_URL}/admin/participation-ranking`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('spin4all_token')}` }
+                });
+                const data = await response.json();
+                
+                const list = document.getElementById('ranking-list');
+                if (data.success && data.ranking.length > 0) {
+                    list.innerHTML = data.ranking.map((player, index) => `
+                        <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); padding: 12px 15px; border-radius: 12px; border-left: 3px solid ${index === 0 ? '#fbbf24' : index === 1 ? '#94a3b8' : index === 2 ? '#b45309' : 'transparent'}">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <span style="font-weight: 800; color: ${index === 0 ? '#fbbf24' : '#64748b'}; width: 20px;">${index + 1}º</span>
+                                <span style="font-size: 0.9rem; font-weight: 600;">${player.dsc_nome_completo}</span>
+                            </div>
+                            <span style="font-size: 0.8rem; color: #38bdf8; font-weight: 700;">${player.total_checkins} <small style="font-size: 0.6rem; opacity: 0.6;">DDS</small></span>
+                        </div>
+                    `).join('');
+                } else {
+                    list.innerHTML = '<div style="color: #64748b; font-size: 0.8rem; text-align: center; padding: 20px;">Nenhum check-in registrado nos últimos 30 dias.</div>';
+                }
+            } catch (err) {
+                console.error('Erro ao carregar ranking:', err);
+            }
+        }
+
+        async function updatePassword(e) {
+            e.preventDefault();
+            const token = localStorage.getItem('spin4all_token');
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+
+            if (!currentPassword || !newPassword) {
+                alert('Preencha as senhas atual e nova.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/update-password`, {
+                    method: 'PUT',
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ currentPassword, newPassword })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    alert('Senha alterada com sucesso! 🛡️');
+                    document.getElementById('password-form').reset();
+                } else {
+                    alert('Erro: ' + result.message);
+                }
+            } catch (err) {
+                alert('Erro ao conectar com o servidor.');
+            }
+        }
+
+        function setMotivationalQuote() {
+            const quotes = [
+                "O tênis de mesa não é sobre quem bate mais forte, mas sobre quem erra menos.",
+                "Sua maior vitória é superar a preguiça de treinar hoje.",
+                "O saque é a única jogada que depende 100% de você. Domine-o.",
+                "A consistência no rally ganha jogos; a criatividade ganha torneios.",
+                "Cada ponto perdido é uma lição. Cada ponto ganho é um passo para o topo.",
+                "Não pare quando estiver cansado, pare quando o treino acabar.",
+                "A mentalidade fria é o motor do campeão de Spin4All.",
+                "O talento vence jogos, mas o trabalho em equipe vence campeonatos."
+            ];
+            const quote = quotes[Math.floor(Math.random() * quotes.length)];
+            document.getElementById('motivational-quote').textContent = `"${quote}"`;
+        }
+
+        function logout() {
+            localStorage.removeItem('spin4all_token');
+            window.location.href = 'login.html';
+        }
+
         loadUserData();
+
     </script>
 </body>
 </html>

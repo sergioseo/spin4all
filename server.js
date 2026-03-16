@@ -44,10 +44,20 @@ const runMigrations = async () => {
           UNIQUE(id_usuario, dt_referencia)
       );
     `);
-    // Coluna de foto de perfil
+    // Colunas de habilidades técnicas
     await pool.query(`
       ALTER TABLE trusted.tb_membros_perfil 
-      ADD COLUMN IF NOT EXISTS dsc_foto_perfil TEXT;
+      ADD COLUMN IF NOT EXISTS dsc_foto_perfil TEXT,
+      ADD COLUMN IF NOT EXISTS num_skill_forehand INTEGER DEFAULT 50,
+      ADD COLUMN IF NOT EXISTS num_skill_backhand INTEGER DEFAULT 50,
+      ADD COLUMN IF NOT EXISTS num_skill_cozinhada INTEGER DEFAULT 50,
+      ADD COLUMN IF NOT EXISTS num_skill_topspin INTEGER DEFAULT 50,
+      ADD COLUMN IF NOT EXISTS num_skill_saque INTEGER DEFAULT 50,
+      ADD COLUMN IF NOT EXISTS num_skill_rally INTEGER DEFAULT 50,
+      ADD COLUMN IF NOT EXISTS num_skill_ataque INTEGER DEFAULT 50,
+      ADD COLUMN IF NOT EXISTS num_skill_defesa INTEGER DEFAULT 50,
+      ADD COLUMN IF NOT EXISTS num_skill_bloqueio INTEGER DEFAULT 50,
+      ADD COLUMN IF NOT EXISTS num_skill_controle INTEGER DEFAULT 50;
     `);
     console.log('--- Migrações Concluídas com Sucesso ---');
   } catch (err) {
@@ -110,6 +120,16 @@ app.get('/api/me', authenticateToken, async (req, res) => {
         p.num_peso_kg,
         p.dt_nascimento,
         p.dsc_foto_perfil,
+        p.num_skill_forehand,
+        p.num_skill_backhand,
+        p.num_skill_cozinhada,
+        p.num_skill_topspin,
+        p.num_skill_saque,
+        p.num_skill_rally,
+        p.num_skill_ataque,
+        p.num_skill_defesa,
+        p.num_skill_bloqueio,
+        p.num_skill_controle,
         u.flg_admin,
         u.dt_criacao_registro
       FROM trusted.tb_usuarios u
@@ -543,6 +563,37 @@ app.get('/api/admin/participation-ranking', authenticateToken, async (req, res) 
     res.json({ success: true, ranking: result.rows });
   } catch (err) {
     res.status(500).json({ success: false, error: 'Erro ao gerar ranking.' });
+  }
+});
+
+// Salvar Habilidades Técnicas
+app.post('/api/user/save-skills', authenticateToken, async (req, res) => {
+  const userId = req.user.id;
+  const skills = req.body; // { forehand, backhand, ... }
+  
+  try {
+    const query = `
+      UPDATE trusted.tb_membros_perfil 
+      SET 
+        num_skill_forehand = $1, num_skill_backhand = $2, num_skill_cozinhada = $3,
+        num_skill_topspin = $4, num_skill_saque = $5, num_skill_rally = $6,
+        num_skill_ataque = $7, num_skill_defesa = $8, num_skill_bloqueio = $9,
+        num_skill_controle = $10,
+        dt_atualizacao = CURRENT_TIMESTAMP
+      WHERE id_usuario = $11
+    `;
+    const values = [
+      skills.forehand, skills.backhand, skills.cozinhada, 
+      skills.topspin, skills.saque, skills.rally,
+      skills.ataque, skills.defesa, skills.bloqueio,
+      skills.controle,
+      userId
+    ];
+    await pool.query(query, values);
+    res.json({ success: true, message: 'Habilidades atualizadas!' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: 'Erro ao salvar habilidades.' });
   }
 });
 
