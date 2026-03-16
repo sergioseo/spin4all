@@ -651,23 +651,23 @@ INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (263, 'rockstar263@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (263, 'Star 263 Soundgarden', 'Iniciante', 165, 86, 'https://i.pravatar.cc/150?u=263') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (264, 'rockstar264@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
-INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (264, 'Star 264 Linkin Park', 'IntermediÃ¡rio', 164, 83, 'https://i.pravatar.cc/150?u=264') ON CONFLICT DO NOTHING;
+INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (264, 'Star 264 Linkin Park', 'Intermediário', 164, 83, 'https://i.pravatar.cc/150?u=264') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (265, 'rockstar265@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
-INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (265, 'Star 265 Foo Fighters', 'AvanÃ§ado', 163, 68, 'https://i.pravatar.cc/150?u=265') ON CONFLICT DO NOTHING;
+INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (265, 'Star 265 Foo Fighters', 'Avançado', 163, 68, 'https://i.pravatar.cc/150?u=265') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (266, 'rockstar266@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
-INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (266, 'Star 266 Green Day', 'AvanÃ§ado', 168, 67, 'https://i.pravatar.cc/150?u=266') ON CONFLICT DO NOTHING;
+INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (266, 'Star 266 Green Day', 'Avançado', 168, 67, 'https://i.pravatar.cc/150?u=266') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (267, 'rockstar267@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
-INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (267, 'Star 267 RHCP', 'AvanÃ§ado', 166, 94, 'https://i.pravatar.cc/150?u=267') ON CONFLICT DO NOTHING;
+INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (267, 'Star 267 RHCP', 'Avançado', 166, 94, 'https://i.pravatar.cc/150?u=267') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (268, 'rockstar268@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (268, 'Star 268 Radiohead', 'Iniciante', 172, 62, 'https://i.pravatar.cc/150?u=268') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (269, 'rockstar269@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (269, 'Star 269 The Strokes', 'Iniciante', 170, 90, 'https://i.pravatar.cc/150?u=269') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (270, 'rockstar270@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
-INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (270, 'Star 270 Nirvana', 'AvanÃ§ado', 182, 75, 'https://i.pravatar.cc/150?u=270') ON CONFLICT DO NOTHING;
+INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (270, 'Star 270 Nirvana', 'Avançado', 182, 75, 'https://i.pravatar.cc/150?u=270') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (271, 'rockstar271@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (271, 'Star 271 Pearl Jam', 'Iniciante', 181, 76, 'https://i.pravatar.cc/150?u=271') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (272, 'rockstar272@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
-INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (272, 'Star 272 Alice in Chains', 'AvanÃ§ado', 165, 78, 'https://i.pravatar.cc/150?u=272') ON CONFLICT DO NOTHING;
+INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (272, 'Star 272 Alice in Chains', 'Avançado', 165, 78, 'https://i.pravatar.cc/150?u=272') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (273, 'rockstar273@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (273, 'Star 273 Soundgarden', 'Iniciante', 168, 72, 'https://i.pravatar.cc/150?u=273') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (274, 'rockstar274@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
@@ -677,51 +677,51 @@ INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (276, 'rockstar276@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (276, 'Star 276 Green Day', 'Iniciante', 169, 69, 'https://i.pravatar.cc/150?u=276') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (277, 'rockstar277@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
-INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (277, 'Star 277 RHCP', 'AvanÃ§ado', 174, 84, 'https://i.pravatar.cc/150?u=277') ON CONFLICT DO NOTHING;
+INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (277, 'Star 277 RHCP', 'Avançado', 174, 84, 'https://i.pravatar.cc/150?u=277') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (278, 'rockstar278@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
-INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (278, 'Star 278 Radiohead', 'IntermediÃ¡rio', 182, 89, 'https://i.pravatar.cc/150?u=278') ON CONFLICT DO NOTHING;
+INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (278, 'Star 278 Radiohead', 'Intermediário', 182, 89, 'https://i.pravatar.cc/150?u=278') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (279, 'rockstar279@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
-INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (279, 'Star 279 The Strokes', 'AvanÃ§ado', 165, 77, 'https://i.pravatar.cc/150?u=279') ON CONFLICT DO NOTHING;
+INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (279, 'Star 279 The Strokes', 'Avançado', 165, 77, 'https://i.pravatar.cc/150?u=279') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (280, 'rockstar280@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (280, 'Star 280 Nirvana', 'Iniciante', 160, 69, 'https://i.pravatar.cc/150?u=280') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (281, 'rockstar281@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
-INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (281, 'Star 281 Pearl Jam', 'IntermediÃ¡rio', 184, 63, 'https://i.pravatar.cc/150?u=281') ON CONFLICT DO NOTHING;
+INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (281, 'Star 281 Pearl Jam', 'Intermediário', 184, 63, 'https://i.pravatar.cc/150?u=281') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (282, 'rockstar282@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
-INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (282, 'Star 282 Alice in Chains', 'IntermediÃ¡rio', 180, 75, 'https://i.pravatar.cc/150?u=282') ON CONFLICT DO NOTHING;
+INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (282, 'Star 282 Alice in Chains', 'Intermediário', 180, 75, 'https://i.pravatar.cc/150?u=282') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (283, 'rockstar283@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
-INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (283, 'Star 283 Soundgarden', 'AvanÃ§ado', 174, 65, 'https://i.pravatar.cc/150?u=283') ON CONFLICT DO NOTHING;
+INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (283, 'Star 283 Soundgarden', 'Avançado', 174, 65, 'https://i.pravatar.cc/150?u=283') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (284, 'rockstar284@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
-INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (284, 'Star 284 Linkin Park', 'IntermediÃ¡rio', 169, 67, 'https://i.pravatar.cc/150?u=284') ON CONFLICT DO NOTHING;
+INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (284, 'Star 284 Linkin Park', 'Intermediário', 169, 67, 'https://i.pravatar.cc/150?u=284') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (285, 'rockstar285@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (285, 'Star 285 Foo Fighters', 'Avançado', 166, 73, 'https://i.pravatar.cc/150?u=285') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (286, 'rockstar286@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (286, 'Star 286 Green Day', 'Iniciante', 180, 84, 'https://i.pravatar.cc/150?u=286') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (287, 'rockstar287@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
-INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (287, 'Star 287 RHCP', 'AvanÃ§ado', 164, 76, 'https://i.pravatar.cc/150?u=287') ON CONFLICT DO NOTHING;
+INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (287, 'Star 287 RHCP', 'Avançado', 164, 76, 'https://i.pravatar.cc/150?u=287') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (288, 'rockstar288@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
-INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (288, 'Star 288 Radiohead', 'IntermediÃ¡rio', 165, 84, 'https://i.pravatar.cc/150?u=288') ON CONFLICT DO NOTHING;
+INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (288, 'Star 288 Radiohead', 'Intermediário', 165, 84, 'https://i.pravatar.cc/150?u=288') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (289, 'rockstar289@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
-INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (289, 'Star 289 The Strokes', 'IntermediÃ¡rio', 160, 92, 'https://i.pravatar.cc/150?u=289') ON CONFLICT DO NOTHING;
+INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (289, 'Star 289 The Strokes', 'Intermediário', 160, 92, 'https://i.pravatar.cc/150?u=289') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (290, 'rockstar290@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
-INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (290, 'Star 290 Nirvana', 'IntermediÃ¡rio', 182, 86, 'https://i.pravatar.cc/150?u=290') ON CONFLICT DO NOTHING;
+INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (290, 'Star 290 Nirvana', 'Intermediário', 182, 86, 'https://i.pravatar.cc/150?u=290') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (291, 'rockstar291@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (291, 'Star 291 Pearl Jam', 'Iniciante', 183, 74, 'https://i.pravatar.cc/150?u=291') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (292, 'rockstar292@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
-INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (292, 'Star 292 Alice in Chains', 'IntermediÃ¡rio', 167, 67, 'https://i.pravatar.cc/150?u=292') ON CONFLICT DO NOTHING;
+INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (292, 'Star 292 Alice in Chains', 'Intermediário', 167, 67, 'https://i.pravatar.cc/150?u=292') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (293, 'rockstar293@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
-INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (293, 'Star 293 Soundgarden', 'IntermediÃ¡rio', 186, 63, 'https://i.pravatar.cc/150?u=293') ON CONFLICT DO NOTHING;
+INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (293, 'Star 293 Soundgarden', 'Intermediário', 186, 63, 'https://i.pravatar.cc/150?u=293') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (294, 'rockstar294@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (294, 'Star 294 Linkin Park', 'Iniciante', 169, 60, 'https://i.pravatar.cc/150?u=294') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (295, 'rockstar295@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
-INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (295, 'Star 295 Foo Fighters', 'IntermediÃ¡rio', 176, 77, 'https://i.pravatar.cc/150?u=295') ON CONFLICT DO NOTHING;
+INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (295, 'Star 295 Foo Fighters', 'Intermediário', 176, 77, 'https://i.pravatar.cc/150?u=295') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (296, 'rockstar296@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
-INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (296, 'Star 296 Green Day', 'AvanÃ§ado', 164, 90, 'https://i.pravatar.cc/150?u=296') ON CONFLICT DO NOTHING;
+INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (296, 'Star 296 Green Day', 'Avançado', 164, 90, 'https://i.pravatar.cc/150?u=296') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (297, 'rockstar297@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (297, 'Star 297 RHCP', 'Iniciante', 170, 66, 'https://i.pravatar.cc/150?u=297') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (298, 'rockstar298@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (298, 'Star 298 Radiohead', 'Iniciante', 174, 84, 'https://i.pravatar.cc/150?u=298') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (299, 'rockstar299@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
-INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (299, 'Star 299 The Strokes', 'AvanÃ§ado', 185, 82, 'https://i.pravatar.cc/150?u=299') ON CONFLICT DO NOTHING;
+INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (299, 'Star 299 The Strokes', 'Avançado', 185, 82, 'https://i.pravatar.cc/150?u=299') ON CONFLICT DO NOTHING;
 
 -- Resultados de Torneio para o Ranking
 INSERT INTO trusted.tb_torneios_resultados (id_usuario, num_posicao, dsc_torneio_nome, dt_torneio) VALUES
@@ -829,22 +829,21 @@ SET
   num_skill_movimentacao = (25 + floor(random() * 65))::int
 WHERE id_usuario > 0;
 
--- 7. Evolução Histórica (Ranking Mensal) - 30 DIAS para o Top 5
+-- 7. Evolução Histórica (Ranking Mensal) - 30 DIAS PARA TODOS OS MEMBROS
+-- Gera 30 registros por membro com uma tendência levemente ascendente
 INSERT INTO trusted.tb_membros_evolucao (id_usuario, num_skill_avg_total, dt_registro)
 SELECT 
     u.id_usuario, 
-    (40 + floor(random() * 20) + (i * 0.5))::float as skill, 
+    (30 + floor(random() * 40) + (i * 0.3))::float as skill, 
     (CURRENT_DATE - (30 - i) * INTERVAL '1 day')::date
-FROM (SELECT id_usuario FROM trusted.tb_usuarios ORDER BY id_usuario LIMIT 5) u
+FROM trusted.tb_usuarios u
 CROSS JOIN generate_series(1, 30) i
 ON CONFLICT DO NOTHING;
 
--- Ponto de partida para o resto (Início do mês)
-INSERT INTO trusted.tb_membros_evolucao (id_usuario, num_skill_avg_total, dt_registro)
-SELECT u.id_usuario, (40 + floor(random() * 20))::float, DATE_TRUNC('month', CURRENT_DATE)
-FROM trusted.tb_usuarios u
-WHERE u.id_usuario NOT IN (SELECT id_usuario FROM trusted.tb_usuarios ORDER BY id_usuario LIMIT 5)
-ON CONFLICT DO NOTHING;
+-- Atualizar telefone para membros que não são Rockstars (simulação)
+UPDATE trusted.tb_membros_perfil 
+SET num_telefone = '(11) 9' || floor(random() * 90000000 + 10000000)::text
+WHERE num_telefone IS NULL OR num_telefone = '';
 
 -- Garantir que o Hall da Fama tenha pelo menos 5 nomes com pontos variados
 DELETE FROM trusted.tb_torneios_resultados;

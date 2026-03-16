@@ -286,6 +286,7 @@
                             <th>Nome</th>
                             <th>Nível</th>
                             <th>Idade</th>
+                            <th>Telefone</th>
                             <th>Status</th>
                             <th>Admin</th>
                             <th>Ação</th>
@@ -458,6 +459,7 @@
                     <td style="font-weight: 600;">${m.dsc_nome_completo}</td>
                     <td>${m.dsc_nivel_tecnico}</td>
                     <td>${age}</td>
+                    <td style="font-family: monospace; font-size: 0.8rem;">${m.num_telefone || '--'}</td>
                     <td><span class="status-badge ${m.vlr_status_conta === 'ativo' ? 'status-active' : ''}">${m.vlr_status_conta}</span></td>
                     <td>${m.flg_admin ? '<i class="fas fa-crown status-admin"></i>' : '--'}</td>
                     <td>

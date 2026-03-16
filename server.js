@@ -536,7 +536,7 @@ app.get('/api/admin/members', authenticateToken, isAdmin, async (req, res) => {
     const result = await pool.query(`
       SELECT 
         u.id_usuario, u.dsc_email, u.flg_admin, u.vlr_status_conta,
-        p.dsc_nome_completo, p.dsc_nivel_tecnico, p.dt_nascimento
+        p.dsc_nome_completo, p.dsc_nivel_tecnico, p.dt_nascimento, p.num_telefone
       FROM trusted.tb_usuarios u
       JOIN trusted.tb_membros_perfil p ON u.id_usuario = p.id_usuario
       ORDER BY p.dsc_nome_completo ASC
