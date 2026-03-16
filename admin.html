@@ -178,7 +178,7 @@
         <section class="dashboard-grid" style="grid-template-columns: 2fr 1fr;">
             <!-- Gráfico de Volume -->
             <div class="glass-card">
-                <h3 style="margin-bottom: 20px; color: #38bdf8;">Volume de Presença (7 dias)</h3>
+                <h3 style="margin-bottom: 20px; color: #38bdf8;">Volume de Presença (Últimos 14 dias)</h3>
                 <div class="chart-container">
                     <canvas id="checkinChart"></canvas>
                 </div>
@@ -202,12 +202,27 @@
             <div class="dashboard-grid" style="grid-template-columns: 1fr 1fr; gap: 30px;">
                 <!-- Gargalo Técnico Coletivo -->
                 <div class="glass-card">
-                    <h3 style="margin-bottom: 20px; color: #38bdf8;">Gargalo Técnico Coletivo <small style="color: #64748b; font-size: 0.7rem;">(Média do Grupo)</small></h3>
+                    <h3 style="margin-bottom: 10px; color: #38bdf8;">Gargalo Técnico Coletivo</h3>
                     <div style="height: 350px;">
                         <canvas id="groupRadarChart"></canvas>
                     </div>
-                    <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 15px; background: rgba(56,189,248,0.05); padding: 10px; border-radius: 8px;">
-                        <i class="fas fa-info-circle" style="color: #38bdf8;"></i> Este radar mostra as habilidades mais fracas do grupo geral. Use para planejar treinos coletivos.
+                    <!-- Sub-radares por Nível -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 0.65rem; color: #94a3b8; font-weight: 700; margin-bottom: 5px;">INICIANTE</div>
+                            <div style="height: 120px;"><canvas id="radarIniciante"></canvas></div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 0.65rem; color: #94a3b8; font-weight: 700; margin-bottom: 5px;">INTERMEDIÁRIO</div>
+                            <div style="height: 120px;"><canvas id="radarIntermediario"></canvas></div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 0.65rem; color: #94a3b8; font-weight: 700; margin-bottom: 5px;">AVANÇADO</div>
+                            <div style="height: 120px;"><canvas id="radarAvancado"></canvas></div>
+                        </div>
+                    </div>
+                    <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 15px; background: rgba(56,189,248,0.05); padding: 10px; border-radius: 8px;">
+                        <i class="fas fa-info-circle" style="color: #38bdf8;"></i> Radares segmentados auxiliam no planejamento de treinos específicos por turma.
                     </p>
                 </div>
 
@@ -254,7 +269,15 @@
         <section id="membros" class="glass-card" style="margin-top: 40px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h3 style="color: #38bdf8;">Lista de Membros</h3>
-                <input type="text" placeholder="Buscar membro..." id="search-membros" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 8px 15px; border-radius: 8px; width: 300px;">
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="exportData('csv')" style="background: rgba(56, 189, 248, 0.1); border: 1px solid #38bdf8; color: #38bdf8; padding: 8px 15px; border-radius: 8px; font-size: 0.8rem; cursor: pointer;">
+                        <i class="fas fa-file-csv"></i> Exportar CSV
+                    </button>
+                    <button onclick="exportData('xlsx')" style="background: rgba(74, 222, 128, 0.1); border: 1px solid #4ade80; color: #4ade80; padding: 8px 15px; border-radius: 8px; font-size: 0.8rem; cursor: pointer;">
+                        <i class="fas fa-file-excel"></i> Exportar Excel
+                    </button>
+                    <input type="text" placeholder="Buscar membro..." id="search-membros" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 8px 15px; border-radius: 8px; width: 250px;">
+                </div>
             </div>
             <div style="overflow-x: auto;">
                 <table id="members-table">
@@ -358,37 +381,65 @@
                 document.getElementById('avg-age').textContent = totalPessoas > 0 ? Math.round(totalIdade / totalPessoas) : '--';
             }
         }
+        async function loadDashboardStats() {
+            const token = localStorage.getItem('spin4all_token');
+            try {
+                const response = await fetch(`${API_URL}/admin/reports`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('total-members').textContent = data.totals.total_membros;
+                    document.getElementById('active-today').textContent = data.totals.ativos_hoje;
+                    document.getElementById('avg-age').textContent = Math.round(data.totals.media_idade) + ' anos';
+                    
+                    renderCheckinChart(data.checkins);
+                    renderLevelChart(data.levels);
+                }
+            } catch (err) {
+                console.error('Erro ao carregar dashboard:', err);
+            }
+        }
 
-        function renderCharts(data) {
-            // Chart de Check-ins (Histórico)
-            const checkinCtx = document.getElementById('checkinChart').getContext('2d');
-            const dates = data.historico_checkins.map(h => new Date(h.dt_checkin).toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'})).reverse();
-            const counts = data.historico_checkins.map(h => h.num_checkins).reverse();
-
-            new Chart(checkinCtx, {
-                type: 'line',
+        function renderCheckinChart(data) {
+            const ctx = document.getElementById('checkinChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
                 data: {
-                    labels: dates,
+                    labels: data.map(d => new Date(d.dt_checkin).toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'})),
                     datasets: [{
                         label: 'Check-ins',
-                        data: counts,
+                        data: data.map(d => parseInt(d.num_checkins)),
+                        backgroundColor: 'rgba(56, 189, 248, 0.4)',
                         borderColor: '#38bdf8',
-                        backgroundColor: 'rgba(56, 189, 248, 0.1)',
-                        fill: true,
-                        tension: 0.4
+                        borderWidth: 1,
+                        borderRadius: 4
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
                     scales: {
-                        y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } },
-                        x: { grid: { display: false } }
-                    }
+                        y: { 
+                            beginAtZero: true, 
+                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            ticks: { color: '#64748b' }
+                        },
+                        x: { 
+                            grid: { display: false },
+                            ticks: { 
+                                color: '#64748b',
+                                font: { size: 9 }
+                            }
+                        }
+                    },
+                    plugins: { legend: { display: false } }
                 }
             });
+        }
 
+        function renderLevelChart(data) {
             // Chart de Níveis
             const levelCtx = document.getElementById('levelChart').getContext('2d');
             const levelLabels = data.distribuicao_niveis.map(l => l.dsc_nivel_tecnico);
@@ -482,7 +533,18 @@
                 });
                 const bottleneck = await bottleneckRes.json();
                 if (bottleneck.success) {
-                    renderGroupRadar(bottleneck.data);
+                    renderGroupRadar('groupRadarChart', bottleneck.data, '#38bdf8');
+                    
+                    // Renderizar sub-radares
+                    if (bottleneck.by_level) {
+                        const ini = bottleneck.by_level.find(l => l.level === 'Iniciante');
+                        const int = bottleneck.by_level.find(l => l.level === 'Intermediário');
+                        const ava = bottleneck.by_level.find(l => l.level === 'Avançado');
+                        
+                        if (ini) renderGroupRadar('radarIniciante', ini, '#f43f5e', true);
+                        if (int) renderGroupRadar('radarIntermediario', int, '#fbbf24', true);
+                        if (ava) renderGroupRadar('radarAvancado', ava, '#4ade80', true);
+                    }
                 }
 
                 // 2. Risco Biomecânico
@@ -518,32 +580,37 @@
             }
         }
 
-        function renderGroupRadar(data) {
-            const ctx = document.getElementById('groupRadarChart').getContext('2d');
+        function renderGroupRadar(canvasId, data, color, isMini = false) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
             new Chart(ctx, {
                 type: 'radar',
                 data: {
-                    labels: ['Forehand', 'Backhand', 'Cozinha', 'Topspin', 'Saque', 'Rally', 'Ataque', 'Defesa', 'Bloqueio', 'Controle', 'Movimentação'],
+                    labels: ['FOR', 'BAC', 'COZ', 'TOP', 'SAQ', 'RAL', 'ATA', 'DEF', 'BLO', 'CON', 'MOV'],
                     datasets: [{
-                        label: 'Média do Grupo',
+                        label: 'Média',
                         data: [
                             data.forehand, data.backhand, data.cozinhada, data.topspin, 
                             data.saque, data.rally, data.ataque, data.defesa, 
                             data.bloqueio, data.controle, data.movimentacao || 50
                         ],
-                        backgroundColor: 'rgba(56, 189, 248, 0.2)',
-                        borderColor: '#38bdf8',
-                        pointBackgroundColor: '#38bdf8',
-                        borderWidth: 2
+                        backgroundColor: color + '20',
+                        borderColor: color,
+                        pointBackgroundColor: color,
+                        borderWidth: isMini ? 1 : 2,
+                        pointRadius: isMini ? 0 : 3
                     }]
                 },
                 options: {
                     maintainAspectRatio: false,
                     scales: {
                         r: {
-                            angleLines: { color: 'rgba(255,255,255,0.1)' },
-                            grid: { color: 'rgba(255,255,255,0.1)' },
-                            pointLabels: { color: '#94a3b8', font: { size: 10 } },
+                            angleLines: { color: 'rgba(255,255,255,0.05)' },
+                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            pointLabels: { 
+                                color: '#64748b', 
+                                font: { size: isMini ? 7 : 10 },
+                                display: !isMini // Opcional: ocultar labels em mini radars se ficar muito poluído
+                            },
                             ticks: { display: false, stepSize: 20 },
                             suggestedMin: 0, suggestedMax: 100
                         }
@@ -649,42 +716,74 @@
                     'Social/Lazer': { color: '#a855f7' }
                 };
 
-                let html = '';
+                const tagCloud = [];
                 data.forEach(obj => {
                     const text = (obj.amostra_metas || '').toLowerCase();
                     let color = '#94a3b8';
-                    let catName = 'Outros';
 
                     if (text.includes('técnica') || text.includes('forehand') || text.includes('backhand') || text.includes('saque') || text.includes('fundamentos')) {
                         color = categories['Técnico'].color;
-                        catName = 'Técnico';
                     } else if (text.includes('físico') || text.includes('lesão') || text.includes('resistência') || text.includes('peso')) {
                         color = categories['Físico'].color;
-                        catName = 'Físico';
                     } else if (text.includes('torneio') || text.includes('competição') || text.includes('ranking') || text.includes('confiança')) {
                         color = categories['Competição'].color;
-                        catName = 'Competição';
                     } else if (text.includes('social') || text.includes('amigos') || text.includes('diversão') || text.includes('hobby')) {
                         color = categories['Social/Lazer'].color;
-                        catName = 'Social/Lazer';
                     }
 
-                    // Extrair palavras-chave ou frases curtas para simular "tags" de objetivos reais
                     const tags = obj.amostra_metas.split(/[,.]/).map(t => t.trim()).filter(t => t.length > 5 && t.length < 50);
-                    
-                    tags.forEach(tag => {
-                        html += `
-                            <div style="background: ${color}15; color: ${color}; border: 1px solid ${color}30; padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; cursor: default; transition: all 0.2s;" onmouseover="this.style.background='${color}25'" onmouseout="this.style.background='${color}15'">
-                                <span style="opacity: 0.6; margin-right: 5px;">#${catName}:</span> ${tag}
-                            </div>
-                        `;
-                    });
+                    tags.forEach(tag => tagCloud.push({ text: tag, color }));
                 });
 
-                list.innerHTML = html || '<div style="color: #64748b; font-size: 0.8rem;">Sem tags detalhadas.</div>';
+                // Mostrar apenas as 10 primeiras (simplificando conforme pedido)
+                const topTags = tagCloud.slice(0, 10);
+
+                list.innerHTML = topTags.map(tag => `
+                    <div style="background: ${tag.color}15; color: ${tag.color}; border: 1px solid ${tag.color}30; padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; cursor: default; transition: all 0.2s;" onmouseover="this.style.background='${tag.color}25'" onmouseout="this.style.background='${tag.color}15'">
+                         ${tag.text}
+                    </div>
+                `).join('') || '<div style="color: #64748b; font-size: 0.8rem;">Sem tags detalhadas.</div>';
             } else {
                 list.innerHTML = '<div style="color: #64748b; font-size: 0.8rem;">Sem dados de objetivos.</div>';
             }
+        }
+
+        async function exportData(type) {
+            const token = localStorage.getItem('spin4all_token');
+            const response = await fetch(`${API_URL}/admin/members`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const result = await response.json();
+            
+            if (!result.success) return alert('Erro ao exportar dados.');
+
+            const members = result.data;
+            let content = '';
+            let fileName = `membros_spin4all_${new Date().toISOString().split('T')[0]}`;
+
+            if (type === 'csv') {
+                const headers = ['Nome', 'Nível', 'Status', 'Telefone', 'Admin'];
+                content = headers.join(',') + '\n';
+                members.forEach(m => {
+                    content += `"${m.dsc_nome_completo}","${m.dsc_nivel_tecnico}","${m.vlr_status_conta}","${m.num_telefone || ''}","${m.flg_admin}"\n`;
+                });
+                fileName += '.csv';
+            } else {
+                // Simulação de Excel via CSV delimitado por ponto e vírgula (que o Excel abre direto)
+                const headers = ['Nome', 'Nivel', 'Status', 'Telefone', 'Admin'];
+                content = headers.join(';') + '\n';
+                members.forEach(m => {
+                    content += `"${m.dsc_nome_completo}";"${m.dsc_nivel_tecnico}";"${m.vlr_status_conta}";"${m.num_telefone || ''}";"${m.flg_admin}"\n`;
+                });
+                fileName += '.xls';
+            }
+
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            a.click();
         }
 
         // Filtro de Busca

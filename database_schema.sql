@@ -54,13 +54,14 @@ CREATE TABLE IF NOT EXISTS trusted.tb_membros_perfil (
     id_usuario INTEGER REFERENCES trusted.tb_usuarios(id_usuario) ON DELETE CASCADE,
     dsc_nome_completo VARCHAR(255) NOT NULL,
     dt_nascimento DATE,
-    dsc_lateralidade VARCHAR(20),
+    vlr_lateralidade VARCHAR(20), -- Destro, Canhoto
     dsc_empunhadura VARCHAR(50),
     dsc_nivel_tecnico VARCHAR(50),
     dsc_objetivo VARCHAR(100),
     dsc_metas TEXT,
     num_altura_cm INTEGER,
-    num_peso_kg NUMERIC(5,2),
+    num_peso_kg INTEGER,
+    num_telefone VARCHAR(20),
     dsc_foto_perfil TEXT,
     num_skill_forehand INTEGER DEFAULT 50,
     num_skill_backhand INTEGER DEFAULT 50,
@@ -223,13 +224,13 @@ SELECT
 FROM trusted.tb_membros_perfil p
 GROUP BY p.dsc_nivel_tecnico, num_idade;
 
--- VIEW: EstatÃ­sticas de Check-ins (Últimos 7 dias)
+-- VIEW: EstatÃ­sticas de Check-ins (Últimos 14 dias)
 CREATE OR REPLACE VIEW refined.vw_checkins_stats AS
 SELECT 
     d.day as dt_checkin,
     COALESCE(COUNT(c.id_checkin), 0) as num_checkins
 FROM (
-    SELECT generate_series(CURRENT_DATE - INTERVAL '6 days', CURRENT_DATE, '1 day')::date as day
+    SELECT generate_series(CURRENT_DATE - INTERVAL '13 days', CURRENT_DATE, '1 day')::date as day
 ) d
 LEFT JOIN trusted.tb_checkins c ON d.day = c.dt_checkin
 GROUP BY d.day
@@ -691,7 +692,6 @@ INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (
 INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (283, 'Star 283 Soundgarden', 'AvanÃ§ado', 174, 65, 'https://i.pravatar.cc/150?u=283') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (284, 'rockstar284@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (284, 'Star 284 Linkin Park', 'IntermediÃ¡rio', 169, 67, 'https://i.pravatar.cc/150?u=284') ON CONFLICT DO NOTHING;
-INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (285, 'rockstar285@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (285, 'Star 285 Foo Fighters', 'AvanÃ§ado', 166, 73, 'https://i.pravatar.cc/150?u=285') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (286, 'rockstar286@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (286, 'Star 286 Green Day', 'Iniciante', 180, 84, 'https://i.pravatar.cc/150?u=286') ON CONFLICT DO NOTHING;
@@ -765,7 +765,15 @@ UPDATE trusted.tb_membros_perfil
 SET num_peso_kg = 105, num_altura_cm = 175 -- IMC ~34.3
 WHERE id_usuario IN (SELECT id_usuario FROM trusted.tb_usuarios ORDER BY id_usuario LIMIT 3);
 
--- Garantir frequência alta para esses mesmos 3
+-- 4. Normalização de Níveis (Iniciante, Intermediário, Avançado)
+UPDATE trusted.tb_membros_perfil 
+SET dsc_nivel_tecnico = CASE 
+    WHEN id_usuario % 3 = 0 THEN 'Iniciante'
+    WHEN id_usuario % 3 = 1 THEN 'Intermediário'
+    ELSE 'Avançado'
+END;
+
+-- Garantir frequência alta para os 3 primeiros casos de risco
 INSERT INTO trusted.tb_checkins (id_usuario, dt_checkin)
 SELECT u.id_usuario, d
 FROM (SELECT id_usuario FROM trusted.tb_usuarios ORDER BY id_usuario LIMIT 3) u
@@ -776,7 +784,6 @@ CROSS JOIN (
 ON CONFLICT DO NOTHING;
 
 -- 4. Distribuição Técnica para o Gráfico DNA
-UPDATE trusted.tb_membros_perfil 
 SET dsc_nivel_tecnico = CASE 
     WHEN id_usuario % 5 = 0 THEN 'Avançado'
     WHEN id_usuario % 5 = 1 THEN 'Iniciante'
@@ -820,11 +827,21 @@ SET
   num_skill_movimentacao = (25 + floor(random() * 65))::int
 WHERE id_usuario > 0;
 
--- 7. Evolução Histórica (Ranking Mensal) - Ajustado para o MÊS ATUAL
--- Primeiro, criamos um ponto de partida para TODOS no início deste mês
+-- 7. Evolução Histórica (Ranking Mensal) - 30 DIAS para o Top 5
+INSERT INTO trusted.tb_membros_evolucao (id_usuario, num_skill_avg_total, dt_registro)
+SELECT 
+    u.id_usuario, 
+    (40 + floor(random() * 20) + (i * 0.5))::float as skill, 
+    (CURRENT_DATE - (30 - i) * INTERVAL '1 day')::date
+FROM (SELECT id_usuario FROM trusted.tb_usuarios ORDER BY id_usuario LIMIT 5) u
+CROSS JOIN generate_series(1, 30) i
+ON CONFLICT DO NOTHING;
+
+-- Ponto de partida para o resto (Início do mês)
 INSERT INTO trusted.tb_membros_evolucao (id_usuario, num_skill_avg_total, dt_registro)
 SELECT u.id_usuario, (40 + floor(random() * 20))::float, DATE_TRUNC('month', CURRENT_DATE)
 FROM trusted.tb_usuarios u
+WHERE u.id_usuario NOT IN (SELECT id_usuario FROM trusted.tb_usuarios ORDER BY id_usuario LIMIT 5)
 ON CONFLICT DO NOTHING;
 
 -- Garantir que o Hall da Fama tenha pelo menos 5 nomes com pontos variados

@@ -202,6 +202,10 @@
                         <label>Data de Nascimento</label>
                         <input type="date" id="reg-birth" required>
                     </div>
+                    <div class="input-group">
+                        <label>Telefone / WhatsApp</label>
+                        <input type="tel" id="reg-phone" placeholder="(00) 00000-0000">
+                    </div>
                 </div>
 
                 <!-- STEP 2: Sua Jornada -->
@@ -373,6 +377,7 @@
                     birthDate: document.getElementById('reg-birth').value,
                     height: parseInt(document.getElementById('reg-altura').value),
                     weight: parseInt(document.getElementById('reg-peso').value),
+                    phone: document.getElementById('reg-phone').value,
                     side: document.getElementById('reg-lateralidade').value,
                     grip: document.getElementById('reg-empunhadura').value,
                     level: document.getElementById('reg-nivel').value,

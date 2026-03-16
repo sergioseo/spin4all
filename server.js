@@ -320,23 +320,21 @@ app.post('/api/register', async (req, res) => {
     const userId = userRes.rows[0].id_usuario;
 
     // 3. Criar Perfil na TRUSTED (Estado Atual)
-    await client.query(
-      `INSERT INTO trusted.tb_membros_perfil 
-       (id_usuario, dsc_nome_completo, dt_nascimento, dsc_lateralidade, dsc_empunhadura, dsc_nivel_tecnico, dsc_objetivo, dsc_metas, num_altura_cm, num_peso_kg) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
-      [
+    await client.query(`
+        INSERT INTO trusted.tb_membros_perfil 
+          (id_usuario, dsc_nome_completo, dt_nascimento, num_altura_cm, num_peso_kg, num_telefone, vlr_lateralidade, vlr_empunhadura, dsc_nivel_tecnico, dsc_objetivo_principal, dsc_metas)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+      `, [
         userId, 
         profileData.name, 
-        profileData.birthDate || null,
-        profileData.side, 
-        profileData.grip, 
-        profileData.level,
-        profileData.objective,
-        profileData.goals,
+        profileData.birthDate || null, 
         profileData.height, 
-        profileData.weight
-      ]
-    );
+        profileData.weight,
+        profileData.phone || '', // Novo campo telefone
+        profileData.level, 
+        profileData.objective, 
+        profileData.goals
+      ]);
 
     // 4. Iniciar Histórico de Evolução (Ponto de Partida)
     await client.query(
@@ -787,7 +785,26 @@ app.get('/api/admin/technical-bottleneck', authenticateToken, isAdmin, async (re
       FROM trusted.tb_membros_perfil
     `;
     const result = await pool.query(query);
-    res.json({ success: true, data: result.rows[0] });
+    
+    // Segmentação por Nível (3 sub-radares)
+    const levelsQuery = `
+      SELECT dsc_nivel_tecnico as level,
+        AVG(num_skill_forehand) as forehand, AVG(num_skill_backhand) as backhand,
+        AVG(num_skill_cozinhada) as cozinhada, AVG(num_skill_topspin) as topspin,
+        AVG(num_skill_saque) as saque, AVG(num_skill_rally) as rally,
+        AVG(num_skill_ataque) as ataque, AVG(num_skill_defesa) as defesa,
+        AVG(num_skill_bloqueio) as bloqueio, AVG(num_skill_controle) as controle,
+        AVG(num_skill_movimentacao) as movimentacao
+      FROM trusted.tb_membros_perfil
+      GROUP BY dsc_nivel_tecnico
+    `;
+    const levelsResult = await pool.query(levelsQuery);
+
+    res.json({ 
+      success: true, 
+      data: result.rows[0],
+      by_level: levelsResult.rows
+    });
   } catch (err) {
     res.status(500).json({ success: false, error: 'Erro ao calcular gargalo técnico.' });
   }
@@ -852,7 +869,7 @@ app.get('/api/admin/performance-peak', authenticateToken, isAdmin, async (req, r
         FROM trusted.tb_membros_evolucao
         WHERE id_usuario = $1
         ORDER BY dt_registro ASC
-        LIMIT 6
+        LIMIT 30
       `, [member.id_usuario]);
 
       performanceData.push({
