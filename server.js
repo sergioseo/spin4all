@@ -259,7 +259,7 @@ app.post('/api/login', async (req, res) => {
 // --- SISTEMA DE CHECK-IN ---
 
 // Realizar Check-in (Tablet)
-app.post('/api/checkin', async (req, res) => {
+app.post('/api/checkin', authenticateToken, isAdmin, async (req, res) => {
   const { email, id_usuario } = req.body;
   try {
     let userId = id_usuario;
@@ -298,7 +298,7 @@ app.post('/api/checkin', async (req, res) => {
 });
 
 // Listagem de Membros para Check-in Visual (Tablet)
-app.get('/api/checkin-list', async (req, res) => {
+app.get('/api/checkin-list', authenticateToken, isAdmin, async (req, res) => {
   try {
     const result = await pool.query(`
       SELECT 
@@ -321,7 +321,7 @@ app.get('/api/checkin-list', async (req, res) => {
 });
 
 // Remover Check-in (Undo)
-app.delete('/api/checkin', async (req, res) => {
+app.delete('/api/checkin', authenticateToken, isAdmin, async (req, res) => {
   const { id_usuario } = req.body;
   try {
     const result = await pool.query(

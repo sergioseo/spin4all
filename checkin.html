@@ -283,6 +283,35 @@
             ? 'http://localhost:3000/api'
             : 'https://spin4all-motor.h5rvsp.easypanel.host/api';
 
+        async function checkAdmin() {
+            const token = localStorage.getItem('spin4all_token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/me`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                
+                if (!data.success || !data.user.flg_admin) {
+                    alert('Acesso restrito: Apenas administradores podem lançar o sistema de check-in.');
+                    window.location.href = 'dashboard.html';
+                    return;
+                }
+
+                init();
+            } catch (err) {
+                window.location.href = 'dashboard.html';
+            }
+        }
+
+        async function init() {
+            fetchMembers();
+        }
+
         let allMembers = [];
         let selectedMember = null;
 
@@ -397,8 +426,8 @@
             renderMembers(filtered);
         });
 
-        // Inicializar
-        fetchMembers();
+        // Inicializar com proteção
+        checkAdmin();
     </script>
 </body>
 </html>

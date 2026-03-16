@@ -293,7 +293,7 @@
                     <span>Evolução</span>
                 </a>
             </div>
-            <div class="nav-item">
+            <div class="nav-item" id="checkin-nav-item" style="display: none;">
                 <a href="checkin.html" class="nav-link">
                     <i class="fas fa-id-card"></i>
                     <span>Check-in (Presencial)</span>
@@ -522,9 +522,10 @@
                 document.getElementById('user-objective').textContent = userData.dsc_objetivo;
                 document.getElementById('user-goals').textContent = userData.dsc_metas;
 
-                // Mostrar menu admin se o usuário for administrador
+                // Mostrar menus restritos se o usuário for administrador
                 if (userData.flg_admin) {
                     document.getElementById('admin-nav-item').style.display = 'block';
+                    document.getElementById('checkin-nav-item').style.display = 'block';
                 }
 
                 const imc = (userData.num_peso_kg / Math.pow(userData.num_altura_cm / 100, 2)).toFixed(2);
