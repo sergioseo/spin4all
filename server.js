@@ -470,6 +470,29 @@ app.get('/api/admin/members', authenticateToken, isAdmin, async (req, res) => {
   }
 });
 
+// Alternar Status de Admin (Gestão de Acessos)
+app.put('/api/admin/toggle-admin', authenticateToken, isAdmin, async (req, res) => {
+  const { id_usuario, flg_admin } = req.body;
+  const adminId = req.user.id;
+
+  try {
+    // Impedir auto-bloqueio
+    if (id_usuario === adminId) {
+      return res.status(400).json({ success: false, message: 'Você não pode remover suas próprias permissões de administrador.' });
+    }
+
+    await pool.query(
+      'UPDATE trusted.tb_usuarios SET flg_admin = $1 WHERE id_usuario = $2',
+      [flg_admin, id_usuario]
+    );
+
+    res.json({ success: true, message: `Status de administrador ${flg_admin ? 'concedido' : 'revogado'} com sucesso!` });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: 'Erro ao atualizar permissões.' });
+  }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
     console.log('=============================================');

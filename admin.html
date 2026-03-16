@@ -204,6 +204,7 @@
                             <th>Idade</th>
                             <th>Status</th>
                             <th>Admin</th>
+                            <th>Ação</th>
                         </tr>
                     </thead>
                     <tbody id="members-list">
@@ -362,6 +363,11 @@
                     <td>${age}</td>
                     <td><span class="status-badge ${m.vlr_status_conta === 'ativo' ? 'status-active' : ''}">${m.vlr_status_conta}</span></td>
                     <td>${m.flg_admin ? '<i class="fas fa-crown status-admin"></i>' : '--'}</td>
+                    <td>
+                        <button onclick="toggleAdmin(${m.id_usuario}, ${!m.flg_admin})" class="nav-link" style="padding: 5px 10px; font-size: 0.8rem; background: ${m.flg_admin ? 'rgba(239, 68, 68, 0.1)' : 'rgba(56, 189, 248, 0.1)'}; color: ${m.flg_admin ? '#ef4444' : '#38bdf8'}; border: none; border-radius: 4px; cursor: pointer;">
+                            ${m.flg_admin ? 'Revogar Admin' : 'Tornar Admin'}
+                        </button>
+                    </td>
                 `;
                 list.appendChild(row);
             });
@@ -374,6 +380,33 @@
             const m = today.getMonth() - birth.getMonth();
             if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
             return age;
+        }
+
+        async function toggleAdmin(userId, newStatus) {
+            const token = localStorage.getItem('spin4all_token');
+            if (!confirm(`Tem certeza que deseja ${newStatus ? 'conceder' : 'revogar'} acesso de administrador para este membro?`)) return;
+
+            try {
+                const response = await fetch(`${API_URL}/admin/toggle-admin`, {
+                    method: 'PUT',
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id_usuario: userId, flg_admin: newStatus })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    alert(data.message);
+                    location.reload(); // Recarrega para atualizar a lista
+                } else {
+                    alert('Erro: ' + data.message);
+                }
+            } catch (err) {
+                console.error('Erro ao alternar admin:', err);
+                alert('Falha na comunicação com o servidor.');
+            }
         }
 
         // Filtro de Busca
