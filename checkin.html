@@ -316,8 +316,11 @@
         let selectedMember = null;
 
         async function fetchMembers() {
+            const token = localStorage.getItem('spin4all_token');
             try {
-                const response = await fetch(`${API_URL}/checkin-list`);
+                const response = await fetch(`${API_URL}/checkin-list`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
                 const data = await response.json();
                 if (data.success) {
                     allMembers = data.members;
@@ -366,11 +369,15 @@
         }
 
         async function doCheckin(userId, fullName) {
+            const token = localStorage.getItem('spin4all_token');
             closeModals();
             try {
                 const response = await fetch(`${API_URL}/checkin`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
                     body: JSON.stringify({ id_usuario: userId })
                 });
 
@@ -383,11 +390,15 @@
         }
 
         async function doUndo(userId) {
+            const token = localStorage.getItem('spin4all_token');
             closeModals();
             try {
                 const response = await fetch(`${API_URL}/checkin`, {
                     method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
                     body: JSON.stringify({ id_usuario: userId })
                 });
 
