@@ -18,6 +18,54 @@ const pool = new Pool({
   port: process.env.DB_PORT,
 });
 
+// Middleware de Autenticação
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) return res.status(401).json({ success: false, message: 'Token não fornecido' });
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) return res.status(403).json({ success: false, message: 'Token inválido ou expirado' });
+    req.user = user;
+    next();
+  });
+};
+
+// --- ROTAS DA API ---
+
+// Perfil do Usuário Logado
+app.get('/api/me', authenticateToken, async (req, res) => {
+  try {
+    const query = `
+      SELECT 
+        u.dsc_email, 
+        p.dsc_nome_completo, 
+        p.dsc_lateralidade, 
+        p.dsc_empunhadura, 
+        p.dsc_nivel_tecnico, 
+        p.dsc_objetivo, 
+        p.dsc_metas, 
+        p.num_altura_cm, 
+        p.num_peso_kg,
+        u.dt_criacao_registro
+      FROM trusted.tb_usuarios u
+      JOIN trusted.tb_membros_perfil p ON u.id_usuario = p.id_usuario
+      WHERE u.id_usuario = $1
+    `;
+    const result = await pool.query(query, [req.user.id]);
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({ success: false, message: 'Perfil não encontrado' });
+    }
+
+    res.json({ success: true, user: result.rows[0] });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: 'Erro ao buscar perfil.' });
+  }
+});
+
 // Rota Raiz (Evita o "Cannot GET /")
 app.get('/', (req, res) => {
   res.send('🚀 Spin4All API está ativa! Acesse o portal em <a href="https://www.spin4all.com.br">www.spin4all.com.br</a>');
