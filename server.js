@@ -149,7 +149,7 @@ app.get('/api/me', authenticateToken, async (req, res) => {
         u.flg_admin,
         u.dt_criacao_registro
       FROM trusted.tb_usuarios u
-      JOIN trusted.tb_membros_perfil p ON u.id_usuario = p.id_usuario
+      LEFT JOIN trusted.tb_membros_perfil p ON u.id_usuario = p.id_usuario
       WHERE u.id_usuario = $1
     `;
     const result = await pool.query(query, [req.user.id]);
