@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check-in | Spin4All</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: radial-gradient(circle at top right, #1e293b, #0f172a);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .checkin-container {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 4rem;
+            border-radius: 30px;
+            text-align: center;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo-area {
+            margin-bottom: 3rem;
+        }
+
+        .logo-area h1 {
+            color: #fff;
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .logo-area h1 span {
+            color: #38bdf8;
+        }
+
+        .instruction {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.2);
+            color: #fff;
+            font-size: 1.8rem;
+            text-align: center;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #38bdf8;
+            background: rgba(0, 0, 0, 0.4);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+        }
+
+        .btn-checkin {
+            width: 100%;
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: none;
+            background: linear-gradient(135deg, #0ea5e9, #2563eb);
+            color: #fff;
+            font-size: 1.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-checkin:active {
+            transform: scale(0.98);
+        }
+
+        .message {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 15px;
+            font-size: 1.4rem;
+            font-weight: 600;
+            display: none;
+        }
+
+        .message.success {
+            background: rgba(34, 197, 94, 0.1);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            display: block;
+        }
+
+        .message.error {
+            background: rgba(239, 68, 68, 0.1);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            display: block;
+        }
+
+        /* Animação de Sucesso Extra */
+        @keyframes pulseSuccess {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .success-pulse {
+            animation: pulseSuccess 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="checkin-container" id="container">
+        <div class="logo-area">
+            <h1>Spin<span>4All</span></h1>
+        </div>
+        
+        <p class="instruction">Digite seu e-mail para confirmar presença no treino de hoje.</p>
+
+        <form id="checkinForm">
+            <div class="form-group">
+                <input type="email" id="email" placeholder="seu@email.com" required>
+            </div>
+            <button type="submit" class="btn-checkin">CONFIRMAR PRESENÇA</button>
+        </form>
+
+        <div id="msg" class="message"></div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api'; // Ajustar para o domínio real se necessário
+
+        document.getElementById('checkinForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const emailInput = document.getElementById('email');
+            const msgDiv = document.getElementById('msg');
+            const container = document.getElementById('container');
+            const email = emailInput.value;
+
+            msgDiv.className = 'message';
+            msgDiv.style.display = 'none';
+
+            try {
+                const response = await fetch(`${API_URL}/checkin`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    msgDiv.textContent = data.message;
+                    msgDiv.className = 'message success';
+                    container.classList.add('success-pulse');
+                    emailInput.value = '';
+                    
+                    // Limpar mensagem após 5 segundos
+                    setTimeout(() => {
+                        msgDiv.style.display = 'none';
+                        container.classList.remove('success-pulse');
+                    }, 5000);
+                } else {
+                    msgDiv.textContent = data.message;
+                    msgDiv.className = 'message error';
+                }
+            } catch (error) {
+                msgDiv.textContent = "Erro de conexão com o servidor.";
+                msgDiv.className = 'message error';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -171,6 +171,86 @@
             border-left: 4px solid #38bdf8;
         }
 
+        /* Frequency & Calendar Styles */
+        .frequency-circle {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 15px;
+        }
+
+        .frequency-circle svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .circle-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.05);
+            stroke-width: 8;
+        }
+
+        .circle-progress {
+            fill: none;
+            stroke: #38bdf8;
+            stroke-width: 8;
+            stroke-linecap: round;
+            stroke-dasharray: 351.85;
+            stroke-dashoffset: 351.85;
+            transition: stroke-dashoffset 1s ease-out;
+        }
+
+        .percentage-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .attendance-calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .day-dot {
+            width: 100%;
+            aspect-ratio: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            position: relative;
+            cursor: default;
+        }
+
+        .day-dot.present {
+            background: #4ade80;
+            box-shadow: 0 0 10px rgba(74, 222, 128, 0.3);
+        }
+
+        .day-label {
+            font-size: 0.6rem;
+            color: #64748b;
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        .qualification-status {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .status-ok { background: rgba(34, 197, 94, 0.1); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.2); }
+        .status-pending { background: rgba(245, 158, 11, 0.1); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.2); }
+
         @media (max-width: 1024px) {
             .sidebar {
                 width: 80px;
@@ -279,6 +359,31 @@
                         <div class="data-label">Empunhadura</div>
                         <div class="data-value" id="user-grip">--</div>
                     </div>
+                </div>
+
+                <!-- Camada de Engajamento / Frequência -->
+                <div class="glass-card">
+                    <div class="card-title">
+                        <i class="fas fa-calendar-check"></i>
+                        Frequência e Torneios
+                    </div>
+                    
+                    <div class="frequency-circle">
+                        <svg>
+                            <circle class="circle-bg" cx="60" cy="60" r="56"></circle>
+                            <circle class="circle-progress" cx="60" cy="60" r="56" id="frequency-progress"></circle>
+                        </svg>
+                        <div class="percentage-text"><span id="frequency-pct">0</span>%</div>
+                    </div>
+
+                    <div class="qualification-status status-pending" id="tournament-status">
+                        Calculando frequência...
+                    </div>
+
+                    <div class="attendance-calendar" id="attendance-dots">
+                        <!-- Gerado via JS -->
+                    </div>
+                    <div class="data-label" style="text-align: center; margin-top: 10px;">Últimos 14 dias de treino</div>
                 </div>
 
                 <!-- Camada Estratégica -->
@@ -404,6 +509,9 @@
                 const imc = (userData.num_peso_kg / Math.pow(userData.num_altura_cm / 100, 2)).toFixed(2);
                 document.getElementById('user-imc').textContent = imc;
 
+                // Carregar Frequência
+                loadAttendanceData();
+
                 // Preencher Formulário de Edição
                 document.getElementById('edit-name').value = userData.dsc_nome_completo;
                 document.getElementById('edit-weight').value = userData.num_peso_kg;
@@ -414,6 +522,54 @@
             } catch (err) {
                 console.error(err);
                 logout();
+            }
+        }
+
+        async function loadAttendanceData() {
+            const token = localStorage.getItem('spin4all_token');
+            try {
+                const response = await fetch(`${API_URL}/my-attendance`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    const stats = data.stats;
+                    const pct = parseFloat(stats.pct_frequencia);
+                    
+                    // Atualizar Círculo de Progresso
+                    const circle = document.getElementById('frequency-progress');
+                    const radius = 56;
+                    const circumference = 2 * Math.PI * radius;
+                    const offset = circumference - (pct / 100) * circumference;
+                    circle.style.strokeDashoffset = offset;
+                    document.getElementById('frequency-pct').textContent = Math.round(pct);
+
+                    // Atualizar Status de Torneio
+                    const statusDiv = document.getElementById('tournament-status');
+                    statusDiv.textContent = stats.dsc_status_torneio;
+                    statusDiv.className = `qualification-status ${pct >= 70 ? 'status-ok' : 'status-pending'}`;
+
+                    // Gerar Pontinhos do Calendário (Últimos 14 dias)
+                    const dotsContainer = document.getElementById('attendance-dots');
+                    dotsContainer.innerHTML = '';
+                    
+                    const today = new Date();
+                    for (let i = 13; i >= 0; i--) {
+                        const date = new Date();
+                        date.setDate(today.getDate() - i);
+                        const dateStr = date.toISOString().split('T')[0];
+                        
+                        const isPresent = data.dates.some(d => d.split('T')[0] === dateStr);
+                        
+                        const dot = document.createElement('div');
+                        dot.className = `day-dot ${isPresent ? 'present' : ''}`;
+                        dot.title = date.toLocaleDateString('pt-BR');
+                        dotsContainer.appendChild(dot);
+                    }
+                }
+            } catch (err) {
+                console.error('Erro ao carregar frequência:', err);
             }
         }
 

@@ -239,5 +239,58 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
+// --- SISTEMA DE CHECK-IN ---
+
+// Realizar Check-in (Tablet)
+app.post('/api/checkin', async (req, res) => {
+  const { email } = req.body;
+  try {
+    // 1. Buscar usuário pelo e-mail
+    const userRes = await pool.query('SELECT id_usuario, dsc_nome_completo FROM trusted.tb_membros_perfil p JOIN trusted.tb_usuarios u ON p.id_usuario = u.id_usuario WHERE u.dsc_email = $1', [email]);
+    
+    if (userRes.rows.length === 0) {
+      return res.status(404).json({ success: false, message: 'Membro não encontrado com este e-mail.' });
+    }
+
+    const user = userRes.rows[0];
+
+    // 2. Registrar Check-in
+    await pool.query(
+      'INSERT INTO trusted.tb_checkins (id_usuario) VALUES ($1)',
+      [user.id_usuario]
+    );
+
+    res.json({ success: true, message: `Presença confirmada, ${user.dsc_nome_completo.split(' ')[0]}!` });
+  } catch (err) {
+    if (err.code === '23505') { // Unique constraint violation
+      return res.status(400).json({ success: false, message: 'Check-in já realizado hoje.' });
+    }
+    console.error(err);
+    res.status(500).json({ success: false, error: 'Erro ao processar check-in.' });
+  }
+});
+
+// Buscar Minha Frequência (Dashboard)
+app.get('/api/my-attendance', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // 1. Dados consolidado de frequência
+    const statsRes = await pool.query('SELECT * FROM refined.vw_frequencia_mensal WHERE id_usuario = $1', [userId]);
+    
+    // 2. Lista de datas para o calendário
+    const datesRes = await pool.query('SELECT dt_checkin FROM trusted.tb_checkins WHERE id_usuario = $1 ORDER BY dt_checkin DESC', [userId]);
+
+    res.json({ 
+      success: true, 
+      stats: statsRes.rows[0] || { num_presencas: 0, pct_frequencia: 0, dsc_status_torneio: 'Pendente ❌' },
+      dates: datesRes.rows.map(r => r.dt_checkin)
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: 'Erro ao buscar dados de frequência.' });
+  }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Servidor Spin4All escutando na porta ${PORT}`));

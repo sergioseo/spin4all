@@ -72,6 +72,15 @@ CREATE TABLE IF NOT EXISTS trusted.tb_membros_evolucao (
     dt_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Tabela de Check-ins (Presença Presencial)
+CREATE TABLE IF NOT EXISTS trusted.tb_checkins (
+    id_checkin SERIAL PRIMARY KEY,
+    id_usuario INTEGER REFERENCES trusted.tb_usuarios(id_usuario) ON DELETE CASCADE,
+    dt_checkin DATE DEFAULT CURRENT_DATE,
+    dt_criacao_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(id_usuario, dt_checkin) -- Garante apenas um check-in por dia por aluno
+);
+
 -----------------------------------------------------------
 -- 3. CAMADA REFINED (Consumo/Dashboards)
 -----------------------------------------------------------
@@ -122,9 +131,34 @@ FROM trusted.tb_usuarios
 GROUP BY dt_mes
 ORDER BY dt_mes DESC;
 
+-- VIEW 5: Frequência Mensal e Qualificação para Torneios
+CREATE OR REPLACE VIEW refined.vw_frequencia_mensal AS
+WITH stats AS (
+    SELECT 
+        id_usuario,
+        COUNT(*) as num_presencas,
+        -- Assumindo 12 treinos por mês como base (3 por semana)
+        12.0 as num_treinos_esperados 
+    FROM trusted.tb_checkins
+    WHERE dt_checkin >= DATE_TRUNC('month', CURRENT_DATE)
+    GROUP BY id_usuario
+)
+SELECT 
+    s.id_usuario,
+    p.dsc_nome_completo,
+    s.num_presencas,
+    ROUND((s.num_presencas / s.num_treinos_esperados) * 100, 2) as pct_frequencia,
+    CASE 
+        WHEN (s.num_presencas / s.num_treinos_esperados) * 100 >= 70 THEN 'Qualificado ✅'
+        ELSE 'Pendente ❌'
+    END as dsc_status_torneio
+FROM stats s
+JOIN trusted.tb_membros_perfil p ON s.id_usuario = p.id_usuario;
+
 -----------------------------------------------------------
 -- INDEXES PARA PERFORMANCE
 -----------------------------------------------------------
 CREATE INDEX idx_trusted_usuarios_email ON trusted.tb_usuarios(dsc_email);
 CREATE INDEX idx_raw_status ON raw.tb_onboarding_submissions(vlr_status_processamento);
 CREATE INDEX idx_evolucao_usuario ON trusted.tb_membros_evolucao(id_usuario, dt_registro);
+CREATE INDEX idx_checkins_usuario_data ON trusted.tb_checkins(id_usuario, dt_checkin);
