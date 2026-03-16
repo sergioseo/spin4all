@@ -48,6 +48,8 @@ const runMigrations = async () => {
     await pool.query(`
       ALTER TABLE trusted.tb_membros_perfil 
       ADD COLUMN IF NOT EXISTS dsc_foto_perfil TEXT,
+      ADD COLUMN IF NOT EXISTS dsc_lateralidade TEXT DEFAULT 'Destro',
+      ADD COLUMN IF NOT EXISTS dsc_empunhadura TEXT DEFAULT 'Clássica',
       ADD COLUMN IF NOT EXISTS num_skill_forehand INTEGER DEFAULT 50,
       ADD COLUMN IF NOT EXISTS num_skill_backhand INTEGER DEFAULT 50,
       ADD COLUMN IF NOT EXISTS num_skill_cozinhada INTEGER DEFAULT 50,
@@ -57,7 +59,8 @@ const runMigrations = async () => {
       ADD COLUMN IF NOT EXISTS num_skill_ataque INTEGER DEFAULT 50,
       ADD COLUMN IF NOT EXISTS num_skill_defesa INTEGER DEFAULT 50,
       ADD COLUMN IF NOT EXISTS num_skill_bloqueio INTEGER DEFAULT 50,
-      ADD COLUMN IF NOT EXISTS num_skill_controle INTEGER DEFAULT 50;
+      ADD COLUMN IF NOT EXISTS num_skill_controle INTEGER DEFAULT 50,
+      ADD COLUMN IF NOT EXISTS num_skill_movimentacao INTEGER DEFAULT 50;
     `);
 
     // Master Admin Bootstrap: Se houver um ADMIN_EMAIL no .env, garante que ele seja admin

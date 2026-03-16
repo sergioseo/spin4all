@@ -733,15 +733,15 @@ FROM trusted.tb_usuarios u
 WHERE mp.id_usuario = u.id_usuario;
 
 -- 3. Alertas Biomecânicos (Simular 3 casos críticos: IMC > 28 + Frequência Alta)
--- Primeiro garantir peso/altura elevada para alguns
+-- Primeiro garantir peso/altura elevada para alguns (os 3 primeiros da base)
 UPDATE trusted.tb_membros_perfil 
-SET num_peso = 105, num_altura = 1.75 -- IMC ~34.3
-WHERE id_usuario IN (10, 50, 90);
+SET num_peso_kg = 105, num_altura_cm = 175 -- IMC ~34.3
+WHERE id_usuario IN (SELECT id_usuario FROM trusted.tb_usuarios ORDER BY id_usuario LIMIT 3);
 
 -- Garantir frequência alta para esses mesmos 3
 INSERT INTO trusted.tb_checkins (id_usuario, dt_checkin)
 SELECT u.id_usuario, d
-FROM (SELECT 10 as id_usuario UNION SELECT 50 UNION SELECT 90) u
+FROM (SELECT id_usuario FROM trusted.tb_usuarios ORDER BY id_usuario LIMIT 3) u
 CROSS JOIN (
     SELECT (CURRENT_DATE - i * INTERVAL '1 day')::date as d 
     FROM generate_series(1, 20) i 
