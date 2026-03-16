@@ -9,63 +9,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// --- ROTA DE EMERGENCIA (TOP LEVEL) ---
-app.get('/api/setup-admin-emergency', async (req, res) => {
-  console.log('--- EMERGENCY ROUTE HIT ---');
-  let testPool = pool;
-  try {
-    // Tenta uma query simples para validar conexão
-    await testPool.query('SELECT 1');
-  } catch (err) {
-    console.log('DB_HOST falhou, tentando localhost...');
-    testPool = new Pool({
-      user: process.env.DB_USER,
-      host: 'localhost',
-      database: process.env.DB_NAME,
-      password: process.env.DB_PASSWORD,
-      port: process.env.DB_PORT,
-    });
-  }
-
-  try {
-    const email = 'sjwseo@gmail.com';
-    const tempPass = 'admin123';
-    const hash = await bcrypt.hash(tempPass, 10);
-
-    // --- BLOCO DE MIGRAÇÃO DE EMERGÊNCIA ---
-    console.log('Rodando migrações de emergência...');
-    await testPool.query(`
-      -- Adicionar coluna flg_admin se não existir
-      DO $$ 
-      BEGIN 
-        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='trusted' AND table_name='tb_usuarios' AND column_name='flg_admin') THEN
-          ALTER TABLE trusted.tb_usuarios ADD COLUMN flg_admin BOOLEAN DEFAULT FALSE;
-        END IF;
-        
-        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='trusted' AND table_name='tb_membros_perfil' AND column_name='dt_nascimento') THEN
-          ALTER TABLE trusted.tb_membros_perfil ADD COLUMN dt_nascimento DATE;
-        END IF;
-      END $$;
-    `);
-
-    const userRes = await testPool.query('SELECT id_usuario FROM trusted.tb_usuarios WHERE dsc_email = $1', [email]);
-    if (userRes.rows.length > 0) {
-      await testPool.query('UPDATE trusted.tb_usuarios SET dsc_senha_hash = $1, flg_admin = true, vlr_status_conta = $2 WHERE dsc_email = $3', [hash, 'ativo', email]);
-      res.send(`<h1>✅ OK: Usuário Atualizado para sjwseo@gmail.com / admin123</h1>`);
-    } else {
-      const newRes = await testPool.query('INSERT INTO trusted.tb_usuarios (dsc_email, dsc_senha_hash, flg_admin, vlr_status_conta) VALUES ($1, $2, true, $3) RETURNING id_usuario', [email, hash, 'ativo']);
-      const newId = newRes.rows[0].id_usuario;
-      await testPool.query('INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico) VALUES ($1, $2, $3)', [newId, 'Admin Sergio', 'Avançado']);
-      res.send(`<h1>✅ OK: Novo Admin Criado (sjwseo@gmail.com / admin123)</h1>`);
-    }
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('ERR: ' + err.message);
-  } finally {
-    if (testPool !== pool) await testPool.end();
-  }
-});
-
 // Configuração do Banco de Dados (Postgres)
 const pool = new Pool({
   user: process.env.DB_USER,
