@@ -454,4 +454,9 @@ app.get('/api/admin/members', authenticateToken, isAdmin, async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 Servidor Spin4All escutando na porta ${PORT}`));
+app.listen(PORT, '0.0.0.0', () => {
+    console.log('=============================================');
+    console.log(`🚀 SERVIDOR SPIN4ALL ATIVO NA PORTA ${PORT}`);
+    console.log(`🔗 Local: http://localhost:${PORT}`);
+    console.log('=============================================');
+});
