@@ -63,6 +63,12 @@ const runMigrations = async () => {
       ADD COLUMN IF NOT EXISTS num_skill_movimentacao INTEGER DEFAULT 50;
     `);
 
+    // Garantir que a tabela de perfis tenha uma restrição UNIQUE no id_usuario para o ON CONFLICT funcionar
+    await pool.query(`
+      ALTER TABLE trusted.tb_membros_perfil 
+      ADD CONSTRAINT unique_user_profile UNIQUE (id_usuario);
+    `).catch(e => { /* Ignorar se já existir */ });
+
     // Master Admin Bootstrap: Se houver um ADMIN_EMAIL no .env, garante que ele seja admin (Case-Insensitive)
     if (process.env.ADMIN_EMAIL) {
       console.log(`--- [BOOTSTRAP] Verificando privilégios para: ${process.env.ADMIN_EMAIL} ---`);
@@ -342,6 +348,14 @@ app.post('/api/login', async (req, res) => {
 
     // Gerar Token JWT
     const token = jwt.sign({ id: user.id_usuario, admin: user.flg_admin }, process.env.JWT_SECRET, { expiresIn: '8h' });
+
+    // GARANTIR QUE PERFIL EXISTA: Se for um admin via bootstrap, pode não ter perfil.
+    // Criamos um perfil básico se não existir para evitar erros no dashboard.
+    await pool.query(`
+      INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico)
+      VALUES ($1, $2, $3)
+      ON CONFLICT (id_usuario) DO NOTHING
+    `, [user.id_usuario, email.split('@')[0], 'Iniciante']);
 
     // Atualizar último login e incrementar contador de interação
     await pool.query('UPDATE trusted.tb_usuarios SET dt_ultimo_login = CURRENT_TIMESTAMP, num_logins = num_logins + 1 WHERE id_usuario = $1', [user.id_usuario]);
