@@ -65,10 +65,14 @@ CREATE TABLE IF NOT EXISTS trusted.tb_membros_perfil (
     num_skill_forehand INTEGER DEFAULT 50,
     num_skill_backhand INTEGER DEFAULT 50,
     num_skill_saque INTEGER DEFAULT 50,
-    num_skill_recepcao INTEGER DEFAULT 50,
-    num_skill_movimentacao INTEGER DEFAULT 50,
+    num_skill_cozinhada INTEGER DEFAULT 50,
+    num_skill_topspin INTEGER DEFAULT 50,
+    num_skill_rally INTEGER DEFAULT 50,
+    num_skill_ataque INTEGER DEFAULT 50,
+    num_skill_defesa INTEGER DEFAULT 50,
     num_skill_bloqueio INTEGER DEFAULT 50,
     num_skill_controle INTEGER DEFAULT 50,
+    num_skill_movimentacao INTEGER DEFAULT 50,
     dsc_mensagem_mentor TEXT, -- Campo para recado ao mentor
     dt_criacao_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     dt_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -184,7 +188,9 @@ WITH baseline AS (
 ),
 current_val AS (
     SELECT id_usuario, 
-    ((num_skill_forehand + num_skill_backhand + num_skill_saque + num_skill_recepcao + num_skill_movimentacao + num_skill_bloqueio + num_skill_controle)/7.0) as val_atual
+    ((num_skill_forehand + num_skill_backhand + num_skill_saque + num_skill_cozinhada + 
+      num_skill_topspin + num_skill_rally + num_skill_ataque + num_skill_defesa + 
+      num_skill_bloqueio + num_skill_controle + num_skill_movimentacao)/11.0) as val_atual
     FROM trusted.tb_membros_perfil
 )
 SELECT 
@@ -695,4 +701,76 @@ INSERT INTO trusted.tb_torneios_resultados (id_usuario, num_posicao, dsc_torneio
 (99, 2, 'Torneio Inaugural', CURRENT_DATE - INTERVAL '2 months'),
 (100, 3, 'Torneio Inaugural', CURRENT_DATE - INTERVAL '2 months'),
 (101, 4, 'Torneio Inaugural', CURRENT_DATE - INTERVAL '2 months')
+ON CONFLICT DO NOTHING;
+
+-----------------------------------------------------------
+-- 7. MASSIVE DATA SIMULATION (DASHBOARD & ADMIN)
+-----------------------------------------------------------
+
+-- 1. Check-ins para os últimos 30 dias (Simulação de Frequência)
+-- Cada membro treina cerca de 3x por semana (ter, qui, sex)
+INSERT INTO trusted.tb_checkins (id_usuario, dt_checkin)
+SELECT u.id_usuario, d
+FROM trusted.tb_usuarios u
+CROSS JOIN (
+    SELECT (CURRENT_DATE - i * INTERVAL '1 day')::date as d 
+    FROM generate_series(0, 30) i 
+    WHERE EXTRACT(DOW FROM (CURRENT_DATE - i * INTERVAL '1 day')) IN (2, 4, 5) -- Ter, Qui, Sex
+) dates
+WHERE u.id_usuario % 2 = 0 -- Metade da base é bem ativa
+ON CONFLICT DO NOTHING;
+
+-- 2. Mais Resultados de Torneios para Popular Hall da Fama
+INSERT INTO trusted.tb_torneios_resultados (id_usuario, num_posicao, dsc_torneio_nome, dt_torneio)
+SELECT 
+    id_usuario, 
+    (1 + floor(random() * 10))::int as pos,
+    'Grand Slam Spin4All',
+    CURRENT_DATE - INTERVAL '1 month'
+FROM trusted.tb_usuarios 
+WHERE id_usuario BETWEEN 100 AND 120
+ON CONFLICT DO NOTHING;
+
+-- 3. Badges Aleatórias para Atividades Recentes
+INSERT INTO trusted.tb_usuarios_badges (id_usuario, id_badge)
+SELECT id_usuario, (1 + floor(random() * 12))::int
+FROM trusted.tb_usuarios 
+WHERE id_usuario % 10 = 0
+ON CONFLICT DO NOTHING;
+
+-- 4. Metas e Objetivos (Para Insights do Admin)
+UPDATE trusted.tb_membros_perfil 
+SET dsc_metas = CASE 
+    WHEN id_usuario % 3 = 0 THEN 'Melhorar o drive de forehand e reduzir erros não forçados'
+    WHEN id_usuario % 3 = 1 THEN 'Chegar ao nível avançado e participar de torneios estaduais'
+    ELSE 'Melhorar o preparo físico e a mobilidade na mesa'
+END,
+dsc_nivel_tecnico = CASE 
+    WHEN id_usuario < 150 THEN 'Intermediário'
+    WHEN id_usuario < 200 THEN 'Avançado'
+    ELSE 'Iniciante'
+END
+WHERE dsc_metas IS NULL;
+
+-- 5. Randomizar Skills para Radar de Gargalo Técnico
+UPDATE trusted.tb_membros_perfil 
+SET 
+  num_skill_forehand = (40 + floor(random() * 40))::int,
+  num_skill_backhand = (30 + floor(random() * 50))::int,
+  num_skill_cozinhada = (50 + floor(random() * 30))::int,
+  num_skill_topspin = (20 + floor(random() * 60))::int,
+  num_skill_saque = (45 + floor(random() * 45))::int,
+  num_skill_rally = (35 + floor(random() * 55))::int,
+  num_skill_ataque = (40 + floor(random() * 50))::int,
+  num_skill_defesa = (30 + floor(random() * 60))::int,
+  num_skill_bloqueio = (45 + floor(random() * 45))::int,
+  num_skill_controle = (50 + floor(random() * 40))::int,
+  num_skill_movimentacao = (25 + floor(random() * 65))::int
+WHERE id_usuario > 1;
+
+-- 6. Evolução Histórica (Para Vanguarda da Evolução)
+INSERT INTO trusted.tb_membros_evolucao (id_usuario, num_skill_avg_total, dt_registro)
+SELECT u.id_usuario, (40 + floor(random() * 20))::float, CURRENT_DATE - INTERVAL '1 month'
+FROM trusted.tb_usuarios u
+WHERE u.id_usuario % 5 = 0
 ON CONFLICT DO NOTHING;
