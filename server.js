@@ -782,7 +782,8 @@ app.get('/api/admin/technical-bottleneck', authenticateToken, isAdmin, async (re
         AVG(num_skill_cozinhada) as cozinhada, AVG(num_skill_topspin) as topspin,
         AVG(num_skill_saque) as saque, AVG(num_skill_rally) as rally,
         AVG(num_skill_ataque) as ataque, AVG(num_skill_defesa) as defesa,
-        AVG(num_skill_bloqueio) as bloqueio, AVG(num_skill_controle) as controle
+        AVG(num_skill_bloqueio) as bloqueio, AVG(num_skill_controle) as controle,
+        AVG(num_skill_movimentacao) as movimentacao
       FROM trusted.tb_membros_perfil
     `;
     const result = await pool.query(query);
@@ -832,19 +833,37 @@ app.get('/api/admin/sparring-matrix', authenticateToken, isAdmin, async (req, re
   }
 });
 
-// 4. Pico de Performance Mensal (Evolução Técnica)
+// 4. Pico de Performance Mensal (Evolução Técnica - LINHAS)
 app.get('/api/admin/performance-peak', authenticateToken, isAdmin, async (req, res) => {
   try {
-    // Simulação por enquanto, já que precisamos de histórico de skills (tb_membros_evolucao ainda não guarda skills individuais)
-    const query = `
-      SELECT dsc_nome_completo, dsc_nivel_tecnico, 
-      (num_skill_forehand + num_skill_backhand + num_skill_topspin)/3 as performance
-      FROM trusted.tb_membros_perfil
-      ORDER BY performance DESC LIMIT 5
-    `;
-    const result = await pool.query(query);
-    res.json({ success: true, data: result.rows });
+    // Busca os 5 membros com maior evolução média no último mês
+    const topMembers = await pool.query(`
+      SELECT mp.id_usuario, mp.dsc_nome_completo
+      FROM trusted.tb_membros_perfil mp
+      ORDER BY (num_skill_forehand + num_skill_backhand + num_skill_topspin) DESC
+      LIMIT 5
+    `);
+
+    const performanceData = [];
+
+    for (const member of topMembers.rows) {
+      const history = await pool.query(`
+        SELECT dt_registro, num_skill_avg_total as val
+        FROM trusted.tb_membros_evolucao
+        WHERE id_usuario = $1
+        ORDER BY dt_registro ASC
+        LIMIT 6
+      `, [member.id_usuario]);
+
+      performanceData.push({
+        name: member.dsc_nome_completo,
+        history: history.rows
+      });
+    }
+
+    res.json({ success: true, data: performanceData });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ success: false, error: 'Erro ao calcular picos de performance.' });
   }
 });

@@ -142,9 +142,6 @@
             <a href="checkin.html" class="nav-link" style="margin-bottom: 10px; display: flex; align-items: center; gap: 12px; padding: 12px; color: #4ade80; text-decoration: none;">
                 <i class="fas fa-tablet-screen-button"></i> Lançar Check-in (Tablet)
             </a>
-            <a href="#membros" class="nav-link" style="margin-bottom: 10px; display: flex; align-items: center; gap: 12px; padding: 12px; color: #94a3b8; text-decoration: none;">
-                <i class="fas fa-users"></i> Gestão de Membros
-            </a>
         </nav>
         <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
             <p style="font-size: 0.8rem; color: #64748b;">Acesso Restrito</p>
@@ -152,9 +149,15 @@
     </aside>
 
     <main class="main-content">
-        <header style="margin-bottom: 40px;">
-            <h1 style="font-size: 2rem; margin-bottom: 10px;">Relatórios Analíticos</h1>
-            <p style="color: #94a3b8;">Visão consolidada da comunidade Spin4All</p>
+        <header style="margin-bottom: 40px; background: rgba(30, 41, 59, 0.4); padding: 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h1 style="font-size: 2.2rem; margin-bottom: 5px; font-weight: 800; background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Relatórios Analíticos</h1>
+                <p style="color: #94a3b8; font-size: 1.1rem;">Visão consolidada da comunidade Spin4All</p>
+            </div>
+            <div style="text-align: right;">
+                <div style="font-size: 0.8rem; color: #38bdf8; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;">Sistema Operacional</div>
+                <div style="font-size: 1.2rem; font-weight: 600;">AdminShield v2.4</div>
+            </div>
         </header>
 
         <section class="dashboard-grid">
@@ -230,16 +233,19 @@
 
             <!-- Pico de Performance -->
             <div class="glass-card" style="margin-top: 30px;">
-                <h3 style="margin-bottom: 20px; color: #4ade80;"><i class="fas fa-chart-line"></i> Picos de Performance (Top 5 Ativos)</h3>
-                <div id="performance-peak-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-                    <!-- Gerado via JS -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                    <h3 style="color: #4ade80; margin: 0;"><i class="fas fa-chart-line"></i> Evolução de Performance (Top 5 Ativos)</h3>
+                    <div style="font-size: 0.7rem; color: #64748b; text-transform: uppercase;">Acompanhamento Histórico</div>
+                </div>
+                <div style="height: 300px;">
+                    <canvas id="performanceLineChart"></canvas>
                 </div>
             </div>
 
             <!-- Resumo de Objetivos da Comunidade -->
             <div class="glass-card" style="margin-top: 30px; border-top: 4px solid #38bdf8;">
                 <h3 style="margin-bottom: 20px; color: #fff;"><i class="fas fa-bullseye"></i> Foco e Objetivos do Grupo</h3>
-                <div id="objectives-summary-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                <div id="objectives-summary-list" style="display: flex; flex-wrap: wrap; gap: 15px;">
                     <div style="color: #64748b; font-size: 0.8rem;">Compilando objetivos dos membros...</div>
                 </div>
             </div>
@@ -523,7 +529,7 @@
                         data: [
                             data.forehand, data.backhand, data.cozinhada, data.topspin, 
                             data.saque, data.rally, data.ataque, data.defesa, 
-                            data.bloqueio, data.controle, data.movimentacao
+                            data.bloqueio, data.controle, data.movimentacao || 50
                         ],
                         backgroundColor: 'rgba(56, 189, 248, 0.2)',
                         borderColor: '#38bdf8',
@@ -567,16 +573,23 @@
             const list = document.getElementById('sparring-list');
             if (data && data.length >= 2) {
                 let html = '';
-                // Agrupar por nível e sugerir pares
-                for (let i = 0; i < Math.min(data.length - 1, 6); i += 2) {
-                    html += `
-                        <div style="display: flex; align-items: center; justify-content: center; gap: 10px; background: rgba(251,191,36,0.05); padding: 8px; border-radius: 8px;">
-                            <span style="font-size: 0.75rem; font-weight: 600;">${data[i].dsc_nome_completo.split(' ')[0]}</span>
-                            <i class="fas fa-bolt" style="color: #fbbf24; font-size: 0.7rem;"></i>
-                            <span style="font-size: 0.75rem; font-weight: 600;">${data[i+1].dsc_nome_completo.split(' ')[0]}</span>
-                        </div>
-                    `;
+                // Melhorar lógica para mostrar ao menos 10 pares (se houver gente suficiente)
+                const pairs = [];
+                for (let i = 0; i < data.length - 1; i += 2) {
+                    pairs.push([data[i], data[i+1]]);
                 }
+
+                html = pairs.slice(0, 10).map(p => `
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; background: rgba(251,191,36,0.05); padding: 10px 15px; border-radius: 10px; border: 1px solid rgba(251,191,36,0.1);">
+                        <span style="font-size: 0.85rem; font-weight: 700; color: #f8fafc;">${p[0].dsc_nome_completo}</span>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <span style="font-size: 0.7rem; color: #64748b;">Nível ${p[0].dsc_nivel_tecnico.split(' ')[0]}</span>
+                            <i class="fas fa-bolt" style="color: #fbbf24; font-size: 0.8rem;"></i>
+                            <span style="font-size: 0.7rem; color: #64748b;">Nível ${p[1].dsc_nivel_tecnico.split(' ')[0]}</span>
+                        </div>
+                        <span style="font-size: 0.85rem; font-weight: 700; color: #f8fafc;">${p[1].dsc_nome_completo}</span>
+                    </div>
+                `).join('');
                 list.innerHTML = html;
             } else {
                 list.innerHTML = '<div style="color: #64748b; font-size: 0.8rem;">Membros insuficientes para gerar matriz.</div>';
@@ -584,66 +597,91 @@
         }
 
         function renderPerformancePeak(data) {
-            const list = document.getElementById('performance-peak-list');
-            if (data && data.length > 0) {
-                list.innerHTML = data.map(m => `
-                    <div class="glass-card" style="padding: 15px; text-align: center; background: rgba(74, 222, 128, 0.05); border: 1px solid rgba(74, 222, 128, 0.1);">
-                        <div style="font-weight: 800; font-size: 0.85rem; color: #f8fafc; margin-bottom: 5px;">${m.dsc_nome_completo}</div>
-                        <div style="color: #4ade80; font-size: 1.2rem; font-weight: 900;">+${Math.round(m.performance)}%</div>
-                        <div style="font-size: 0.6rem; color: #64748b; text-transform: uppercase; letter-spacing: 1px;">Crescimento Mensal</div>
-                    </div>
-                `).join('');
-            }
+            const ctx = document.getElementById('performanceLineChart').getContext('2d');
+            const colors = ['#4ade80', '#38bdf8', '#fbbf24', '#f43f5e', '#a855f7'];
+            
+            // Extrair labels (datas únicas de todos os históricos)
+            const allDates = new Set();
+            data.forEach(m => m.history.forEach(h => allDates.add(new Date(h.dt_registro).toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'}))));
+            const labels = Array.from(allDates).sort();
+
+            const datasets = data.map((m, i) => ({
+                label: m.name,
+                data: m.history.map(h => h.val),
+                borderColor: colors[i % colors.length],
+                backgroundColor: colors[i % colors.length] + '20',
+                fill: false,
+                tension: 0.3,
+                pointRadius: 4
+            }));
+
+            new Chart(ctx, {
+                type: 'line',
+                data: { labels, datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 10 } } }
+                    },
+                    scales: {
+                        y: { 
+                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            ticks: { color: '#64748b' },
+                            suggestedMin: 40, suggestedMax: 100
+                        },
+                        x: { 
+                            grid: { display: false },
+                            ticks: { color: '#64748b' }
+                        }
+                    }
+                }
+            });
         }
 
         function renderObjectivesSummary(data) {
             const list = document.getElementById('objectives-summary-list');
             if (data && data.length > 0) {
-                // Estratégia de Segmentação Inteligente
                 const categories = {
-                    'Técnico': { icon: 'fa-microchip', color: '#38bdf8', items: [] },
-                    'Físico': { icon: 'fa-heart-pulse', color: '#f43f5e', items: [] },
-                    'Competição': { icon: 'fa-trophy', color: '#fbbf24', items: [] },
-                    'Social/Lazer': { icon: 'fa-mug-hot', color: '#a855f7', items: [] }
+                    'Técnico': { color: '#38bdf8' },
+                    'Físico': { color: '#f43f5e' },
+                    'Competição': { color: '#fbbf24' },
+                    'Social/Lazer': { color: '#a855f7' }
                 };
 
+                let html = '';
                 data.forEach(obj => {
                     const text = (obj.amostra_metas || '').toLowerCase();
-                    if (text.includes('técnica') || text.includes('forehand') || text.includes('backhand') || text.includes('topspin')) {
-                        categories['Técnico'].items.push(obj);
-                    } else if (text.includes('físico') || text.includes('lesão') || text.includes('flexibilidade')) {
-                        categories['Físico'].items.push(obj);
-                    } else if (text.includes('torneio') || text.includes('competição') || text.includes('ranking')) {
-                        categories['Competição'].items.push(obj);
-                    } else {
-                        categories['Social/Lazer'].items.push(obj);
+                    let color = '#94a3b8';
+                    let catName = 'Outros';
+
+                    if (text.includes('técnica') || text.includes('forehand') || text.includes('backhand') || text.includes('saque') || text.includes('fundamentos')) {
+                        color = categories['Técnico'].color;
+                        catName = 'Técnico';
+                    } else if (text.includes('físico') || text.includes('lesão') || text.includes('resistência') || text.includes('peso')) {
+                        color = categories['Físico'].color;
+                        catName = 'Físico';
+                    } else if (text.includes('torneio') || text.includes('competição') || text.includes('ranking') || text.includes('confiança')) {
+                        color = categories['Competição'].color;
+                        catName = 'Competição';
+                    } else if (text.includes('social') || text.includes('amigos') || text.includes('diversão') || text.includes('hobby')) {
+                        color = categories['Social/Lazer'].color;
+                        catName = 'Social/Lazer';
                     }
+
+                    // Extrair palavras-chave ou frases curtas para simular "tags" de objetivos reais
+                    const tags = obj.amostra_metas.split(/[,.]/).map(t => t.trim()).filter(t => t.length > 5 && t.length < 50);
+                    
+                    tags.forEach(tag => {
+                        html += `
+                            <div style="background: ${color}15; color: ${color}; border: 1px solid ${color}30; padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; cursor: default; transition: all 0.2s;" onmouseover="this.style.background='${color}25'" onmouseout="this.style.background='${color}15'">
+                                <span style="opacity: 0.6; margin-right: 5px;">#${catName}:</span> ${tag}
+                            </div>
+                        `;
+                    });
                 });
 
-                list.innerHTML = Object.entries(categories).map(([name, cat]) => {
-                    if (cat.items.length === 0) return '';
-                    const totalMembers = cat.items.reduce((sum, i) => sum + parseInt(i.qtd), 0);
-                    return `
-                        <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
-                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
-                                <div style="display: flex; align-items: center; gap: 10px;">
-                                    <div style="background: ${cat.color}20; color: ${cat.color}; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                                        <i class="fas ${cat.icon}"></i>
-                                    </div>
-                                    <span style="font-weight: 800; color: ${cat.color}; font-size: 0.9rem;">${name}</span>
-                                </div>
-                                <span style="font-size: 0.7rem; color: #94a3b8; font-weight: 700;">${totalMembers} MEMBROS</span>
-                            </div>
-                            <div style="display: flex; flex-direction: column; gap: 10px;">
-                                ${cat.items.slice(0, 2).map(i => `
-                                    <div style="font-size: 0.75rem; color: #cbd5e1; font-style: italic; border-left: 2px solid ${cat.color}40; padding-left: 10px;">
-                                        "${i.amostra_metas.substring(0, 80)}..."
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                    `;
-                }).join('');
+                list.innerHTML = html || '<div style="color: #64748b; font-size: 0.8rem;">Sem tags detalhadas.</div>';
             } else {
                 list.innerHTML = '<div style="color: #64748b; font-size: 0.8rem;">Sem dados de objetivos.</div>';
             }

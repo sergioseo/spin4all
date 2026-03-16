@@ -223,6 +223,33 @@ SELECT
 FROM trusted.tb_membros_perfil p
 GROUP BY p.dsc_nivel_tecnico, num_idade;
 
+-- VIEW: EstatÃ­sticas de Check-ins (Últimos 7 dias)
+CREATE OR REPLACE VIEW refined.vw_checkins_stats AS
+SELECT 
+    d.day as dt_checkin,
+    COALESCE(COUNT(c.id_checkin), 0) as num_checkins
+FROM (
+    SELECT generate_series(CURRENT_DATE - INTERVAL '6 days', CURRENT_DATE, '1 day')::date as day
+) d
+LEFT JOIN trusted.tb_checkins c ON d.day = c.dt_checkin
+GROUP BY d.day
+ORDER BY d.day ASC;
+
+-- VIEW: FrequÃªncia Mensal Consolidada
+CREATE OR REPLACE VIEW refined.vw_frequencia_mensal AS
+SELECT 
+    u.id_usuario,
+    COUNT(c.id_checkin) as num_presencas,
+    ROUND((COUNT(c.id_checkin)::float / 12.0) * 100) as pct_frequencia, -- Base 12 treinos/mês
+    CASE 
+        WHEN COUNT(c.id_checkin) >= 8 THEN 'Apto ✅'
+        ELSE 'Pendente ❌'
+    END as dsc_status_torneio
+FROM trusted.tb_usuarios u
+LEFT JOIN trusted.tb_checkins c ON u.id_usuario = c.id_usuario 
+    AND c.dt_checkin >= DATE_TRUNC('month', CURRENT_DATE)
+GROUP BY u.id_usuario;
+
 -----------------------------------------------------------
 -- 5. DEFINIÃ‡ÃƒO DE BADGES (CONQUISTAS)
 -----------------------------------------------------------
@@ -757,13 +784,24 @@ SET dsc_nivel_tecnico = CASE
     ELSE 'Profissional'
 END;
 
--- 5. Objetivos para Segmentação Inteligente
+-- 5. Objetivos para Segmentação Inteligente (Ricos para gerar Tags)
 UPDATE trusted.tb_membros_perfil 
 SET dsc_metas = CASE 
-    WHEN id_usuario % 4 = 0 THEN 'Foco em torneios estaduais e competição profissional'
-    WHEN id_usuario % 4 = 1 THEN 'Melhorar flexibilidade e preparo físico para evitar lesões'
-    WHEN id_usuario % 4 = 2 THEN 'Aprimorar técnica de forehand e topspin'
-    ELSE 'Interação social e diversão aos finais de semana'
+    -- Técnico
+    WHEN id_usuario % 10 = 0 THEN 'Melhorar técnica de forehand, consistência no topspin e recepção de saque curto. Foco total em fundamentos.'
+    WHEN id_usuario % 10 = 1 THEN 'Aprimorar backhand agressivo, transição para o ataque e movimentação lateral. Treino de multibol.'
+    -- Físico
+    WHEN id_usuario % 10 = 2 THEN 'Prevenção de lesões no ombro, aumento de flexibilidade e resistência cardiovascular para rallies longos.'
+    WHEN id_usuario % 10 = 3 THEN 'Fortalecimento de core e pernas, perda de peso para melhorar agilidade e tempo de reação à mesa.'
+    -- Competição
+    WHEN id_usuario % 10 = 4 THEN 'Preparação para o torneio estadual, ganhar confiança em jogos decisivos e subir no ranking da federação.'
+    WHEN id_usuario % 10 = 5 THEN 'Estudar táticas de jogo, analisar vídeos de adversários e participar de pelo menos 3 opens este semestre.'
+    -- Social / Lazer
+    WHEN id_usuario % 10 = 6 THEN 'Manter a saúde mental através do esporte, interação social com outros membros e diversão nos finais de semana.'
+    WHEN id_usuario % 10 = 7 THEN 'Hobby relaxante após o trabalho, aprender o básico do tênis de mesa e fazer novos amigos no clube.'
+    -- Variados / Mistos
+    WHEN id_usuario % 10 = 8 THEN 'Aprender saques com efeito lateral, melhorar o controle de bloqueio e aumentar a frequência semanal.'
+    ELSE 'Dominar a técnica de cozinhada agressiva, melhorar o saque rápido e participar de competições internas do grupo.'
 END;
 
 -- 6. Randomizar Skills para Radar
