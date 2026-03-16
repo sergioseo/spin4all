@@ -348,9 +348,19 @@
     </main>
 
     <script>
-        const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        const API_URL = window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
             ? 'http://localhost:3000/api'
             : 'https://spin4all-motor.h5rvsp.easypanel.host/api';
+
+        // Função para normalizar níveis e evitar erros de encoding (Avançado vs AvanÃ§ado)
+        function normalizeLevel(level) {
+            if (!level) return '';
+            const l = level.toLowerCase();
+            if (l.includes('inician')) return 'Iniciante';
+            if (l.includes('intermedi')) return 'Intermediário';
+            if (l.includes('avan')) return 'Avançado';
+            return level;
+        }
 
         let radarChartInstance = null;
         let cachedBottleneckData = null;
@@ -417,15 +427,20 @@
             } catch (err) {
                 console.error('Erro ao carregar admin:', err);
                 document.getElementById('loader').style.display = 'none';
+                // Adicionar aviso visual se falhar
+                const main = document.querySelector('.main-content');
+                const errorMsg = document.createElement('div');
+                errorMsg.style.cssText = "background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 20px; border-radius: 12px; border: 1px solid rgba(239, 68, 68, 0.2); margin-top: 20px; text-align: center;";
+                errorMsg.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Erro ao carregar dados do servidor. Verifique se o backend está ativo.<br><small style="opacity: 0.7;">${err.message}</small>`;
+                main.prepend(errorMsg);
             }
         }
 
         function updateMetrics(data) {
-            document.getElementById('total-members').textContent = data.total_membros;
-            document.getElementById('active-today').textContent = data.ativos_hoje;
+            document.getElementById('total-members').textContent = data.total_membros || '--';
+            document.getElementById('active-today').textContent = data.ativos_hoje || '--';
             
-            // Média de idade simples
-            if (data.demografia.length > 0) {
+            if (data.demografia && data.demografia.length > 0) {
                 let totalIdade = 0;
                 let totalPessoas = 0;
                 data.demografia.forEach(d => {
@@ -435,6 +450,8 @@
                     }
                 });
                 document.getElementById('avg-age').textContent = totalPessoas > 0 ? Math.round(totalIdade / totalPessoas) : '--';
+            } else {
+                document.getElementById('avg-age').textContent = '--';
             }
         }
 
@@ -476,28 +493,69 @@
         }
 
         function renderLevelChart(data) {
-            // Chart de Níveis
+            // Conversão de array para objeto se necessário, mas vamos padronizar para o array da API
             const levelCtx = document.getElementById('levelChart').getContext('2d');
-            const levelLabels = data.map(l => l.dsc_nivel_tecnico);
-            const levelCounts = data.map(l => l.num_membros);
+            
+            // Se vier como objeto (da lógica antiga do loadMembers), converter para array
+            let chartData = Array.isArray(data) ? data : Object.entries(data).map(([level, count]) => ({ dsc_nivel_tecnico: level, num_membros: count }));
+
+            const labels = chartData.map(l => l.dsc_nivel_tecnico);
+            const counts = chartData.map(l => parseInt(l.num_membros));
+            const total = counts.reduce((a, b) => a + b, 0);
+
+            // Destruir instância anterior se existir
+            Chart.getChart(levelCtx.canvas)?.destroy();
 
             new Chart(levelCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: levelLabels,
+                    labels: labels,
                     datasets: [{
-                        data: levelCounts,
-                        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444'],
+                        data: counts,
+                        backgroundColor: ['#38bdf8', '#4ade80', '#fbbf24', '#f43f5e'],
                         borderWidth: 0
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    cutout: '65%',
                     plugins: {
-                        legend: { position: 'bottom', labels: { color: '#94a3b8', padding: 20 } }
+                        legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 10 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => {
+                                    const val = context.raw;
+                                    const percent = total > 0 ? ((val / total) * 100).toFixed(1) : 0;
+                                    return `${context.label}: ${val} (${percent}%)`;
+                                }
+                            }
+                        }
                     }
-                }
+                },
+                plugins: [{
+                    id: 'percentageLabels',
+                    afterDraw: (chart) => {
+                        if (total === 0) return;
+                        const { ctx, data } = chart;
+                        ctx.save();
+                        chart.data.datasets.forEach((dataset, i) => {
+                            chart.getDatasetMeta(i).data.forEach((datapoint, index) => {
+                                if (!datapoint.active && chart.data.datasets[i].data[index] === 0) return;
+                                const { x, y } = datapoint.tooltipPosition();
+                                const val = data.datasets[i].data[index];
+                                const percent = ((val / total) * 100).toFixed(0) + '%';
+                                
+                                ctx.fillStyle = '#fff';
+                                ctx.font = 'bold 10px sans-serif';
+                                ctx.textAlign = 'center';
+                                ctx.textBaseline = 'middle';
+                                ctx.fillText(percent, x, y);
+                            });
+                        });
+                        ctx.restore();
+                    }
+                }]
             });
         }
 
@@ -622,9 +680,10 @@
                          level === 'Iniciante' ? 'btn-radar-ini' :
                          level === 'Intermediário' ? 'btn-radar-int' : 'btn-radar-ava';
             document.getElementById(btnId).classList.add('active');
+            const normLevel = normalizeLevel(level);
 
             let plotData = level === 'all' ? cachedBottleneckData.data : 
-                          cachedBottleneckData.by_level.find(l => l.level === level);
+                          cachedBottleneckData.by_level.find(l => normalizeLevel(l.level) === normLevel);
 
             if (!plotData) return;
 
@@ -710,79 +769,7 @@
             });
         }
 
-        async function loadMembers() {
-            const token = localStorage.getItem('spin4all_token');
-            try {
-                const response = await fetch(`${API_URL}/admin/members`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const data = await response.json();
-                if (data.success && data.members) {
-                    renderMembers(data.members);
-                    const levels = data.members.reduce((acc, m) => {
-                        acc[m.dsc_nivel_tecnico] = (acc[m.dsc_nivel_tecnico] || 0) + 1;
-                        return acc;
-                    }, {});
-                    renderLevelChart(levels);
-                }
-            } catch (err) {
-                console.error('Erro ao carregar membros:', err);
-            }
-        }
 
-        function renderLevelChart(levels) {
-            const ctx = document.getElementById('levelChart').getContext('2d');
-            const total = Object.values(levels).reduce((a, b) => a + b, 0);
-            
-            new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: Object.keys(levels),
-                    datasets: [{
-                        data: Object.values(levels),
-                        backgroundColor: ['#38bdf8', '#4ade80', '#fbbf24', '#f43f5e'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    maintainAspectRatio: false,
-                    cutout: '65%',
-                    plugins: {
-                        legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 10 } } },
-                        tooltip: {
-                            callbacks: {
-                                label: (context) => {
-                                    const val = context.raw;
-                                    const percent = ((val / total) * 100).toFixed(1);
-                                    return `${context.label}: ${val} (${percent}%)`;
-                                }
-                            }
-                        }
-                    }
-                },
-                plugins: [{
-                    id: 'percentageLabels',
-                    afterDraw: (chart) => {
-                        const { ctx, data } = chart;
-                        ctx.save();
-                        chart.data.datasets.forEach((dataset, i) => {
-                            chart.getDatasetMeta(i).data.forEach((datapoint, index) => {
-                                const { x, y } = datapoint.tooltipPosition();
-                                const val = data.datasets[i].data[index];
-                                const percent = ((val / total) * 100).toFixed(0) + '%';
-                                
-                                ctx.fillStyle = '#fff';
-                                ctx.font = 'bold 10px sans-serif';
-                                ctx.textAlign = 'center';
-                                ctx.textBaseline = 'middle';
-                                ctx.fillText(percent, x, y);
-                            });
-                        });
-                        ctx.restore();
-                    }
-                }]
-            });
-        }
 
         function renderInjuryRisk(members) {
             const list = document.getElementById('injury-risk-list');
