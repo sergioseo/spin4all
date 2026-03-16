@@ -6,6 +6,7 @@
     <title>Painel do Membro | Spin4All</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --sidebar-width: 280px;
@@ -42,8 +43,13 @@
         }
 
         .sidebar-logo img {
-            width: 40px;
-            filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.5));
+            width: 45px;
+            filter: drop-shadow(0 0 12px rgba(56, 189, 248, 0.6)) brightness(1.1);
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-logo:hover img {
+            transform: scale(1.1) rotate(5deg);
         }
 
         .nav-menu {
@@ -287,12 +293,6 @@
                     <span>Meus Treinos</span>
                 </a>
             </div>
-            <div class="nav-item">
-                <a href="#" class="nav-link">
-                    <i class="fas fa-chart-line"></i>
-                    <span>Evolução</span>
-                </a>
-            </div>
             <div class="nav-item" id="checkin-nav-item" style="display: none;">
                 <a href="checkin.html" class="nav-link">
                     <i class="fas fa-id-card"></i>
@@ -322,15 +322,45 @@
     </aside>
 
     <main class="main-content">
-        <header class="header-actions">
+        <header class="header-actions" style="background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(10px); padding: 20px 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 40px;">
             <div class="user-greeting">
-                <h1 id="user-welcome">Carregando...</h1>
-                <p id="user-email">Aguarde um momento</p>
+                <h1 id="user-welcome" style="font-size: 1.5rem; letter-spacing: -0.5px;">Carregando...</h1>
+                <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
+                    <div style="width: 8px; height: 8px; background: #4ade80; border-radius: 50%; box-shadow: 0 0 8px #4ade80;"></div>
+                    <p id="user-email" style="font-size: 0.85rem; color: #94a3b8; font-family: 'Inter', sans-serif;">Aguarde um momento</p>
+                </div>
             </div>
-            <div class="glass-card" style="padding: 10px 20px; border-radius: 50px;">
-                <span id="user-level-badge" style="font-weight: 600; color: #38bdf8;">--</span>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div class="glass-card" style="padding: 8px 20px; border-radius: 50px; border: 1px solid rgba(56, 189, 248, 0.2); background: rgba(56, 189, 248, 0.05);">
+                    <span id="user-level-badge" style="font-weight: 700; color: #38bdf8; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px;">--</span>
+                </div>
+                <!-- Container de Foto com Upload -->
+                <div id="user-profile-img-container" onclick="document.getElementById('photo-upload').click()" style="width: 45px; height: 45px; border-radius: 50%; border: 2px solid #38bdf8; overflow: hidden; background: #1e293b; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; transition: all 0.3s ease;">
+                    <i class="fas fa-user" style="color: #94a3b8; font-size: 1.2rem;"></i>
+                    <img id="user-photo-img" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                    <div style="position: absolute; bottom: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">
+                        <i class="fas fa-camera" style="color: #fff; font-size: 0.8rem;"></i>
+                    </div>
+                </div>
+                <input type="file" id="photo-upload" style="display: none;" accept="image/*" onchange="uploadPhoto(this)">
             </div>
         </header>
+
+        <!-- SEÇÃO DE BANNER ESTRATÉGICO -->
+        <section id="promotion-banner" class="glass-card" style="margin-bottom: 30px; padding: 0; min-height: 120px; overflow: hidden; display: flex; align-items: center; border: 1px dashed rgba(56, 189, 248, 0.3); background: linear-gradient(90deg, rgba(30,41,59,0.4) 0%, rgba(56,189,248,0.05) 100%);">
+            <div style="flex: 1; padding: 25px; display: flex; align-items: center; gap: 20px;">
+                <div style="width: 60px; height: 60px; background: rgba(56,189,248,0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #38bdf8; font-size: 1.5rem;">
+                    <i class="fas fa-bullhorn"></i>
+                </div>
+                <div>
+                    <h3 style="font-size: 1.1rem; color: #fff; margin-bottom: 5px;">Próximo Torneio Interno</h3>
+                    <p style="font-size: 0.85rem; color: #94a3b8;">Inscrições abertas para o Torneio da Amizade - Junho 2024. Não perca!</p>
+                </div>
+            </div>
+            <div style="padding-right: 25px;">
+                <button class="btn-auth" style="width: auto; padding: 10px 25px; font-size: 0.8rem;">Saber Mais</button>
+            </div>
+        </section>
 
         <!-- ABA: INÍCIO (DASHBOARD) -->
         <div id="tab-home" class="tab-content">
@@ -357,60 +387,78 @@
                     </div>
                 </div>
 
-                <!-- Camada Técnica -->
+                <!-- Camada Técnica (Radar) -->
                 <div class="glass-card">
                     <div class="card-title">
-                        <i class="fas fa-dna"></i>
-                        DNA Técnico
+                        <i class="fas fa-dharmachakra"></i>
+                        Habilidades Técnicas
                     </div>
-                    <div class="stat-item" style="margin-bottom: 15px;">
-                        <div class="data-label">Lateralidade</div>
-                        <div class="data-value" id="user-side">--</div>
+                    <div style="height: 250px; position: relative;">
+                        <canvas id="skillsRadarChart"></canvas>
                     </div>
-                    <div class="stat-item">
-                        <div class="data-label">Empunhadura</div>
-                        <div class="data-value" id="user-grip">--</div>
+                    <div style="display: flex; justify-content: space-around; margin-top: 15px; font-size: 0.75rem; color: #94a3b8;">
+                        <div style="text-align: center;"><div class="data-value" id="user-side" style="font-size: 0.8rem; color: #38bdf8;">--</div>Lateralidade</div>
+                        <div style="text-align: center;"><div class="data-value" id="user-grip" style="font-size: 0.8rem; color: #38bdf8;">--</div>Empunhadura</div>
                     </div>
                 </div>
 
-                <!-- Camada de Engajamento / Frequência -->
-                <div class="glass-card">
-                    <div class="card-title">
-                        <i class="fas fa-calendar-check"></i>
-                        Frequência e Torneios
-                    </div>
-                    
-                    <div class="frequency-circle">
-                        <svg>
-                            <circle class="circle-bg" cx="60" cy="60" r="56"></circle>
-                            <circle class="circle-progress" cx="60" cy="60" r="56" id="frequency-progress"></circle>
-                        </svg>
-                        <div class="percentage-text"><span id="frequency-pct">0</span>%</div>
-                    </div>
-
-                    <div class="qualification-status status-pending" id="tournament-status">
-                        Calculando frequência...
-                    </div>
-
-                    <div class="attendance-calendar" id="attendance-dots">
-                        <!-- Gerado via JS -->
-                    </div>
-                    <div class="data-label" style="text-align: center; margin-top: 10px;">Últimos 14 dias de treino</div>
                 </div>
 
-                <!-- Camada Estratégica -->
+                <!-- Camada de Comunidade & Engajamento -->
+                <div class="glass-card">
+                    <div class="card-title">
+                        <i class="fas fa-trophy"></i>
+                        Hall da Fama (Mensal)
+                    </div>
+                    <div id="ranking-list" style="display: flex; flex-direction: column; gap: 12px;">
+                        <div style="color: #94a3b8; font-size: 0.8rem; text-align: center;">Carregando ranking...</div>
+                    </div>
+                </div>
+
+                <div class="glass-card">
+                    <div class="card-title">
+                        <i class="fas fa-medal"></i>
+                        Minhas Conquistas
+                    </div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                        <div class="badge-item" title="Membro Ativo" style="width: 45px; height: 45px; background: rgba(56,189,248,0.1); border: 1px solid rgba(56,189,248,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #38bdf8;">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="badge-item" title="Participante de Torneio" style="width: 45px; height: 45px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #64748b; opacity: 0.5;">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                    </div>
+                    <p style="font-size: 0.65rem; color: #64748b; text-align: center; margin-top: 15px;">Treine para desbloquear novos selos!</p>
+                </div>
+
+                <!-- Camada Estratégica & Performance -->
                 <div class="glass-card focus-section">
                     <div class="card-title">
                         <i class="fas fa-bullseye"></i>
-                        Objetivo e Metas
+                        Objetivos e Metas
                     </div>
-                    <div style="margin-bottom: 15px;">
-                        <div class="data-label">Foco Principal</div>
-                        <div style="font-size: 1.2rem; font-weight: 600;" id="user-objective">--</div>
-                    </div>
-                    <div class="data-label" style="margin-bottom: 10px;">Recado para os Mentores</div>
-                    <div class="goals-text" id="user-goals">
-                        Carregando suas metas...
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                        <div>
+                            <div class="data-label" style="margin-bottom: 15px;">Percepção de Movimentação</div>
+                            <div style="position: relative; padding: 10px 0;">
+                                <input type="range" id="mobility-slider" min="0" max="100" value="50" oninput="updateMobilityUI(this.value)" style="width: 100%; cursor: pointer; -webkit-appearance: none; height: 8px; border-radius: 5px; background: linear-gradient(to right, #ef4444, #fbbf24, #22c55e); outline: none;">
+                                <div style="display: flex; justify-content: space-between; margin-top: 10px; font-size: 0.7rem; color: #94a3b8; font-weight: 600;">
+                                    <span>RUIM</span>
+                                    <span id="mobility-value" style="color: #fff; font-size: 1rem; background: rgba(56, 189, 248, 0.1); padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(56, 189, 248, 0.2);">50%</span>
+                                    <span>EXCELENTE</span>
+                                </div>
+                            </div>
+                            <button onclick="saveMobilityScore()" class="nav-link" style="margin-top: 20px; font-size: 0.8rem; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2); width: 100%; justify-content: center; padding: 10px;">
+                                <i class="fas fa-camera" style="font-size: 0.9rem;"></i> Salvar Percepção de Hoje
+                            </button>
+                        </div>
+                        <div>
+                            <div class="data-label" style="margin-bottom: 10px;">Foco & Recado para Mentores</div>
+                            <div style="font-size: 1.1rem; font-weight: 600; color: #38bdf8; margin-bottom: 10px;" id="user-objective">--</div>
+                            <div class="goals-text" id="user-goals" style="font-size: 0.9rem; max-height: 120px; overflow-y: auto;">
+                                Carregando suas metas...
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -544,58 +592,119 @@
                     document.getElementById('edit-birth').value = userData.dt_nascimento.split('T')[0];
                 }
 
+                // Mostrar foto se existir
+                if (userData.dsc_foto_perfil) {
+                    const img = document.getElementById('user-photo-img');
+                    img.src = userData.dsc_foto_perfil;
+                    img.style.display = 'block';
+                    document.querySelector('#user-profile-img-container i').style.display = 'none';
+                }
+
+                // Iniciar Gráfico de Radar
+                initRadarChart();
+
+                // Carregar Ranking de Membros
+                loadRanking();
+
             } catch (err) {
                 console.error(err);
                 logout();
             }
         }
 
-        async function loadAttendanceData() {
+        let currentViewMonth = new Date().getMonth() + 1;
+        let currentViewYear = new Date().getFullYear();
+
+        async function loadAttendanceData(month = currentViewMonth, year = currentViewYear) {
             const token = localStorage.getItem('spin4all_token');
             try {
-                const response = await fetch(`${API_URL}/my-attendance`, {
+                const response = await fetch(`${API_URL}/user/attendance-calendar?month=${month}&year=${year}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const data = await response.json();
 
                 if (data.success) {
-                    const stats = data.stats;
-                    const pct = parseFloat(stats.pct_frequencia);
+                    renderCalendar(month, year, data.dates);
                     
-                    // Atualizar Círculo de Progresso
-                    const circle = document.getElementById('frequency-progress');
-                    const radius = 56;
-                    const circumference = 2 * Math.PI * radius;
-                    const offset = circumference - (pct / 100) * circumference;
-                    circle.style.strokeDashoffset = offset;
-                    document.getElementById('frequency-pct').textContent = Math.round(pct);
-
-                    // Atualizar Status de Torneio
-                    const statusDiv = document.getElementById('tournament-status');
-                    statusDiv.textContent = stats.dsc_status_torneio;
-                    statusDiv.className = `qualification-status ${pct >= 70 ? 'status-ok' : 'status-pending'}`;
-
-                    // Gerar Pontinhos do Calendário (Últimos 14 dias)
-                    const dotsContainer = document.getElementById('attendance-dots');
-                    dotsContainer.innerHTML = '';
-                    
-                    const today = new Date();
-                    for (let i = 13; i >= 0; i--) {
-                        const date = new Date();
-                        date.setDate(today.getDate() - i);
-                        const dateStr = date.toISOString().split('T')[0];
-                        
-                        const isPresent = data.dates.some(d => d.split('T')[0] === dateStr);
-                        
-                        const dot = document.createElement('div');
-                        dot.className = `day-dot ${isPresent ? 'present' : ''}`;
-                        dot.title = date.toLocaleDateString('pt-BR');
-                        dotsContainer.appendChild(dot);
+                    // Cálculo de frequência do mês atual (para o círulo)
+                    const now = new Date();
+                    if (month === now.getMonth() + 1 && year === now.getFullYear()) {
+                        updateFrequencyCircle(data.dates.length);
                     }
                 }
             } catch (err) {
                 console.error('Erro ao carregar frequência:', err);
             }
+        }
+
+        function updateFrequencyCircle(daysPresent) {
+            // Estimativa simples de 12 treinos/mês (3x semana)
+            const target = 12;
+            const pct = Math.min(Math.round((daysPresent / target) * 100), 100);
+            
+            const circle = document.getElementById('frequency-progress');
+            const radius = 56;
+            const circumference = 2 * Math.PI * radius;
+            const offset = circumference - (pct / 100) * circumference;
+            circle.style.strokeDashoffset = offset;
+            document.getElementById('frequency-pct').textContent = pct;
+
+            const statusDiv = document.getElementById('tournament-status');
+            if (pct >= 60) {
+                statusDiv.textContent = 'QUALIFICADO PARA TORNEIOS';
+                statusDiv.className = 'qualification-status status-ok';
+            } else {
+                statusDiv.textContent = 'PENDENTE DE QUALIFICAÇÃO';
+                statusDiv.className = 'qualification-status status-pending';
+            }
+        }
+
+        function renderCalendar(month, year, presentDates) {
+            const grid = document.getElementById('attendance-calendar-grid');
+            const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+            document.getElementById('calendar-month-year').textContent = `${monthNames[month-1]} ${year}`;
+
+            // Limpar apenas os dias (manter labels)
+            const labels = grid.querySelectorAll('.day-label');
+            grid.innerHTML = '';
+            labels.forEach(l => grid.appendChild(l));
+
+            const firstDay = new Date(year, month - 1, 1).getDay();
+            const daysInMonth = new Date(year, month, 0).getDate();
+
+            // Espaços vazios
+            for (let i = 0; i < firstDay; i++) {
+                grid.appendChild(document.createElement('div'));
+            }
+
+            // Dias do mês
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const isPresent = presentDates.some(d => d.split('T')[0] === dateStr);
+                
+                const dayEl = document.createElement('div');
+                dayEl.className = `day-dot ${isPresent ? 'present' : ''}`;
+                dayEl.style.display = 'flex';
+                dayEl.style.alignItems = 'center';
+                dayEl.style.justifyContent = 'center';
+                dayEl.style.fontSize = '0.6rem';
+                dayEl.style.fontWeight = '700';
+                dayEl.style.color = isPresent ? '#0f172a' : '#64748b';
+                dayEl.textContent = day;
+                grid.appendChild(dayEl);
+            }
+        }
+
+        function changeMonth(delta) {
+            currentViewMonth += delta;
+            if (currentViewMonth > 12) {
+                currentViewMonth = 1;
+                currentViewYear++;
+            } else if (currentViewMonth < 1) {
+                currentViewMonth = 12;
+                currentViewYear--;
+            }
+            loadAttendanceData(currentViewMonth, currentViewYear);
         }
 
         async function updateProfile(e) {
@@ -633,37 +742,70 @@
             }
         }
 
-        async function updatePassword(e) {
-            e.preventDefault();
-            const token = localStorage.getItem('spin4all_token');
-            const currentPassword = document.getElementById('current-password').value;
-            const newPassword = document.getElementById('new-password').value;
+        function initRadarChart() {
+            const ctx = document.getElementById('skillsRadarChart').getContext('2d');
+            
+            // Mock de valores por enquanto (poderia vir do banco)
+            const values = [70, 65, 80, 50, 60, 75]; 
+            
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Saque', 'Ataque', 'Bloqueio', 'Controle', 'Efeito', 'Pernas'],
+                    datasets: [{
+                        label: 'Nível Atual',
+                        data: values,
+                        backgroundColor: 'rgba(56, 189, 248, 0.2)',
+                        borderColor: '#38bdf8',
+                        pointBackgroundColor: '#38bdf8',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(255,255,255,0.05)' },
+                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            pointLabels: { color: '#94a3b8', font: { size: 10 } },
+                            ticks: { display: false, count: 5 },
+                            suggestedMin: 0,
+                            suggestedMax: 100
+                        }
+                    }
+                }
+            });
+        }
 
+        function updateMobilityUI(val) {
+            document.getElementById('mobility-value').textContent = val + '%';
+        }
+
+        async function saveMobilityScore() {
+            const val = document.getElementById('mobility-slider').value;
+            const token = localStorage.getItem('spin4all_token');
+            
             try {
-                const response = await fetch(`${API_URL}/update-password`, {
-                    method: 'PUT',
+                const response = await fetch(`${API_URL}/user/save-mobility`, {
+                    method: 'POST',
                     headers: { 
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ currentPassword, newPassword })
+                    body: JSON.stringify({ score: val })
                 });
-
-                const result = await response.json();
-                if (result.success) {
-                    alert('Senha alterada com sucesso!');
-                    document.getElementById('password-form').reset();
+                const data = await response.json();
+                if (data.success) {
+                    alert('Sua percepção de hoje foi salva com sucesso! 🏓');
                 } else {
-                    alert('Erro: ' + result.message);
+                    alert('Erro ao salvar: ' + data.message);
                 }
             } catch (err) {
-                alert('Erro ao conectar com o servidor.');
+                console.error('Erro ao salvar mobilidade:', err);
+                alert('Servidor indisponível.');
             }
-        }
-
-        function logout() {
-            localStorage.removeItem('spin4all_token');
-            window.location.href = 'login.html';
         }
 
         loadUserData();

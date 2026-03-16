@@ -3,11 +3,57 @@ const cors = require('cors');
 const { Pool } = require('pg');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 require('dotenv').config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Configuração do Multer para Upload de Fotos
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const dir = './uploads';
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+    cb(null, dir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, 'profile-' + req.user.id + '-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+const upload = multer({ 
+  storage: storage,
+  limits: { fileSize: 2 * 1024 * 1024 } // limite 2MB
+});
+
+// --- MIGRAÇÃO AUTOMÁTICA DE BANCO ---
+const runMigrations = async () => {
+  try {
+    console.log('--- Verificando Migrações ---');
+    // Tabela de histórico de metas
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS trusted.tb_usuarios_metas_historico (
+          id_historico SERIAL PRIMARY KEY,
+          id_usuario INTEGER REFERENCES trusted.tb_usuarios(id_usuario),
+          dt_referencia DATE DEFAULT CURRENT_DATE,
+          num_score_mobilidade INTEGER,
+          UNIQUE(id_usuario, dt_referencia)
+      );
+    `);
+    // Coluna de foto de perfil
+    await pool.query(`
+      ALTER TABLE trusted.tb_membros_perfil 
+      ADD COLUMN IF NOT EXISTS dsc_foto_perfil TEXT;
+    `);
+    console.log('--- Migrações Concluídas com Sucesso ---');
+  } catch (err) {
+    console.error('Erro nas migrações:', err.message);
+  }
+};
 
 // Configuração do Banco de Dados (Postgres)
 const pool = new Pool({
@@ -63,6 +109,7 @@ app.get('/api/me', authenticateToken, async (req, res) => {
         p.num_altura_cm, 
         p.num_peso_kg,
         p.dt_nascimento,
+        p.dsc_foto_perfil,
         u.flg_admin,
         u.dt_criacao_registro
       FROM trusted.tb_usuarios u
@@ -437,9 +484,85 @@ app.put('/api/admin/toggle-admin', authenticateToken, isAdmin, async (req, res) 
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, '0.0.0.0', async () => {
     console.log('=============================================');
     console.log(`🚀 SERVIDOR SPIN4ALL ATIVO NA PORTA ${PORT}`);
     console.log(`🔗 Local: http://localhost:${PORT}`);
     console.log('=============================================');
+    
+    // Executar migrações
+    await runMigrations();
+});
+
+// --- NOVOS ENDPOINTS DASHBOARD PREMIUM ---
+
+// Salvar Percepção de Mobilidade
+app.post('/api/user/save-mobility', authenticateToken, async (req, res) => {
+  const { score } = req.body;
+  const userId = req.user.id;
+  try {
+    await pool.query(
+      'INSERT INTO trusted.tb_usuarios_metas_historico (id_usuario, num_score_mobilidade) VALUES ($1, $2) ON CONFLICT (id_usuario, dt_referencia) DO UPDATE SET num_score_mobilidade = EXCLUDED.num_score_mobilidade',
+      [userId, score]
+    );
+    res.json({ success: true, message: 'Mobilidade registrada!' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: 'Erro ao salvar mobilidade.' });
+  }
+});
+
+// Dados para Calendário Mensal
+app.get('/api/user/attendance-calendar', authenticateToken, async (req, res) => {
+  const userId = req.user.id;
+  const { month, year } = req.query; // Ex: ?month=3&year=2024
+  
+  try {
+    const result = await pool.query(
+      'SELECT dt_checkin FROM trusted.tb_checkins WHERE id_usuario = $1 AND EXTRACT(MONTH FROM dt_checkin) = $2 AND EXTRACT(YEAR FROM dt_checkin) = $3',
+      [userId, month, year]
+    );
+    res.json({ success: true, dates: result.rows.map(r => r.dt_checkin) });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Erro ao buscar calendário.' });
+  }
+});
+
+// Ranking de Participação (Engajamento)
+app.get('/api/admin/participation-ranking', authenticateToken, async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT p.dsc_nome_completo, COUNT(c.id_checkin) as total_checkins
+      FROM trusted.tb_membros_perfil p
+      JOIN trusted.tb_checkins c ON p.id_usuario = c.id_usuario
+      WHERE c.dt_checkin >= CURRENT_DATE - INTERVAL '30 days'
+      GROUP BY p.dsc_nome_completo
+      ORDER BY total_checkins DESC
+      LIMIT 5
+    `);
+    res.json({ success: true, ranking: result.rows });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Erro ao gerar ranking.' });
+  }
+});
+
+// Endpoint de Upload de Foto de Perfil
+app.post('/api/user/upload-photo', authenticateToken, upload.single('photo'), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ success: false, message: 'Nenhuma foto enviada.' });
+  }
+
+  const userId = req.user.id;
+  const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+
+  try {
+    await pool.query(
+      'UPDATE trusted.tb_membros_perfil SET dsc_foto_perfil = $1 WHERE id_usuario = $2',
+      [imageUrl, userId]
+    );
+    res.json({ success: true, imageUrl });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: 'Erro ao salvar caminho da foto.' });
+  }
 });
