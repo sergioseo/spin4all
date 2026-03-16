@@ -140,6 +140,8 @@ app.get('/api/me', authenticateToken, async (req, res) => {
         p.num_skill_defesa,
         p.num_skill_bloqueio,
         p.num_skill_controle,
+        p.num_skill_movimentacao,
+        p.dsc_mensagem_mentor,
         u.flg_admin,
         u.dt_criacao_registro
       FROM trusted.tb_usuarios u
@@ -164,7 +166,7 @@ app.put('/api/update-profile', authenticateToken, async (req, res) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
-    const { name, weight, height, level, goals } = req.body;
+    const { name, weight, height, level, goals, mentor_message } = req.body;
     const userId = req.user.id;
 
     // Atualiza dados biomecânicos e técnicos (Estado Atual)
@@ -181,9 +183,9 @@ app.put('/api/update-profile', authenticateToken, async (req, res) => {
     // 2. Atualizar TRUSTED (Estado Atual)
     await client.query(
       `UPDATE trusted.tb_membros_perfil 
-       SET dsc_nome_completo = $1, num_peso_kg = $2, num_altura_cm = $3, dsc_nivel_tecnico = $4, dsc_metas = $5, dt_nascimento = $6, dt_atualizacao = CURRENT_TIMESTAMP
-       WHERE id_usuario = $7`,
-      [name, weight, height, level, goals, req.body.birth || null, userId]
+       SET dsc_nome_completo = $1, num_peso_kg = $2, num_altura_cm = $3, dsc_nivel_tecnico = $4, dsc_metas = $5, dsc_mensagem_mentor = $6, dt_nascimento = $7, dt_atualizacao = CURRENT_TIMESTAMP
+       WHERE id_usuario = $8`,
+      [name, weight, height, level, goals, mentor_message, req.body.birth || null, userId]
     );
 
     // 3. Registrar Evolução (Histórico se houve mudança de peso/nível)
@@ -323,8 +325,8 @@ app.post('/api/login', async (req, res) => {
     // Gerar Token JWT
     const token = jwt.sign({ id: user.id_usuario, admin: user.flg_admin }, process.env.JWT_SECRET, { expiresIn: '8h' });
 
-    // Atualizar último login
-    await pool.query('UPDATE trusted.tb_usuarios SET dt_ultimo_login = CURRENT_TIMESTAMP WHERE id_usuario = $1', [user.id_usuario]);
+    // Atualizar último login e incrementar contador de interação
+    await pool.query('UPDATE trusted.tb_usuarios SET dt_ultimo_login = CURRENT_TIMESTAMP, num_logins = num_logins + 1 WHERE id_usuario = $1', [user.id_usuario]);
 
     res.json({ success: true, token });
   } catch (err) {
@@ -520,8 +522,63 @@ app.listen(PORT, '0.0.0.0', async () => {
     console.log(`🔗 Local: http://localhost:${PORT}`);
     console.log('=============================================');
     
-    // Executar migrações
+    // Executar migraÃ§Ãµes
     await runMigrations();
+});
+
+// Helper: Registrar Snapshot de Skills para EvoluÃ§Ã£o
+async function recordSkillSnapshot(userId, skills) {
+  const avg = (
+      skills.forehand + skills.backhand + skills.cozinhada + skills.topspin + 
+      skills.saque + skills.rally + skills.ataque + skills.defesa + 
+      skills.bloqueio + skills.controle + skills.movimentacao
+  ) / 11;
+  
+  await pool.query(
+    'INSERT INTO trusted.tb_membros_evolucao (id_usuario, num_skill_avg_total) VALUES ($1, $2)',
+    [userId, avg]
+  );
+}
+
+// Salvar Habilidades TÃ©cnicas (Sliders)
+app.post('/api/user/save-skills', authenticateToken, async (req, res) => {
+  const userId = req.user.id;
+  const s = req.body;
+  
+  try {
+    await pool.query(`
+      UPDATE trusted.tb_membros_perfil SET
+        num_skill_forehand = $1, num_skill_backhand = $2, num_skill_cozinhada = $3,
+        num_skill_topspin = $4, num_skill_saque = $5, num_skill_rally = $6,
+        num_skill_ataque = $7, num_skill_defesa = $8, num_skill_bloqueio = $9,
+        num_skill_controle = $10, num_skill_movimentacao = $11,
+        dt_atualizacao = CURRENT_TIMESTAMP
+      WHERE id_usuario = $12
+    `, [s.forehand, s.backhand, s.cozinhada, s.topspin, s.saque, s.rally, s.ataque, s.defesa, s.bloqueio, s.controle, s.movimentacao, userId]);
+
+    await recordSkillSnapshot(userId, s);
+    res.json({ success: true, message: 'Skills atualizadas!' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: 'Erro ao salvar skills.' });
+  }
+});
+
+// Resumo de Objetivos (Admin Only)
+app.get('/api/admin/objectives-summary', authenticateToken, isAdmin, async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT 
+        dsc_objetivo, COUNT(*) as qtd,
+        STRING_AGG(dsc_metas, ' | ') FILTER (WHERE dsc_metas IS NOT NULL) as amostra_metas
+      FROM trusted.tb_membros_perfil
+      GROUP BY dsc_objetivo
+      ORDER BY qtd DESC
+    `);
+    res.json({ success: true, data: result.rows });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Erro ao resumir objetivos.' });
+  }
 });
 
 // --- NOVOS ENDPOINTS DASHBOARD PREMIUM ---
@@ -558,52 +615,146 @@ app.get('/api/user/attendance-calendar', authenticateToken, async (req, res) => 
   }
 });
 
-// Ranking de Participação (Engajamento)
-app.get('/api/admin/participation-ranking', authenticateToken, async (req, res) => {
+// Ranking Hall da Fama (Pontos de Torneio - Ãšltimos 12 Meses)
+app.get('/api/user/hall-fama', authenticateToken, async (req, res) => {
   try {
-    const result = await pool.query(`
-      SELECT p.dsc_nome_completo, COUNT(c.id_checkin) as total_checkins
-      FROM trusted.tb_membros_perfil p
-      JOIN trusted.tb_checkins c ON p.id_usuario = c.id_usuario
-      WHERE c.dt_checkin >= CURRENT_DATE - INTERVAL '30 days'
-      GROUP BY p.dsc_nome_completo
-      ORDER BY total_checkins DESC
-      LIMIT 5
-    `);
+    const query = `SELECT * FROM refined.vw_hall_fama LIMIT 5`;
+    const result = await pool.query(query);
     res.json({ success: true, ranking: result.rows });
   } catch (err) {
-    res.status(500).json({ success: false, error: 'Erro ao gerar ranking.' });
+    console.error(err);
+    res.status(500).json({ success: false, error: 'Erro ao buscar Hall da Fama.' });
   }
 });
 
-// Salvar Habilidades Técnicas
-app.post('/api/user/save-skills', authenticateToken, async (req, res) => {
-  const userId = req.user.id;
-  const skills = req.body; // { forehand, backhand, ... }
-  
+// Ranking de EvoluÃ§Ã£o (Mensal)
+app.get('/api/user/evolution-ranking', authenticateToken, async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM refined.vw_ranking_evolucao LIMIT 5');
+    res.json({ success: true, ranking: result.rows });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Erro ao gerar ranking de evoluÃ§Ã£o.' });
+  }
+});
+
+// Buscar Badges do UsuÃ¡rio
+app.get('/api/user/badges', authenticateToken, async (req, res) => {
   try {
     const query = `
-      UPDATE trusted.tb_membros_perfil 
-      SET 
-        num_skill_forehand = $1, num_skill_backhand = $2, num_skill_cozinhada = $3,
-        num_skill_topspin = $4, num_skill_saque = $5, num_skill_rally = $6,
-        num_skill_ataque = $7, num_skill_defesa = $8, num_skill_bloqueio = $9,
-        num_skill_controle = $10,
-        dt_atualizacao = CURRENT_TIMESTAMP
-      WHERE id_usuario = $11
+      SELECT bd.dsc_nome, bd.dsc_descricao, bd.dsc_icone, ub.dt_conquista
+      FROM trusted.tb_usuarios_badges ub
+      JOIN trusted.tb_badges_definicao bd ON ub.id_badge = bd.id_badge
+      WHERE ub.id_usuario = $1
+      ORDER BY ub.dt_conquista DESC
     `;
-    const values = [
-      skills.forehand, skills.backhand, skills.cozinhada, 
-      skills.topspin, skills.saque, skills.rally,
-      skills.ataque, skills.defesa, skills.bloqueio,
-      skills.controle,
-      userId
-    ];
-    await pool.query(query, values);
-    res.json({ success: true, message: 'Habilidades atualizadas!' });
+    const result = await pool.query(query, [req.user.id]);
+    res.json({ success: true, badges: result.rows });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, error: 'Erro ao salvar habilidades.' });
+    res.status(500).json({ success: false, error: 'Erro ao buscar badges.' });
+  }
+});
+
+// Indicadores da Comunidade (Para a Home)
+app.get('/api/community/stats', authenticateToken, async (req, res) => {
+  try {
+    const levels = await pool.query('SELECT * FROM refined.vw_segmentacao_nivel');
+    const activeToday = await pool.query('SELECT COUNT(*) as count FROM trusted.tb_checkins WHERE dt_checkin = CURRENT_DATE');
+    const recentActivity = await pool.query(`
+      SELECT mp.dsc_nome_completo, bd.dsc_nome, bd.dsc_icone
+      FROM trusted.tb_usuarios_badges ub
+      JOIN trusted.tb_membros_perfil mp ON ub.id_usuario = mp.id_usuario
+      JOIN trusted.tb_badges_definicao bd ON ub.id_badge = bd.id_badge
+      ORDER BY ub.dt_conquista DESC LIMIT 4
+    `);
+
+    res.json({
+      success: true,
+      data: {
+        levels: levels.rows,
+        active_today: parseInt(activeToday.rows[0].count),
+        recent_activity: recentActivity.rows
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Erro ao buscar stats da comunidade.' });
+  }
+});
+
+// --- INSIGHTS DO TÉCNICO (ADMIN ONLY) ---
+
+// 1. Gargalo Técnico Coletivo (Média de Habilidades do Grupo)
+app.get('/api/admin/technical-bottleneck', authenticateToken, isAdmin, async (req, res) => {
+  try {
+    const query = `
+      SELECT 
+        AVG(num_skill_forehand) as forehand, AVG(num_skill_backhand) as backhand,
+        AVG(num_skill_cozinhada) as cozinhada, AVG(num_skill_topspin) as topspin,
+        AVG(num_skill_saque) as saque, AVG(num_skill_rally) as rally,
+        AVG(num_skill_ataque) as ataque, AVG(num_skill_defesa) as defesa,
+        AVG(num_skill_bloqueio) as bloqueio, AVG(num_skill_controle) as controle
+      FROM trusted.tb_membros_perfil
+    `;
+    const result = await pool.query(query);
+    res.json({ success: true, data: result.rows[0] });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Erro ao calcular gargalo técnico.' });
+  }
+});
+
+// 2. Índice de Esforço Biomecânico (Risco de Lesão: IMC alto + Alta Frequência)
+app.get('/api/admin/biomechanical-effort', authenticateToken, isAdmin, async (req, res) => {
+  try {
+    const query = `
+      SELECT 
+        p.dsc_nome_completo,
+        ROUND(p.num_peso_kg / ((p.num_altura_cm/100.0)^2), 2) as imc,
+        COUNT(c.id_checkin) as presencas_mes
+      FROM trusted.tb_membros_perfil p
+      JOIN trusted.tb_usuarios u ON p.id_usuario = u.id_usuario
+      LEFT JOIN trusted.tb_checkins c ON p.id_usuario = c.id_usuario AND c.dt_checkin >= CURRENT_DATE - INTERVAL '30 days'
+      WHERE u.vlr_status_conta = 'ativo'
+      GROUP BY p.dsc_nome_completo, p.num_peso_kg, p.num_altura_cm
+      HAVING (p.num_peso_kg / ((p.num_altura_cm/100.0)^2)) > 28 AND COUNT(c.id_checkin) > 12
+      ORDER BY presencas_mes DESC
+    `;
+    const result = await pool.query(query);
+    res.json({ success: true, data: result.rows });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Erro ao calcular risco biomecânico.' });
+  }
+});
+
+// 3. Sparring Matrix (Sugestões de Pares Baseado em Nível e Habilidades Próximas)
+app.get('/api/admin/sparring-matrix', authenticateToken, isAdmin, async (req, res) => {
+  try {
+    const query = `
+      SELECT 
+        dsc_nome_completo, dsc_nivel_tecnico,
+        (num_skill_forehand + num_skill_backhand + num_skill_saque) / 3 as avg_skill
+      FROM trusted.tb_membros_perfil
+      ORDER BY dsc_nivel_tecnico, avg_skill DESC
+    `;
+    const result = await pool.query(query);
+    res.json({ success: true, data: result.rows });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Erro ao gerar matriz de sparring.' });
+  }
+});
+
+// 4. Pico de Performance Mensal (Evolução Técnica)
+app.get('/api/admin/performance-peak', authenticateToken, isAdmin, async (req, res) => {
+  try {
+    // Simulação por enquanto, já que precisamos de histórico de skills (tb_membros_evolucao ainda não guarda skills individuais)
+    const query = `
+      SELECT dsc_nome_completo, dsc_nivel_tecnico, 
+      (num_skill_forehand + num_skill_backhand + num_skill_topspin)/3 as performance
+      FROM trusted.tb_membros_perfil
+      ORDER BY performance DESC LIMIT 5
+    `;
+    const result = await pool.query(query);
+    res.json({ success: true, data: result.rows });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Erro ao calcular picos de performance.' });
   }
 });
 

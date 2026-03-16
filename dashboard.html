@@ -314,6 +314,7 @@
         }
 
         input[type="range"] {
+            appearance: none;
             -webkit-appearance: none;
             width: 100%;
             height: 6px;
@@ -475,71 +476,88 @@
                     <div class="attendance-calendar" id="attendance-calendar-grid">
                         <div class="day-label">D</div><div class="day-label">S</div><div class="day-label">T</div><div class="day-label">Q</div><div class="day-label">Q</div><div class="day-label">S</div><div class="day-label">S</div>
                     </div>
+                     <!-- Camada de Comunidade: Pulso & Stats -->
+                <div class="glass-card">
+                    <div class="card-title">
+                        <i class="fas fa-satellite-dish"></i>
+                        Pulso da Comunidade
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(56, 189, 248, 0.05); padding: 15px; border-radius: 12px; border: 1px solid rgba(56, 189, 248, 0.1);">
+                            <div>
+                                <div style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase;">Ativos Hoje</div>
+                                <div style="font-size: 1.8rem; font-weight: 800; color: #38bdf8;" id="community-active-count">0</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <i class="fas fa-users" style="font-size: 2rem; color: rgba(56, 189, 248, 0.2);"></i>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div style="font-size: 0.7rem; color: #64748b; margin-bottom: 10px; font-weight: 700; text-transform: uppercase;">Atividades Recentes</div>
+                            <div id="community-activity-list" style="display: flex; flex-direction: column; gap: 10px;">
+                                <div style="color: #64748b; font-size: 0.75rem;">Aguardando conexÃ£o...</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Camada de Comunidade -->
+                <!-- GrÃ¡fico de NÃ­veis da Comunidade -->
+                <div class="glass-card">
+                    <div class="card-title">
+                        <i class="fas fa-chart-pie"></i>
+                        Nossa Comunidade
+                    </div>
+                    <div style="height: 180px; position: relative;">
+                        <canvas id="communityLevelChart"></canvas>
+                    </div>
+                    <div id="community-level-legend" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; justify-content: center;"></div>
+                </div>
+
+                <!-- Hall da Fama (Anual) -->
                 <div class="glass-card">
                     <div class="card-title">
                         <i class="fas fa-trophy"></i>
-                        Hall da Fama (Mensal)
+                        Hall da Fama (Anual)
                     </div>
                     <div id="ranking-list" style="display: flex; flex-direction: column; gap: 12px;">
                         <div style="color: #94a3b8; font-size: 0.8rem; text-align: center;">Carregando ranking...</div>
                     </div>
                 </div>
 
+                <!-- Ranking de EvoluÃ§Ã£o Mensal -->
                 <div class="glass-card">
                     <div class="card-title">
-                        <i class="fas fa-medal"></i>
-                        Conquistas
+                        <i class="fas fa-chart-line"></i>
+                        Vanguarda da EvoluÃ§Ã£o
                     </div>
-                    <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
-                        <div class="badge-item" title="Membro Ativo" style="width: 45px; height: 45px; background: rgba(56,189,248,0.1); border: 1px solid rgba(56,189,248,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #38bdf8;">
-                            <i class="fas fa-check"></i>
-                        </div>
-                        <div class="badge-item" title="Membro Fundador" style="width: 45px; height: 45px; background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fbbf24;">
-                            <i class="fas fa-star"></i>
-                        </div>
+                    <div id="evolution-list" style="display: flex; flex-direction: column; gap: 12px;">
+                        <div style="color: #94a3b8; font-size: 0.8rem; text-align: center;">Analisando progresso...</div>
                     </div>
-                    <p style="font-size: 0.65rem; color: #64748b; text-align: center; margin-top: 15px;">Frequente mais para ganhar novos selos!</p>
-                </div>
-                
-                <!-- Card de Motivação -->
-                <div class="glass-card" style="background: linear-gradient(135deg, rgba(56, 189, 248, 0.1) 0%, rgba(30, 41, 59, 0.4) 100%); border: 1px solid rgba(56, 189, 248, 0.2);">
-                    <div class="card-title">
-                        <i class="fas fa-lightbulb"></i>
-                        Mindset Vencedor
-                    </div>
-                    <div id="motivational-quote" style="font-style: italic; color: #cbd5e1; line-height: 1.6; font-size: 0.95rem; text-align: center; padding: 10px 0;">
-                        "O sucesso é a soma de pequenos esforços repetidos dia após dia."
-                    </div>
-                    <div style="text-align: right; color: #38bdf8; font-size: 0.7rem; font-weight: 700; margin-top: 10px;">
-                        — SPIN4ALL MENTORS
-                    </div>
+                    <p style="font-size: 0.65rem; color: #64748b; text-align: center; margin-top: 15px;">Destaque para quem mais evoluiu suas skills neste mÃªs.</p>
                 </div>
             </section>
-
-        </div>
-
-        <!-- Pop-up Torneio (Global) -->
-        <div id="tournamentModal" class="modal">
-            <div class="modal-content">
-                <span class="close-modal" onclick="closeTournamentModal()">&times;</span>
-                <div style="text-align: center; margin-bottom: 25px;">
-                    <i class="fas fa-trophy" style="font-size: 3rem; color: #fbbf24; margin-bottom: 15px;"></i>
-                    <h2 style="color: #fff;">Torneio Interno</h2>
-                </div>
-                <div style="color: #cbd5e1; line-height: 1.6; font-size: 0.95rem;">
-                    <p style="margin-bottom: 15px;">A <span style="color: #38bdf8; font-weight: 700;">última sexta-feira de todo mês</span> é destinada ao nosso emocionante torneio interno.</p>
-                    <p style="margin-bottom: 15px;">Prepare-se e <span style="color: #fbbf24; font-weight: 700;">Save the Date</span> para não perder o dia da disputa!</p>
-                    <div style="background: rgba(56,189,248,0.1); padding: 15px; border-radius: 10px; border-left: 4px solid #38bdf8; margin-top: 20px;">
-                        <i class="fab fa-whatsapp" style="color: #25d366; margin-right: 8px;"></i>
-                        Qualquer modificação ou informações adicionais serão divulgadas em nosso grupo oficial.
-                    </div>
-                </div>
-                <button onclick="closeTournamentModal()" class="btn-auth" style="margin-top: 30px; width: 100%;">Entendido!</button>
-            </div>
-        </div>
++        </div>
++
++        <!-- Pop-up Torneio (Global) -->
++        <div id="tournamentModal" class="modal">
++            <div class="modal-content">
++                <span class="close-modal" onclick="closeTournamentModal()">&times;</span>
++                <div style="text-align: center; margin-bottom: 25px;">
++                    <i class="fas fa-trophy" style="font-size: 3rem; color: #fbbf24; margin-bottom: 15px;"></i>
++                    <h2 style="color: #fff;">Torneio Interno</h2>
++                </div>
++                <div style="color: #cbd5e1; line-height: 1.6; font-size: 0.95rem;">
++                    <p style="margin-bottom: 15px;">A <span style="color: #38bdf8; font-weight: 700;">última sexta-feira de todo mês</span> é destinada ao nosso emocionante torneio interno.</p>
++                    <p style="margin-bottom: 15px;">Prepare-se e <span style="color: #fbbf24; font-weight: 700;">Save the Date</span> para não perder o dia da disputa!</p>
++                    <div style="background: rgba(56,189,248,0.1); padding: 15px; border-radius: 10px; border-left: 4px solid #38bdf8; margin-top: 20px;">
++                        <i class="fab fa-whatsapp" style="color: #25d366; margin-right: 8px;"></i>
++                        Qualquer modificação ou informações adicionais serão divulgadas em nosso grupo oficial.
++                    </div>
++                </div>
++                <button onclick="closeTournamentModal()" class="btn-auth" style="margin-top: 30px; width: 100%;">Entendido!</button>
++            </div>
++        </div>
 
         <!-- ABA: MEU PERFIL (Evolução & Configurações) -->
         <div id="tab-profile" class="tab-content" style="display: none;">
@@ -589,7 +607,11 @@
                                 <div class="skill-slider-header"><span>Controle</span><span id="label-controle">50</span></div>
                                 <input type="range" id="skill-controle" min="0" max="100" value="50" oninput="updateSkillUI()">
                             </div>
-                            <button onclick="saveTechnicalSkills()" class="btn-auth" style="grid-column: span 2; width: 100%; background: #38bdf8; color: #0f172a; font-weight: 800;">
+                             <div class="skill-slider-container">
+                                <div class="skill-slider-header"><span>Movimentação</span><span id="label-movimentacao">50</span></div>
+                                <input type="range" id="skill-movimentacao" min="0" max="100" value="50" oninput="updateSkillUI()" style="background: linear-gradient(to right, #ef4444, #fbbf24, #22c55e);">
+                            </div>
+                            <button onclick="saveTechnicalSkills()" class="btn-auth" style="grid-column: span 2; width: 100%; background: #38bdf8; color: #0f172a; font-weight: 800; margin-top: 10px;">
                                 <i class="fas fa-save" style="margin-right: 8px;"></i> SALVAR STATUS TÉCNICO
                             </button>
                         </div>
@@ -620,7 +642,7 @@
                         <div class="data-label" style="margin-bottom: 10px;">Foco Principal</div>
                         <div id="user-objective" style="font-size: 1.2rem; font-weight: 700; color: #fff;">--</div>
                     </div>
-                    <div class="goals-text" id="user-goals" style="min-height: 100px;">Carregando...</div>
+                    <div class="goals-text" id="user-goals" style="min-height: 80px; font-size: 0.9rem; color: #cbd5e1;">Defina seus objetivos no perfil!</div>
                     
                     <div class="stats-row" style="margin-top: 30px;">
                         <div class="stat-item">
@@ -637,16 +659,19 @@
                         <div class="data-value" id="user-imc" style="color: #4ade80;">--</div>
                     </div>
 
-                    <!-- Slider de Movimentação Diária (Resumo no Perfil) -->
+                    <!-- Minhas Conquistas (Badges) -->
                     <div style="margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 25px;">
-                        <div class="data-label" style="margin-bottom: 15px;">Percepção de Movimentação (Hoje)</div>
-                        <input type="range" id="mobility-slider" min="0" max="100" value="50" oninput="updateMobilityUI(this.value)" style="background: linear-gradient(to right, #ef4444, #fbbf24, #22c55e);">
-                        <div style="display: flex; justify-content: space-between; margin-top: 10px;">
-                            <span style="font-size: 0.7rem; color: #94a3b8;">RUIM</span>
-                            <span id="mobility-value" style="color: #38bdf8; font-weight: 800;">50%</span>
-                            <span style="font-size: 0.7rem; color: #94a3b8;">EXCELENTE</span>
+                        <div class="card-title" style="font-size: 0.8rem;">
+                            <i class="fas fa-medal" style="color: #fbbf24;"></i> Suas Conquistas
                         </div>
-                        <button onclick="saveMobilityScore()" class="btn-auth" style="margin-top: 15px; width: 100%; font-size: 0.8rem; background: rgba(255,255,255,0.05);">Salvar Percepção</button>
+                        <div id="user-badges-list" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                            <div style="color: #64748b; font-size: 0.75rem;">Treine para ganhar selos!</div>
+                        </div>
+                    </div>
+
+                    <div id="mindset-vencedor" style="margin-top: 30px; background: rgba(56, 189, 248, 0.1); border-radius: 12px; padding: 20px; border-left: 4px solid #38bdf8;">
+                        <div style="color: #38bdf8; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; margin-bottom: 5px;">Mindset Vencedor</div>
+                        <div id="motivational-quote-profile" style="font-style: italic; color: #f8fafc; font-size: 0.85rem; line-height: 1.5;">--</div>
                     </div>
                 </div>
 
@@ -655,9 +680,15 @@
                     <div class="card-title"><i class="fas fa-user-edit"></i> Dados Cadastrais</div>
                     <form id="profile-form" onsubmit="updateProfile(event)" style="display: flex; flex-direction: column; gap: 15px;">
                         <input type="text" id="edit-name" placeholder="Nome Completo" style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; color: #fff;">
-                        <div style="display: flex; gap: 10px;">
-                            <input type="number" step="0.1" id="edit-weight" placeholder="Peso (kg)" style="flex: 1; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; color: #fff;">
-                            <input type="number" id="edit-height" placeholder="Altura (cm)" style="flex: 1; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; color: #fff;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div style="display: flex; flex-direction: column; gap: 5px;">
+                                <label style="font-size: 0.65rem; color: #94a3b8; font-weight: 700;">Peso (kg)</label>
+                                <input type="number" step="0.1" id="edit-weight" style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; color: #fff;">
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 5px;">
+                                <label style="font-size: 0.65rem; color: #94a3b8; font-weight: 700;">Altura (cm)</label>
+                                <input type="number" id="edit-height" style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; color: #fff;">
+                            </div>
                         </div>
                         <input type="date" id="edit-birth" style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; color: #fff;">
                         <select id="edit-level" style="background: #1e293b; border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; color: #fff;">
@@ -666,6 +697,12 @@
                             <option value="Avançado">Avançado</option>
                         </select>
                         <textarea id="edit-goals" placeholder="Minhas Metas..." style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; color: #fff; min-height: 80px;"></textarea>
+                        
+                        <div style="margin-top: 10px;">
+                            <label style="font-size: 0.7rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; display: block; margin-bottom: 8px;">Recado para o Mentor</label>
+                            <textarea id="edit-mentor-message" placeholder="Dúvidas, sugestões ou avisos para o técnico..." style="background: rgba(56, 189, 248, 0.05); border: 1px dashed rgba(56, 189, 248, 0.3); padding: 12px; border-radius: 8px; color: #38bdf8; min-height: 60px; width: 100%; font-size: 0.85rem;"></textarea>
+                        </div>
+
                         <button type="submit" class="btn-auth" style="width: 100%;">Salvar Dados</button>
                     </form>
 
@@ -738,7 +775,7 @@
                 document.getElementById('user-goals').textContent = userData.dsc_metas || 'Defina suas metas no perfil!';
 
                 // Popular Sliders Técnicos
-                const skills = ['forehand', 'backhand', 'cozinhada', 'topspin', 'saque', 'rally', 'ataque', 'defesa', 'bloqueio', 'controle'];
+                const skills = ['forehand', 'backhand', 'cozinhada', 'topspin', 'saque', 'rally', 'ataque', 'defesa', 'bloqueio', 'controle', 'movimentacao'];
                 skills.forEach(s => {
                     const val = userData[`num_skill_${s}`] || 50;
                     const slider = document.getElementById(`skill-${s}`);
@@ -765,7 +802,8 @@
                 document.getElementById('edit-weight').value = userData.num_peso_kg;
                 document.getElementById('edit-height').value = userData.num_altura_cm;
                 document.getElementById('edit-level').value = userData.dsc_nivel_tecnico;
-                document.getElementById('edit-goals').value = userData.dsc_metas;
+                document.getElementById('edit-goals').value = userData.dsc_metas || '';
+                document.getElementById('edit-mentor-message').value = userData.dsc_mensagem_mentor || '';
                 if (userData.dt_nascimento) {
                     document.getElementById('edit-birth').value = userData.dt_nascimento.split('T')[0];
                 }
@@ -925,6 +963,7 @@
                 height: parseInt(document.getElementById('edit-height').value),
                 level: document.getElementById('edit-level').value,
                 goals: document.getElementById('edit-goals').value,
+                mentor_message: document.getElementById('edit-mentor-message').value,
                 birth: document.getElementById('edit-birth').value
             };
 
@@ -955,8 +994,8 @@
         function initRadarChart() {
             const ctx = document.getElementById('skillsRadarChart').getContext('2d');
             
-            const skills = ['forehand', 'backhand', 'cozinhada', 'topspin', 'saque', 'rally', 'ataque', 'defesa', 'bloqueio', 'controle'];
-            const labels = ['Forehand', 'Backhand', 'Cozinha', 'Topspin', 'Saque', 'Rally', 'Ataque', 'Defesa', 'Bloqueio', 'Controle'];
+            const skills = ['forehand', 'backhand', 'cozinhada', 'topspin', 'saque', 'rally', 'ataque', 'defesa', 'bloqueio', 'controle', 'movimentacao'];
+            const labels = ['Forehand', 'Backhand', 'Cozinha', 'Topspin', 'Saque', 'Rally', 'Ataque', 'Defesa', 'Bloqueio', 'Controle', 'Movimentação'];
             const dataValues = skills.map(s => {
                 const slider = document.getElementById(`skill-${s}`);
                 return slider ? parseInt(slider.value) : 50;
@@ -1000,7 +1039,7 @@
         }
 
         function updateSkillUI() {
-            const skills = ['forehand', 'backhand', 'cozinhada', 'topspin', 'saque', 'rally', 'ataque', 'defesa', 'bloqueio', 'controle'];
+            const skills = ['forehand', 'backhand', 'cozinhada', 'topspin', 'saque', 'rally', 'ataque', 'defesa', 'bloqueio', 'controle', 'movimentacao'];
             const dataValues = [];
             
             skills.forEach(s => {
@@ -1017,7 +1056,7 @@
 
         async function saveTechnicalSkills() {
             const token = localStorage.getItem('spin4all_token');
-            const skills = ['forehand', 'backhand', 'cozinhada', 'topspin', 'saque', 'rally', 'ataque', 'defesa', 'bloqueio', 'controle'];
+            const skills = ['forehand', 'backhand', 'cozinhada', 'topspin', 'saque', 'rally', 'ataque', 'defesa', 'bloqueio', 'controle', 'movimentacao'];
             const skillData = {};
             
             skills.forEach(s => {
@@ -1076,24 +1115,39 @@
 
         async function loadRanking() {
             try {
-                const response = await fetch(`${API_URL}/admin/participation-ranking`, {
+                const response = await fetch(`${API_URL}/user/hall-fama`, {
                     headers: { 'Authorization': `Bearer ${localStorage.getItem('spin4all_token')}` }
                 });
                 const data = await response.json();
                 
                 const list = document.getElementById('ranking-list');
                 if (data.success && data.ranking.length > 0) {
-                    list.innerHTML = data.ranking.map((player, index) => `
-                        <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); padding: 12px 15px; border-radius: 12px; border-left: 3px solid ${index === 0 ? '#fbbf24' : index === 1 ? '#94a3b8' : index === 2 ? '#b45309' : 'transparent'}">
-                            <div style="display: flex; align-items: center; gap: 12px;">
-                                <span style="font-weight: 800; color: ${index === 0 ? '#fbbf24' : '#64748b'}; width: 20px;">${index + 1}º</span>
-                                <span style="font-size: 0.9rem; font-weight: 600;">${player.dsc_nome_completo}</span>
+                    list.innerHTML = data.ranking.map((player, index) => {
+                        const medal = index === 0 ? '<i class="fas fa-medal" style="color: #fbbf24;"></i>' : 
+                                      index === 1 ? '<i class="fas fa-medal" style="color: #94a3b8;"></i>' : 
+                                      index === 2 ? '<i class="fas fa-medal" style="color: #b45309;"></i>' : 
+                                      `<span style="width: 20px; text-align: center; font-weight: 800; color: #64748b;">${index + 1}º</span>`;
+                        
+                        const photo = player.dsc_foto_perfil ? 
+                                      `<img src="${player.dsc_foto_perfil}" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);">` :
+                                      `<div style="width: 35px; height: 35px; border-radius: 50%; background: #1e293b; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: #94a3b8;"><i class="fas fa-user"></i></div>`;
+
+                        return `
+                            <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); padding: 10px 15px; border-radius: 12px; transition: transform 0.2s;" onmouseover="this.style.transform='translateX(5px)'" onmouseout="this.style.transform='translateX(0)'">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <div style="width: 25px; display: flex; justify-content: center; font-size: 1.1rem;">${medal}</div>
+                                    ${photo}
+                                    <span style="font-size: 0.9rem; font-weight: 600; color: #f8fafc;">${player.dsc_nome_completo}</span>
+                                </div>
+                                <div style="text-align: right;">
+                                    <div style="font-size: 0.9rem; color: #38bdf8; font-weight: 800;">${player.total_pontos}</div>
+                                    <div style="font-size: 0.6rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Pontos</div>
+                                </div>
                             </div>
-                            <span style="font-size: 0.8rem; color: #38bdf8; font-weight: 700;">${player.total_checkins} <small style="font-size: 0.6rem; opacity: 0.6;">DDS</small></span>
-                        </div>
-                    `).join('');
+                        `;
+                    }).join('');
                 } else {
-                    list.innerHTML = '<div style="color: #64748b; font-size: 0.8rem; text-align: center; padding: 20px;">Nenhum check-in registrado nos últimos 30 dias.</div>';
+                    list.innerHTML = '<div style="color: #64748b; font-size: 0.8rem; text-align: center; padding: 20px;">Nenhum resultado de torneio nos últimos 12 meses.</div>';
                 }
             } catch (err) {
                 console.error('Erro ao carregar ranking:', err);
@@ -1145,7 +1199,10 @@
                 "O talento vence jogos, mas o trabalho em equipe vence campeonatos."
             ];
             const quote = quotes[Math.floor(Math.random() * quotes.length)];
-            document.getElementById('motivational-quote').textContent = `"${quote}"`;
+            const qHome = document.getElementById('motivational-quote');
+            if(qHome) qHome.textContent = `"${quote}"`;
+            const qProfile = document.getElementById('motivational-quote-profile');
+            if(qProfile) qProfile.textContent = `"${quote}"`;
         }
 
         function logout() {
