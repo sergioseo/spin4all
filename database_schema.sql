@@ -692,7 +692,8 @@ INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (
 INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (283, 'Star 283 Soundgarden', 'AvanÃ§ado', 174, 65, 'https://i.pravatar.cc/150?u=283') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (284, 'rockstar284@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (284, 'Star 284 Linkin Park', 'IntermediÃ¡rio', 169, 67, 'https://i.pravatar.cc/150?u=284') ON CONFLICT DO NOTHING;
-INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (285, 'Star 285 Foo Fighters', 'AvanÃ§ado', 166, 73, 'https://i.pravatar.cc/150?u=285') ON CONFLICT DO NOTHING;
+INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (285, 'rockstar285@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
+INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (285, 'Star 285 Foo Fighters', 'Avançado', 166, 73, 'https://i.pravatar.cc/150?u=285') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (286, 'rockstar286@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico, num_altura_cm, num_peso_kg, dsc_foto_perfil) VALUES (286, 'Star 286 Green Day', 'Iniciante', 180, 84, 'https://i.pravatar.cc/150?u=286') ON CONFLICT DO NOTHING;
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash) VALUES (287, 'rockstar287@spin4all.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty') ON CONFLICT DO NOTHING;
@@ -784,11 +785,12 @@ CROSS JOIN (
 ON CONFLICT DO NOTHING;
 
 -- 4. Distribuição Técnica para o Gráfico DNA
+UPDATE trusted.tb_membros_perfil 
 SET dsc_nivel_tecnico = CASE 
     WHEN id_usuario % 5 = 0 THEN 'Avançado'
     WHEN id_usuario % 5 = 1 THEN 'Iniciante'
     WHEN id_usuario % 5 = 2 THEN 'Intermediário'
-    ELSE 'Profissional'
+    ELSE 'Avançado' -- Removido 'Profissional' para manter apenas 3 níveis
 END;
 
 -- 5. Objetivos para Segmentação Inteligente (Ricos para gerar Tags)
