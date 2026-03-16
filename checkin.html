@@ -6,188 +6,274 @@
     <title>Check-in | Spin4All</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body {
-            background: radial-gradient(circle at top right, #1e293b, #0f172a);
+            background: #0f172a;
             height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            font-family: 'Outfit', sans-serif;
+            color: #fff;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            width: 100%;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+        }
+
+        .header h1 span { color: #38bdf8; }
+
+        /* Search Bar */
+        .search-container {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 1.2rem 1.5rem 1.2rem 3.5rem;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 1.2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .search-container i {
+            position: absolute;
+            left: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #38bdf8;
+            font-size: 1.2rem;
+        }
+
+        /* Grid de Membros */
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+            width: 100%;
+            max-width: 1200px;
+            overflow-y: auto;
+            padding-bottom: 2rem;
+        }
+
+        .member-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .member-card:hover {
+            background: rgba(56, 189, 248, 0.1);
+            border-color: #38bdf8;
+            transform: translateY(-5px);
+        }
+
+        .member-card:active {
+            transform: scale(0.95);
+        }
+
+        .avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #0ea5e9, #2563eb);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
-            font-family: 'Outfit', sans-serif;
-        }
-
-        .checkin-container {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 4rem;
-            border-radius: 30px;
-            text-align: center;
-            width: 90%;
-            max-width: 600px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        }
-
-        .logo-area {
-            margin-bottom: 3rem;
-        }
-
-        .logo-area h1 {
-            color: #fff;
-            font-size: 3rem;
-            font-weight: 800;
-            letter-spacing: -1px;
-        }
-
-        .logo-area h1 span {
-            color: #38bdf8;
-        }
-
-        .instruction {
-            color: rgba(255, 255, 255, 0.7);
             font-size: 1.5rem;
-            margin-bottom: 3rem;
-        }
-
-        .form-group {
-            margin-bottom: 2rem;
-        }
-
-        input {
-            width: 100%;
-            padding: 1.5rem;
-            border-radius: 15px;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            background: rgba(0, 0, 0, 0.2);
-            color: #fff;
-            font-size: 1.8rem;
-            text-align: center;
-            font-family: inherit;
-            transition: all 0.3s ease;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: #38bdf8;
-            background: rgba(0, 0, 0, 0.4);
-            box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
-        }
-
-        .btn-checkin {
-            width: 100%;
-            padding: 1.5rem;
-            border-radius: 15px;
-            border: none;
-            background: linear-gradient(135deg, #0ea5e9, #2563eb);
-            color: #fff;
-            font-size: 1.8rem;
             font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+            color: #fff;
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
         }
 
-        .btn-checkin:active {
-            transform: scale(0.98);
-        }
-
-        .message {
-            margin-top: 2rem;
-            padding: 1.5rem;
-            border-radius: 15px;
-            font-size: 1.4rem;
+        .member-name {
+            font-size: 1.1rem;
             font-weight: 600;
+            color: #f1f5f9;
+        }
+
+        /* Modal / Feedback de Sucesso */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(10px);
             display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
         }
 
-        .message.success {
-            background: rgba(34, 197, 94, 0.1);
+        .feedback-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 3rem;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .feedback-card i {
+            font-size: 4rem;
             color: #4ade80;
-            border: 1px solid rgba(34, 197, 94, 0.2);
-            display: block;
+            margin-bottom: 1.5rem;
         }
 
-        .message.error {
-            background: rgba(239, 68, 68, 0.1);
-            color: #f87171;
-            border: 1px solid rgba(239, 68, 68, 0.2);
-            display: block;
+        .feedback-card h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
         }
 
-        /* Animação de Sucesso Extra */
-        @keyframes pulseSuccess {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+        .feedback-card p {
+            color: #94a3b8;
+            font-size: 1.2rem;
         }
 
-        .success-pulse {
-            animation: pulseSuccess 0.5s ease-in-out;
-        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(56, 189, 248, 0.3); }
+
     </style>
 </head>
 <body>
 
-    <div class="checkin-container" id="container">
-        <div class="logo-area">
-            <h1>Spin<span>4All</span></h1>
+    <header class="header">
+        <h1>Spin<span>4All</span> <small style="font-size: 1rem; font-weight: 400; color: #64748b;">CHECK-IN PRESENCIAL</small></h1>
+    </header>
+
+    <div class="search-container">
+        <i class="fas fa-search"></i>
+        <input type="text" id="memberSearch" placeholder="Quem está treinando agora?">
+    </div>
+
+    <div class="members-grid" id="membersGrid">
+        <!-- Membros via JS -->
+    </div>
+
+    <!-- Feedback Overlay -->
+    <div id="overlay" class="overlay">
+        <div class="feedback-card">
+            <i class="fas fa-check-circle"></i>
+            <h2 id="feedback-name">Olá!</h2>
+            <p id="feedback-msg">Presença confirmada!</p>
         </div>
-        
-        <p class="instruction">Digite seu e-mail para confirmar presença no treino de hoje.</p>
-
-        <form id="checkinForm">
-            <div class="form-group">
-                <input type="email" id="email" placeholder="seu@email.com" required>
-            </div>
-            <button type="submit" class="btn-checkin">CONFIRMAR PRESENÇA</button>
-        </form>
-
-        <div id="msg" class="message"></div>
     </div>
 
     <script>
-        const API_URL = 'http://localhost:3000/api'; // Ajustar para o domínio real se necessário
+        const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:3000/api'
+            : 'https://spin4all-motor.h5rvsp.easypanel.host/api';
 
-        document.getElementById('checkinForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const emailInput = document.getElementById('email');
-            const msgDiv = document.getElementById('msg');
-            const container = document.getElementById('container');
-            const email = emailInput.value;
+        let allMembers = [];
 
-            msgDiv.className = 'message';
-            msgDiv.style.display = 'none';
+        async function fetchMembers() {
+            try {
+                const response = await fetch(`${API_URL}/checkin-list`);
+                const data = await response.json();
+                if (data.success) {
+                    allMembers = data.members;
+                    renderMembers(allMembers);
+                }
+            } catch (err) {
+                console.error("Erro ao carregar membros:", err);
+            }
+        }
+
+        function renderMembers(members) {
+            const grid = document.getElementById('membersGrid');
+            grid.innerHTML = '';
+
+            members.forEach(m => {
+                const initials = m.dsc_nome_completo.split(' ').map(n => n[0]).join('').substring(0, 2);
+                const card = document.createElement('div');
+                card.className = 'member-card';
+                card.innerHTML = `
+                    <div class="avatar">${initials}</div>
+                    <div class="member-name">${m.dsc_nome_completo}</div>
+                `;
+                card.onclick = () => doCheckin(m.id_usuario, m.dsc_nome_completo);
+                grid.appendChild(card);
+            });
+        }
+
+        async function doCheckin(userId, fullName) {
+            const overlay = document.getElementById('overlay');
+            const fbName = document.getElementById('feedback-name');
+            const fbMsg = document.getElementById('feedback-msg');
 
             try {
                 const response = await fetch(`${API_URL}/checkin`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email })
+                    body: JSON.stringify({ id_usuario: userId })
                 });
 
                 const data = await response.json();
+                
+                fbName.textContent = data.success ? `Olá, ${fullName.split(' ')[0]}!` : "Opa!";
+                fbMsg.textContent = data.message;
+                
+                const icon = overlay.querySelector('i');
+                icon.className = data.success ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+                icon.style.color = data.success ? '#4ade80' : '#f87171';
 
-                if (data.success) {
-                    msgDiv.textContent = data.message;
-                    msgDiv.className = 'message success';
-                    container.classList.add('success-pulse');
-                    emailInput.value = '';
-                    
-                    // Limpar mensagem após 5 segundos
-                    setTimeout(() => {
-                        msgDiv.style.display = 'none';
-                        container.classList.remove('success-pulse');
-                    }, 5000);
-                } else {
-                    msgDiv.textContent = data.message;
-                    msgDiv.className = 'message error';
-                }
+                overlay.style.display = 'flex';
+
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                    document.getElementById('memberSearch').value = '';
+                    renderMembers(allMembers);
+                }, 3000);
+
             } catch (error) {
-                msgDiv.textContent = "Erro de conexão com o servidor.";
-                msgDiv.className = 'message error';
+                console.error("Erro no checkin:", error);
             }
+        }
+
+        // Filtro de Busca
+        document.getElementById('memberSearch').addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const filtered = allMembers.filter(m => 
+                m.dsc_nome_completo.toLowerCase().includes(term)
+            );
+            renderMembers(filtered);
         });
+
+        // Inicializar
+        fetchMembers();
     </script>
 </body>
 </html>

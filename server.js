@@ -243,30 +243,57 @@ app.post('/api/login', async (req, res) => {
 
 // Realizar Check-in (Tablet)
 app.post('/api/checkin', async (req, res) => {
-  const { email } = req.body;
+  const { email, id_usuario } = req.body;
   try {
-    // 1. Buscar usuário pelo e-mail
-    const userRes = await pool.query('SELECT id_usuario, dsc_nome_completo FROM trusted.tb_membros_perfil p JOIN trusted.tb_usuarios u ON p.id_usuario = u.id_usuario WHERE u.dsc_email = $1', [email]);
-    
-    if (userRes.rows.length === 0) {
-      return res.status(404).json({ success: false, message: 'Membro não encontrado com este e-mail.' });
-    }
+    let userId = id_usuario;
+    let userName = '';
 
-    const user = userRes.rows[0];
+    if (!userId && email) {
+      // Buscar usuário pelo e-mail se o ID não for fornecido
+      const userRes = await pool.query('SELECT id_usuario, dsc_nome_completo FROM trusted.tb_membros_perfil p JOIN trusted.tb_usuarios u ON p.id_usuario = u.id_usuario WHERE u.dsc_email = $1', [email]);
+      if (userRes.rows.length === 0) {
+        return res.status(404).json({ success: false, message: 'Membro não encontrado.' });
+      }
+      userId = userRes.rows[0].id_usuario;
+      userName = userRes.rows[0].dsc_nome_completo;
+    } else if (userId) {
+      // Apenas buscar o nome para o feedback se o ID for fornecido
+      const nameRes = await pool.query('SELECT dsc_nome_completo FROM trusted.tb_membros_perfil WHERE id_usuario = $1', [userId]);
+      userName = nameRes.rows[0]?.dsc_nome_completo || 'Membro';
+    } else {
+      return res.status(400).json({ success: false, message: 'E-mail ou ID de usuário é obrigatório.' });
+    }
 
     // 2. Registrar Check-in
     await pool.query(
       'INSERT INTO trusted.tb_checkins (id_usuario) VALUES ($1)',
-      [user.id_usuario]
+      [userId]
     );
 
-    res.json({ success: true, message: `Presença confirmada, ${user.dsc_nome_completo.split(' ')[0]}!` });
+    res.json({ success: true, message: `Presença confirmada, ${userName.split(' ')[0]}!` });
   } catch (err) {
     if (err.code === '23505') { // Unique constraint violation
       return res.status(400).json({ success: false, message: 'Check-in já realizado hoje.' });
     }
     console.error(err);
     res.status(500).json({ success: false, error: 'Erro ao processar check-in.' });
+  }
+});
+
+// Listagem de Membros para Check-in Visual (Tablet)
+app.get('/api/checkin-list', async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT p.id_usuario, p.dsc_nome_completo 
+      FROM trusted.tb_membros_perfil p
+      JOIN trusted.tb_usuarios u ON p.id_usuario = u.id_usuario
+      WHERE u.vlr_status_conta = 'ativo'
+      ORDER BY p.dsc_nome_completo ASC
+    `);
+    res.json({ success: true, members: result.rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: 'Erro ao buscar lista de membros.' });
   }
 });
 
