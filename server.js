@@ -12,6 +12,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use(express.static(__dirname)); // Servir HTML, CSS e JS da raiz
 
 // Configuração do Multer para Upload de Fotos
 const storage = multer.diskStorage({
