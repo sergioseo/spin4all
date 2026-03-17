@@ -435,7 +435,7 @@
                 loadCoachInsights();
                 
                 // 4. Métricas Avançadas (Churn & Presença 14 dias)
-                loadAdvancedMetrics();
+                // loadAdvancedMetrics(); // Comentado por não estar implementado
 
                 document.getElementById('loader').style.display = 'none';
             } catch (err) {
@@ -902,6 +902,42 @@
             const canvas = document.getElementById('performanceLineChart');
             if (!canvas) return;
             Chart.getChart(canvas)?.destroy();
+
+            let labels = [];
+            let datasets = [];
+
+            if (data && data.length > 0) {
+                const colors = ['#38bdf8', '#4ade80', '#fbbf24', '#f43f5e', '#a855f7'];
+                
+                // Pega as labels (datas) do primeiro membro que tem histórico
+                const refHist = data.find(m => m.history && m.history.length > 0)?.history || [];
+                labels = refHist.map(h => new Date(h.dt_registro).toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'}));
+
+                if (activePerfIndex === 'all') {
+                    datasets = data.map((m, i) => ({
+                        label: m.name,
+                        data: m.history ? m.history.map(h => h.val) : [],
+                        borderColor: colors[i % colors.length],
+                        backgroundColor: colors[i % colors.length] + '20',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: false
+                    }));
+                } else {
+                    const m = data[activePerfIndex];
+                    if (m) {
+                        datasets = [{
+                            label: m.name,
+                            data: m.history ? m.history.map(h => h.val) : [],
+                            borderColor: '#38bdf8',
+                            backgroundColor: 'rgba(56, 189, 248, 0.1)',
+                            borderWidth: 3,
+                            tension: 0.4,
+                            fill: true
+                        }];
+                    }
+                }
+            }
 
             performanceChartInstance = new Chart(canvas.getContext('2d'), {
                 type: 'line',

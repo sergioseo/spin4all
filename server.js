@@ -1092,6 +1092,22 @@ app.get('/api/admin/performance-peak', authenticateToken, isAdmin, async (req, r
   }
 });
 
+// 4.5. Síntese de Objetivos do Grupo (Para tags de foco no Dashboard Admin)
+app.get('/api/admin/objectives-summary', authenticateToken, isAdmin, async (req, res) => {
+  try {
+    const query = `
+      SELECT id_usuario, dsc_nome_completo, dsc_metas as amostra_metas
+      FROM trusted.tb_membros_perfil
+      WHERE dsc_metas IS NOT NULL AND TRIM(dsc_metas) <> ''
+    `;
+    const result = await pool.query(query);
+    res.json({ success: true, data: result.rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: 'Erro ao buscar resumo de objetivos.' });
+  }
+});
+
 // 5. Alertas Biomecânicos e Gargalos Técnicos (Admin)
 app.get('/api/admin/technical-bottlenecks', authenticateToken, isAdmin, async (req, res) => {
   try {
