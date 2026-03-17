@@ -14,6 +14,20 @@ app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(express.static(__dirname)); // Servir HTML, CSS e JS da raiz
 
+// Rotas Explícitas para HTML (Garantia)
+app.get('/login.html', (req, res) => res.sendFile(path.join(__dirname, 'login.html')));
+app.get('/dashboard.html', (req, res) => res.sendFile(path.join(__dirname, 'dashboard.html')));
+app.get('/admin.html', (req, res) => res.sendFile(path.join(__dirname, 'admin.html')));
+app.get('/checkin.html', (req, res) => res.sendFile(path.join(__dirname, 'checkin.html')));
+app.get('/cadastro.html', (req, res) => res.sendFile(path.join(__dirname, 'cadastro.html')));
+
+// Rota de Diagnóstico
+app.get('/debug-static', (req, res) => {
+  const loginPath = path.join(__dirname, 'login.html');
+  const exists = fs.existsSync(loginPath);
+  res.json({ __dirname, loginPath, exists, files: fs.readdirSync(__dirname) });
+});
+
 // Configuração do Multer para Upload de Fotos
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
