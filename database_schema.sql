@@ -851,6 +851,14 @@ UPDATE trusted.tb_membros_perfil
 SET num_telefone = '(11) 9' || floor(random() * 90000000 + 10000000)::text
 WHERE num_telefone IS NULL OR num_telefone = '';
 
+-- 8. Vitral de Conquistas (Badges para a Home)
+INSERT INTO trusted.tb_usuarios_badges (id_usuario, id_badge, dt_conquista)
+SELECT u.id_usuario, b.id_badge, CURRENT_DATE - (u.id_usuario % 10) * INTERVAL '1 day'
+FROM trusted.tb_usuarios u
+CROSS JOIN (SELECT id_badge FROM trusted.tb_badges_definicao LIMIT 3) b
+WHERE u.id_usuario % 7 = 0
+ON CONFLICT DO NOTHING;
+
 -- Garantir que o Hall da Fama tenha pelo menos 5 nomes com pontos variados
 DELETE FROM trusted.tb_torneios_resultados;
 INSERT INTO trusted.tb_torneios_resultados (id_usuario, num_posicao, dsc_torneio_nome, dt_torneio) VALUES
@@ -863,3 +871,4 @@ INSERT INTO trusted.tb_torneios_resultados (id_usuario, num_posicao, dsc_torneio
 (104, 1, 'Inaugural Jan', CURRENT_DATE - INTERVAL '70 days'),
 (110, 2, 'Inaugural Jan', CURRENT_DATE - INTERVAL '70 days'),
 (113, 3, 'Inaugural Jan', CURRENT_DATE - INTERVAL '70 days');
+

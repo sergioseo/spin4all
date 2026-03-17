@@ -263,7 +263,6 @@
         <!-- Insights do Técnico -->
         <section id="coach-insights" style="margin-top: 40px;">
             <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
-                <i class="fas fa-microchip" style="color: #fbbf24; font-size: 1.5rem;"></i>
                 <h2 style="font-size: 1.8rem; margin: 0;">Insights do Técnico</h2>
             </div>
             
@@ -956,7 +955,7 @@
                         category = 'Social/Lazer'; color = categoriesColors['Social/Lazer'];
                     }
 
-                    const tags = obj.amostra_metas.split(/[,.]/).map(t => t.trim()).filter(t => t.length > 3 && t.length < 50);
+                    const tags = (obj.amostra_metas || '').split(/[,.|]/).map(t => t.trim()).filter(t => t.length > 3 && t.length < 50);
                     tags.forEach(tag => tagCloud.push({ text: tag, color, category }));
                 });
 

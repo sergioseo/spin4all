@@ -641,13 +641,13 @@ app.get('/api/admin/advanced-metrics', authenticateToken, isAdmin, async (req, r
       LIMIT 10
     `);
 
-    // 2. Ranking de PresenÃ§a (Ãltimos 14 dias com Foto)
+    // 2. Ranking de Presença (Últimos 14 dias com Foto)
     const attendanceRanking = await pool.query(`
-      SELECT p.dsc_nome_completo, p.url_foto, COUNT(c.id_checkin) as total_treinos
+      SELECT p.dsc_nome_completo, p.dsc_foto_perfil, COUNT(c.id_checkin) as total_treinos
       FROM trusted.tb_membros_perfil p
       JOIN trusted.tb_checkins c ON p.id_usuario = c.id_usuario
       WHERE c.dt_checkin >= CURRENT_DATE - INTERVAL '14 days'
-      GROUP BY p.dsc_nome_completo, p.url_foto
+      GROUP BY p.dsc_nome_completo, p.dsc_foto_perfil
       ORDER BY total_treinos DESC
       LIMIT 10
     `);
@@ -858,6 +858,24 @@ app.get('/api/community/stats', authenticateToken, async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Erro ao buscar stats da comunidade.' });
+  }
+});
+
+// Ranking de Presença 14 dias (Simplificado para a Home)
+app.get('/api/community/attendance-ranking', authenticateToken, async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT p.dsc_nome_completo, p.dsc_foto_perfil, COUNT(c.id_checkin) as total_treinos
+      FROM trusted.tb_membros_perfil p
+      JOIN trusted.tb_checkins c ON p.id_usuario = c.id_usuario
+      WHERE c.dt_checkin >= CURRENT_DATE - INTERVAL '14 days'
+      GROUP BY p.dsc_nome_completo, p.dsc_foto_perfil
+      ORDER BY total_treinos DESC
+      LIMIT 3
+    `);
+    res.json({ success: true, ranking: result.rows });
+  } catch (err) {
+    res.status(500).json({ success: false });
   }
 });
 
