@@ -315,6 +315,95 @@
             color: #94a3b8;
             cursor: pointer;
             font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+
+        .close-modal:hover {
+            color: #ef4444;
+        }
+
+        /* Torneio Banner & Buttons */
+        .tournament-banner {
+            border: 2px dashed rgba(56, 189, 248, 0.4) !important;
+            background: linear-gradient(90deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.8) 100%) !important;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        }
+
+        .tournament-banner-icon {
+            background: rgba(56, 189, 248, 0.15);
+            padding: 18px;
+            border-radius: 12px;
+            color: #38bdf8;
+            font-size: 1.8rem;
+            box-shadow: inset 0 0 15px rgba(56, 189, 248, 0.1);
+        }
+
+        .btn-register-tournament {
+            background: #fff;
+            color: #0f172a;
+            font-weight: 700;
+            padding: 12px 30px;
+            border-radius: 4px; /* Mais quadradinho como no print */
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.9rem;
+            text-transform: none;
+        }
+
+        .btn-register-tournament:hover {
+            transform: scale(1.05);
+            background: #f1f5f9;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-register-tournament:disabled {
+            background: #334155;
+            color: #64748b;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Modal Torneio Estilizado */
+        .modal-tournament-content {
+            border-top: 5px solid #38bdf8;
+            max-width: 450px;
+        }
+
+        .whatsapp-notice {
+            background: rgba(56, 189, 248, 0.1);
+            padding: 15px 20px;
+            border-radius: 10px;
+            border-left: 4px solid #38bdf8;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin: 25px 0;
+            color: #e2e8f0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .whatsapp-notice i {
+            color: #22c55e;
+            font-size: 1.2rem;
+            margin-top: 2px;
+        }
+
+        .btn-understood {
+            background: #e2e8f0;
+            color: #1e293b;
+            width: 100%;
+            padding: 10px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            border-radius: 2px;
+            transition: background 0.3s;
+        }
+
+        .btn-understood:hover {
+            background: #cbd5e1;
         }
 
         /* Skill Slider Labels */
@@ -465,18 +554,19 @@
         <!-- ABA: INÍCIO (DASHBOARD) -->
         <div id="tab-home" class="tab-content">
             <!-- SEÇÃO DE BANNER ESTRATÉGICO -->
-            <section id="promotion-banner" class="glass-card" style="margin-bottom: 30px; padding: 0; min-height: 120px; overflow: hidden; display: flex; align-items: center; border: 1px dashed rgba(56, 189, 248, 0.3); background: linear-gradient(90deg, rgba(30,41,59,0.4) 0%, rgba(56,189,248,0.05) 100%);">
-                <div style="flex: 1; padding: 25px; display: flex; align-items: center; gap: 20px;">
-                    <div style="width: 60px; height: 60px; background: rgba(56,189,248,0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #38bdf8; font-size: 1.5rem;">
+            <section id="promotion-banner" class="glass-card tournament-banner" style="margin-bottom: 30px; padding: 25px; overflow: hidden; display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <div class="tournament-banner-icon">
                         <i class="fas fa-bullhorn"></i>
                     </div>
                     <div>
-                        <h3 style="font-size: 1.1rem; color: #fff; margin-bottom: 5px;">Próximo Torneio Interno</h3>
-                        <p style="font-size: 0.85rem; color: #94a3b8;">Não esqueça de fazer o check-in toda vez para poder participar do próximo torneio.</p>
+                        <h3 style="font-size: 1.2rem; color: #fff; margin-bottom: 4px; font-weight: 700;">Próximo Torneio Interno</h3>
+                        <p style="font-size: 0.9rem; color: #94a3b8;">Não esqueça de fazer o check-in toda vez para poder participar do próximo torneio.</p>
                     </div>
                 </div>
-                <div style="padding-right: 25px;">
-                    <button class="btn-auth" onclick="openTournamentModal()" style="width: auto; padding: 10px 25px; font-size: 0.8rem;">Saber Mais</button>
+                <div>
+                    <button class="btn-register-tournament" id="btn-saiba-mais" onclick="openTournamentModal()">Saber Mais</button>
+                    <button class="btn-register-tournament" id="btn-inscricao-real" style="margin-left: 10px; display: none; background: #38bdf8; color: #000;">Inscrever-se Agora</button>
                 </div>
             </section>
             <section class="dashboard-grid" style="grid-template-columns: repeat(3, 1fr);">
@@ -603,23 +693,24 @@
             </section>
         </div>
 
-        <!-- Pop-up Torneio (Global) -->
+        <!-- Pop-up Torneio (Fiel ao Mockup) -->
         <div id="tournamentModal" class="modal">
-            <div class="modal-content">
+            <div class="modal-content modal-tournament-content">
                 <span class="close-modal" onclick="closeTournamentModal()">&times;</span>
-                <div style="text-align: center; margin-bottom: 25px;">
-                    <i class="fas fa-trophy" style="font-size: 3rem; color: #fbbf24; margin-bottom: 15px;"></i>
-                    <h2 style="color: #fff;">Torneio Interno</h2>
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <i class="fas fa-trophy" style="font-size: 3.5rem; color: #fbbf24; margin-bottom: 20px; filter: drop-shadow(0 0 15px rgba(251, 191, 36, 0.4));"></i>
+                    <h2 style="color: #fff; font-size: 1.8rem; font-weight: 800; letter-spacing: -0.5px;">Torneio Interno</h2>
                 </div>
-                <div style="color: #cbd5e1; line-height: 1.6; font-size: 0.95rem;">
-                    <p style="margin-bottom: 15px;">A <span style="color: #38bdf8; font-weight: 700;">última sexta-feira de todo mês</span> é destinada ao nosso emocionante torneio interno.</p>
-                    <p style="margin-bottom: 15px;">Prepare-se e <span style="color: #fbbf24; font-weight: 700;">Save the Date</span> para não perder o dia da disputa!</p>
-                    <div style="background: rgba(56,189,248,0.1); padding: 15px; border-radius: 10px; border-left: 4px solid #38bdf8; margin-top: 20px;">
-                        <i class="fab fa-whatsapp" style="color: #25d366; margin-right: 8px;"></i>
-                        Qualquer modificação ou informações adicionais serão divulgadas em nosso grupo oficial.
+                <div style="color: #cbd5e1; line-height: 1.8; font-size: 1rem;">
+                    <p style="margin-bottom: 15px;">A <span style="color: #38bdf8; font-weight: 800;">última sexta-feira de todo mês</span> é destinada ao nosso emocionante torneio interno.</p>
+                    <p style="margin-bottom: 15px;">Prepare-se e <span style="color: #fbbf24; font-weight: 800;">Save the Date</span> para não perder o dia da disputa!</p>
+                    
+                    <div class="whatsapp-notice">
+                        <i class="fab fa-whatsapp"></i>
+                        <span>Qualquer modificação ou informações adicionais serão divulgadas em nosso grupo oficial.</span>
                     </div>
                 </div>
-                <button onclick="closeTournamentModal()" class="btn-auth" style="margin-top: 30px; width: 100%;">Entendido!</button>
+                <button onclick="handleUnderstood()" class="btn-understood">Entendido!</button>
             </div>
         </div>
 
@@ -915,6 +1006,28 @@
                 document.getElementById('edit-grip').value = userData.dsc_empunhadura || 'Clássica';
                 document.getElementById('edit-level').value = userData.dsc_nivel_tecnico || 'Iniciante';
                 document.getElementById('edit-goals').value = userData.dsc_metas || '';
+
+                // Lógica de Ativação do Botão de Inscrição (Torneio)
+                // Se frequência (id="frequency-pct") for carregada, vamos checar aqui
+                setTimeout(() => {
+                    const freq = parseInt(document.getElementById('frequency-pct').innerText) || 0;
+                    const btnSaibaMais = document.getElementById('btn-saiba-mais');
+                    const btnInscricao = document.getElementById('btn-inscricao-real');
+                    
+                    if (freq >= 60) {
+                        if(btnSaibaMais) btnSaibaMais.style.display = 'none';
+                        if(btnInscricao) {
+                            btnInscricao.style.display = 'block';
+                            btnInscricao.onclick = () => {
+                                alert('🎉 Inscrição Realizada! Você está na lista oficial para o próximo Sextão.');
+                                btnInscricao.innerText = 'Inscrito / Apto ✓';
+                                btnInscricao.disabled = true;
+                                btnInscricao.style.background = '#22c55e';
+                            };
+                        }
+                    }
+                }, 1000);
+
                 document.getElementById('edit-mentor-message').value = userData.dsc_mensagem_mentor || '';
                 if (userData.dt_nascimento) {
                     document.getElementById('edit-birth').value = userData.dt_nascimento.split('T')[0];
@@ -1490,6 +1603,20 @@
                     list.innerHTML = '<div style="color: #64748b; font-size: 0.75rem; text-align: center;">Carregando frequência...</div>';
                 }
             } catch (err) { console.error(err); }
+        }
+
+        function openTournamentModal() {
+            document.getElementById('tournamentModal').style.display = 'flex';
+        }
+
+        function closeTournamentModal() {
+            document.getElementById('tournamentModal').style.display = 'none';
+        }
+
+        function handleUnderstood() {
+            closeTournamentModal();
+            // Feedback opcional ou persistência de que o usuário leu as regras
+            console.log('Usuário leu as informações do torneio.');
         }
 
         loadUserData();

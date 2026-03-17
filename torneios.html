@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Torneio Sextão | Spin4All</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --color-pro: #fbbf24;
+            --color-challenger: #a855f7; /* Violeta Vibrante */
+        }
+        body {
+            background: #020617; /* Fundo mais escuro para destaque da TV */
+            color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: auto; /* Permitir scroll se o bracket crescer muito */
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Header TV */
+        header {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(20px);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .tournament-title {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .tournament-title h1 {
+            font-size: 2.2rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+            background: linear-gradient(90deg, #fff, #38bdf8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+        }
+
+        .big-clock {
+            font-size: 2.2rem; /* Reduzido levemente para caber data */
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+            color: #38bdf8;
+            text-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+            text-align: right;
+        }
+
+        /* Nav Tabs */
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .tab-btn {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #94a3b8;
+            padding: 12px 30px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+
+        .tab-btn.active {
+            background: #38bdf8;
+            color: #020617;
+            border-color: #38bdf8;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+        }
+
+        /* Tournament Content */
+        .container {
+            max-width: 100%; /* Permitir que o container use todo o espaço disponível para scroll */
+            margin: 0;
+            padding: 0 100px 120px; /* Padding lateral generoso para segurança */
+            width: fit-content; /* Ocupar apenas o espaço necessário pelos brackets */
+            min-width: 100vw;
+        }
+
+        /* Phase Styling: Groups */
+        .groups-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .group-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        .group-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 10px;
+        }
+
+        .group-name {
+            font-weight: 900;
+            font-size: 1.2rem;
+            color: #38bdf8;
+        }
+
+        .group-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .group-table th {
+            text-align: left;
+            font-size: 0.7rem;
+            color: #64748b;
+            text-transform: uppercase;
+            padding: 10px;
+        }
+
+        .group-table td {
+            padding: 12px 10px;
+            font-size: 0.9rem;
+            border-bottom: 1px solid rgba(255,255,255,0.02);
+        }
+
+        /* Brackets Styling V4.0 */
+        .playoffs-unified {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            width: 100%;
+            padding: 20px 0;
+            align-items: stretch;
+        }
+
+        .series-section {
+            background: rgba(30, 41, 59, 0.4);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .series-section.pro { border-top: 4px solid var(--color-pro); }
+        .series-section.challenger { border-top: 4px solid var(--color-challenger); }
+
+        .bracket-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: stretch;
+            flex: 1;
+            padding: 20px 0;
+        }
+
+        .bracket-column {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            position: relative;
+            flex: 1;
+            min-width: 220px;
+            z-index: 2;
+        }
+
+        .match-card {
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            width: 220px;
+            margin: 15px auto;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            z-index: 5;
+            transition: transform 0.3s ease;
+        }
+
+        /* Conectores em Chave ITTF Style */
+        .bracket-column { position: relative; }
+        
+        /* Linha que sai do card (Origem) */
+        .bracket-column:not(:last-child) .match-card::after {
+            content: '';
+            position: absolute;
+            right: -30px;
+            top: 50%;
+            width: 30px;
+            height: 1.5px;
+            background: rgba(255,255,255,0.2);
+            z-index: 1;
+        }
+
+        .pro .bracket-column:not(:last-child) .match-card::after { background: var(--color-pro); box-shadow: 0 0 10px var(--color-pro); }
+        .challenger .bracket-column:not(:last-child) .match-card::after { background: var(--color-challenger); box-shadow: 0 0 10px var(--color-challenger); }
+
+        /* Chave Vertical (Destino) */
+        .bracket-column:not(:first-child) .match-card::before {
+            content: '';
+            position: absolute;
+            left: -30px;
+            top: 50%;
+            width: 30px;
+            height: 1.5px;
+            background: rgba(255,255,255,0.2);
+            z-index: 1;
+        }
+
+        .pro .bracket-column:not(:first-child) .match-card::before { background: var(--color-pro); box-shadow: 0 0 10px var(--color-pro); }
+        .challenger .bracket-column:not(:first-child) .match-card::before { background: var(--color-challenger); box-shadow: 0 0 10px var(--color-challenger); }
+
+        /* Barra vertical da chave */
+        .bracket-column:first-child .match-card:nth-child(odd)::after {
+            height: calc(50% + 120px); /* Ajustado para unir os pares */
+            border-right: 1.5px solid rgba(255,255,255,0.2);
+            border-top: 1.5px solid rgba(255,255,255,0.2);
+            border-top-right-radius: 8px;
+            background: none;
+            box-shadow: none;
+            top: 50%;
+        }
+
+        .bracket-column:first-child .match-card:nth-child(even)::after {
+            height: calc(50% + 120px);
+            border-right: 1.5px solid rgba(255,255,255,0.2);
+            border-bottom: 1.5px solid rgba(255,255,255,0.2);
+            border-bottom-right-radius: 8px;
+            background: none;
+            box-shadow: none;
+            top: auto;
+            bottom: 50%;
+        }
+
+        .pro .bracket-column:first-child .match-card::after { border-color: var(--color-pro); }
+        .challenger .bracket-column:first-child .match-card::after { border-color: var(--color-challenger); }
+
+        /* Estilos Pro TV */
+        .player-row {
+            padding: 8px 12px;
+            display: grid;
+            grid-template-columns: 32px 1fr 30px 60px; /* Foto | Nome | Sets | Ponto-a-Ponto */
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            font-size: 0.8rem;
+            transition: background 0.2s;
+            gap: 8px;
+        }
+
+        .player-photo {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            background: #1e293b;
+            border: 1px solid rgba(255,255,255,0.1);
+            object-fit: cover;
+        }
+
+        .match-card.finished {
+            opacity: 0.6;
+            transform: scale(1) !important;
+        }
+
+        .match-card.live {
+            border: 3px solid var(--color-pro) !important; /* Borda mais grossa para visibilidade */
+            animation: live-pulse 2s infinite !important;
+            transform: scale(1.3) !important; /* Destaque 30% PROFISSIONAL */
+            z-index: 100 !important;
+            background: rgba(15, 23, 42, 1) !important;
+            box-shadow: 0 0 60px rgba(251, 191, 36, 0.6) !important;
+            /* Margens dinâmicas para criar espaço real no fluxo do DOM */
+            margin: 80px 60px !important;
+        }
+        
+        .match-card.tbd {
+            opacity: 0.5 !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            box-shadow: none !important;
+            background: rgba(15, 23, 42, 0.4) !important;
+            transform: scale(1) !important;
+        }
+
+        .match-card.tbd .points-p2p {
+            color: #475569 !important; /* Pontos apagados para TBD */
+        }
+
+        @keyframes live-pulse {
+            0% { box-shadow: 0 0 10px rgba(251, 191, 36, 0.2); }
+            50% { box-shadow: 0 0 35px rgba(251, 191, 36, 0.6); }
+            100% { box-shadow: 0 0 10px rgba(251, 191, 36, 0.2); }
+        }
+
+        @keyframes live-pulse-cha {
+            0% { box-shadow: 0 0 10px rgba(168, 85, 247, 0.2); }
+            50% { box-shadow: 0 0 35px rgba(168, 85, 247, 0.6); }
+            100% { box-shadow: 0 0 10px rgba(168, 85, 247, 0.2); }
+        }
+
+        .challenger .match-card.live {
+            border-color: var(--color-challenger) !important;
+            animation: live-pulse-cha 2s infinite !important;
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.3) !important;
+        }
+
+        .sets-score {
+            font-weight: 700;
+            color: #fff;
+            opacity: 0.6; /* Mais apagado conforme pedido */
+            font-size: 0.8rem;
+            text-align: center;
+            background: rgba(255,255,255,0.05);
+            border-radius: 2px;
+            padding: 2px 0;
+        }
+
+        .points-p2p {
+            font-weight: 900;
+            color: #38bdf8; /* Destaque conforme referência */
+            font-size: 1rem;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .pro .points-p2p { color: var(--color-pro); }
+        .challenger .points-p2p { color: var(--color-challenger); }
+
+        .match-timer {
+            font-size: 0.65rem;
+            color: #475569;
+            text-align: center;
+            padding: 4px 0;
+            background: rgba(0,0,0,0.2);
+            border-top: 1px solid rgba(255,255,255,0.02);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .match-timer.live-timer {
+            color: #fca5a5;
+            font-weight: 700;
+        }
+
+        .match-timer.live-timer::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: #ef4444;
+            border-radius: 50%;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+
+
+        /* Live Footer */
+        .live-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #0f172a;
+            border-top: 2px solid #38bdf8;
+            padding: 15px 40px;
+            display: flex;
+            gap: 30px;
+            overflow-x: auto;
+            z-index: 1000;
+        }
+
+        .mesa-badge {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid #334155;
+            padding: 8px 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+
+        .mesa-badge.active-pro { border-color: var(--color-pro); box-shadow: 0 0 10px rgba(251, 191, 36, 0.2); }
+        .mesa-badge.active-cha { border-color: var(--color-challenger) !important; box-shadow: 0 0 10px rgba(168, 85, 247, 0.4) !important; }
+        .mesa-badge.active-gp { border-color: #38bdf8; box-shadow: 0 0 10px rgba(56, 189, 248, 0.2); }
+
+        .phase-tag {
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .tag-pro { background: var(--color-pro); color: #020617; }
+        .tag-cha { background: var(--color-challenger) !important; color: #fff !important; }
+        .tag-gp { background: #38bdf8; color: #020617; }
+
+        .mesa-id {
+            font-weight: 900;
+            color: #64748b;
+            font-size: 0.75rem;
+        }
+
+        /* Utils */
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="tournament-title">
+            <a href="admin.html" style="color: #64748b; margin-right: 20px; font-size: 1.5rem; transition: color 0.3s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#64748b'">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <img src="logo.png" alt="Logo" style="width: 50px;">
+            <div>
+                <h1>SEXTÃO SPIN4ALL</h1>
+                <p style="font-size: 0.8rem; color: #64748b; letter-spacing: 2px; text-transform: uppercase; margin: 0;">Evento Mensal de Confraternização</p>
+            </div>
+        </div>
+        <div class="big-clock" id="clock">14:45</div>
+    </header>
+
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab('groups')">Fase de Grupos</button>
+        <button class="tab-btn" onclick="switchTab('playoffs')">Mata-Mata (Playoffs)</button>
+    </div>
+
+    <div class="container">
+        <!-- 1. FASE DE GRUPOS -->
+        <div id="view-groups" class="groups-grid">
+            <!-- Grupo A -->
+            <div class="group-card">
+                <div class="group-header">
+                    <span class="group-name">GRUPO A</span>
+                    <span style="font-size: 0.7rem; color: #64748b;">Completo</span>
+                </div>
+                <table class="group-table">
+                    <thead>
+                        <tr><th>Jogador</th><th>V-D</th><th>Saldo</th><th>Pos</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>João Silva</td><td>3-0</td><td>+45</td><td>1º 🚀</td></tr>
+                        <tr><td>Maria Oliveira</td><td>2-1</td><td>+12</td><td>2º 🚀</td></tr>
+                        <tr><td>Carlos Santos</td><td>1-2</td><td>-10</td><td>3º 🛡️</td></tr>
+                        <tr><td>Bia Ramos</td><td>0-3</td><td>-47</td><td>4º 🛡️</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Grupo B -->
+            <div class="group-card">
+                <div class="group-header">
+                    <span class="group-name">GRUPO B</span>
+                    <span style="font-size: 0.7rem; color: #64748b;">Completo</span>
+                </div>
+                <table class="group-table">
+                    <thead>
+                        <tr><th>Jogador</th><th>V-D</th><th>Saldo</th><th>Pos</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>André Lima</td><td>3-0</td><td>+38</td><td>1º 🚀</td></tr>
+                        <tr><td>Fernanda Z.</td><td>2-1</td><td>+05</td><td>2º 🚀</td></tr>
+                        <tr><td>Rafael Castro</td><td>1-2</td><td>-15</td><td>3º 🛡️</td></tr>
+                        <tr><td>Paula M.</td><td>0-3</td><td>-28</td><td>4º 🛡️</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Grupo C -->
+            <div class="group-card">
+                <div class="group-header">
+                    <span class="group-name">GRUPO C</span>
+                    <span style="font-size: 0.7rem; color: #64748b;">Completo</span>
+                </div>
+                <table class="group-table">
+                    <thead>
+                        <tr><th>Jogador</th><th>V-D</th><th>Saldo</th><th>Pos</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Ricardo P.</td><td>3-0</td><td>+50</td><td>1º 🚀</td></tr>
+                        <tr><td>Julia Rocha</td><td>2-1</td><td>+08</td><td>2º 🚀</td></tr>
+                        <tr><td>Lucas Dias</td><td>1-2</td><td>-22</td><td>3º 🛡️</td></tr>
+                        <tr><td>Patrícia L.</td><td>0-3</td><td>-36</td><td>4º 🛡️</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Grupo D -->
+            <div class="group-card">
+                <div class="group-header">
+                    <span class="group-name">GRUPO D</span>
+                    <span style="font-size: 0.7rem; color: #64748b;">Completo</span>
+                </div>
+                <table class="group-table">
+                    <thead>
+                        <tr><th>Jogador</th><th>V-D</th><th>Saldo</th><th>Pos</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Bruno Meira</td><td>3-0</td><td>+42</td><td>1º 🚀</td></tr>
+                        <tr><td>Sérgio Souza</td><td>2-1</td><td>+15</td><td>2º 🚀</td></tr>
+                        <tr><td>Renata Kim</td><td>1-2</td><td>-18</td><td>3º 🛡️</td></tr>
+                        <tr><td>Hugo Boss</td><td>0-3</td><td>-39</td><td>4º 🛡️</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Grupo E -->
+            <div class="group-card">
+                <div class="group-header">
+                    <span class="group-name">GRUPO E</span>
+                    <span style="font-size: 0.7rem; color: #64748b;">Completo</span>
+                </div>
+                <table class="group-table">
+                    <thead>
+                        <tr><th>Jogador</th><th>V-D</th><th>Saldo</th><th>Pos</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Thiago F.</td><td>3-0</td><td>+55</td><td>1º 🚀</td></tr>
+                        <tr><td>Mônica S.</td><td>2-1</td><td>+04</td><td>2º 🚀</td></tr>
+                        <tr><td>Daniel V.</td><td>1-2</td><td>-20</td><td>3º 🛡️</td></tr>
+                        <tr><td>Carla J.</td><td>0-3</td><td>-39</td><td>4º 🛡️</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Grupo F -->
+            <div class="group-card">
+                <div class="group-header">
+                    <span class="group-name">GRUPO F</span>
+                    <span style="font-size: 0.7rem; color: #64748b;">Completo</span>
+                </div>
+                <table class="group-table">
+                    <thead>
+                        <tr><th>Jogador</th><th>V-D</th><th>Saldo</th><th>Pos</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Alexandre T.</td><td>3-0</td><td>+30</td><td>1º 🚀</td></tr>
+                        <tr><td>Beatriz M.</td><td>2-1</td><td>+10</td><td>2º 🚀</td></tr>
+                        <tr><td>Gustavo P.</td><td>1-2</td><td>-12</td><td>3º 🛡️</td></tr>
+                        <tr><td>Larissa K.</td><td>0-3</td><td>-28</td><td>4º 🛡️</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 2. MATA-MATA UNIFICADO V4.0 -->
+        <div id="view-playoffs" class="playoffs-unified hidden">
+            <!-- SÉRIE PRO ELITE -->
+            <section class="series-section pro">
+                <h2 style="text-align: center; color: var(--color-pro); margin-bottom: 30px; font-weight: 900; font-size: 1.5rem; text-transform: uppercase;">SÉRIE PRO ELITE</h2>
+                <div class="bracket-container">
+                    <!-- FASE 1 -->
+                    <div class="bracket-column">
+                        <div class="match-card finished">
+                            <div class="player-row">
+                                <img src="p1.jpg" class="player-photo"><span>João Silva</span><span class="sets-score">3</span><span class="points-p2p">11</span>
+                            </div>
+                            <div class="player-row">
+                                <img src="p2.jpg" class="player-photo"><span>Bruno Meira</span><span class="sets-score">0</span><span class="points-p2p">9</span>
+                            </div>
+                            <div class="match-timer"><i class="far fa-clock"></i> 15:20 (Fim)</div>
+                        </div>
+                        <div class="match-card finished">
+                            <div class="player-row">
+                                <img src="p3.jpg" class="player-photo"><span>Ricardo P.</span><span class="sets-score">3</span><span class="points-p2p">11</span>
+                            </div>
+                            <div class="player-row">
+                                <img src="p4.jpg" class="player-photo"><span>André Lima</span><span class="sets-score">0</span><span class="points-p2p">8</span>
+                            </div>
+                            <div class="match-timer"><i class="far fa-clock"></i> 14:45 (Fim)</div>
+                        </div>
+                    </div>
+                    <!-- FASE 2 -->
+                    <div class="bracket-column">
+                        <div class="match-card live">
+                            <div class="player-row">
+                                <img src="p1.jpg" class="player-photo"><span>João Silva</span><span class="sets-score">2</span><span class="points-p2p">11</span>
+                            </div>
+                            <div class="player-row">
+                                <img src="p3.jpg" class="player-photo"><span>Ricardo P.</span><span class="sets-score">0</span><span class="points-p2p">9</span>
+                            </div>
+                            <div class="match-timer live-timer">LIVE: 12:45</div>
+                        </div>
+                    </div>
+                    <!-- FASE 3 -->
+                    <div class="bracket-column">
+                        <div class="match-card tbd final-match">
+                            <div class="player-row">
+                                <div class="player-photo"></div><span>TBD</span><span class="sets-score">0</span><span class="points-p2p">0</span>
+                            </div>
+                            <div class="player-row">
+                                <div class="player-photo"></div><span>TBD</span><span class="sets-score">0</span><span class="points-p2p">0</span>
+                            </div>
+                            <div class="match-timer">AGUARDANDO</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SÉRIE CHALLENGER -->
+            <section class="series-section challenger">
+                <h2 style="text-align: center; color: var(--color-challenger); margin-bottom: 30px; font-weight: 900; font-size: 1.5rem; text-transform: uppercase;">CHALLENGER SERIES</h2>
+                <div class="bracket-container">
+                    <!-- FASE 1 -->
+                    <div class="bracket-column">
+                        <div class="match-card finished">
+                            <div class="player-row">
+                                <div class="player-photo"></div><span>Carlos S.</span><span class="sets-score">3</span><span class="points-p2p">11</span>
+                            </div>
+                            <div class="player-row">
+                                <div class="player-photo"></div><span>Lucas D.</span><span class="sets-score">1</span><span class="points-p2p">5</span>
+                            </div>
+                            <div class="match-timer">18m total</div>
+                        </div>
+                        <div class="match-card live">
+                            <div class="player-row">
+                                <div class="player-photo"></div><span>Renata K.</span><span class="sets-score">1</span><span class="points-p2p">12</span>
+                            </div>
+                            <div class="player-row">
+                                <div class="player-photo"></div><span>Bia Ramos</span><span class="sets-score">1</span><span class="points-p2p">10</span>
+                            </div>
+                            <div class="match-timer live-timer">LIVE: 08:12</div>
+                        </div>
+                    </div>
+                    <!-- FASE 2 -->
+                    <div class="bracket-column">
+                        <div class="match-card tbd">
+                            <div class="player-row">
+                                <div class="player-photo"></div><span>TBD</span><span class="sets-score">0</span><span class="points-p2p">0</span>
+                            </div>
+                            <div class="player-row">
+                                <div class="player-photo"></div><span>TBD</span><span class="sets-score">0</span><span class="points-p2p">0</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- FASE 3 -->
+                    <div class="bracket-column">
+                        <div class="match-card tbd final-match-cha">
+                            <div class="player-row">
+                                <div class="player-photo"></div><span>TBD</span><span class="sets-score">0</span><span class="points-p2p">0</span>
+                            </div>
+                            <div class="player-row">
+                                <div class="player-photo"></div><span>TBD</span><span class="sets-score">0</span><span class="points-p2p">0</span>
+                            </div>
+                            <div class="match-timer">AGUARDANDO</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Live Games Footer -->
+    <div class="live-footer">
+        <div class="mesa-badge active-pro">
+            <span class="phase-tag tag-pro">PRO</span>
+            <div class="mesa-id">MESA 1</div>
+            <div style="font-weight: 700;">João Silva <span style="color:#ef4444">vs</span> Ricardo P.</div>
+        </div>
+        <div class="mesa-badge active-cha">
+            <span class="phase-tag tag-cha">CHA</span>
+            <div class="mesa-id">MESA 2</div>
+            <div style="font-weight: 700;">Renata K. <span style="color:#ef4444">vs</span> Bia Ramos</div>
+        </div>
+        <div class="mesa-badge" style="opacity: 0.5; border-style: dashed; border-color: #334155;">
+            <div class="mesa-id" style="color: #64748b;">MESA 3</div>
+            <div style="font-weight: 700; color: #64748b;">AGUARDANDO JOGO</div>
+        </div>
+    </div>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+            const timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+            const options = { day: '2-digit', month: 'long' };
+            const dateStr = now.toLocaleDateString('pt-BR', options);
+            const clockEl = document.getElementById('clock');
+            if (clockEl) {
+                clockEl.innerHTML = `<span style="font-size: 1.2rem; opacity: 0.7; vertical-align: middle; margin-right: 15px;">${dateStr} | </span>${timeStr}`;
+            }
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('view-groups').classList.add('hidden');
+            document.getElementById('view-playoffs').classList.add('hidden');
+
+            if(tab === 'groups') {
+                document.querySelector('.tab-btn:nth-child(1)').classList.add('active');
+                document.getElementById('view-groups').classList.remove('hidden');
+            } else if(tab === 'playoffs') {
+                document.querySelector('.tab-btn:nth-child(2)').classList.add('active');
+                document.getElementById('view-playoffs').classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -141,6 +141,37 @@ CREATE TABLE IF NOT EXISTS trusted.tb_usuarios_badges (
     UNIQUE(id_usuario, id_badge)
 );
 
+-- Catalogo de Treinos (Preset)
+CREATE TABLE IF NOT EXISTS trusted.tb_treinos_catalogo (
+    id_treino SERIAL PRIMARY KEY,
+    dsc_treino VARCHAR(150) NOT NULL,
+    vlr_icone VARCHAR(50) DEFAULT 'fas fa-table-tennis',
+    flg_nivel VARCHAR(20) DEFAULT 'Geral', -- Iniciante, Intermediario, Avancado
+    dsc_foco VARCHAR(50) DEFAULT 'Tecnico', -- Fisico, Tatico
+    num_minutos_default INTEGER DEFAULT 5,
+    dt_criacao_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Cabecalho da Sessao de Aula do Dia
+CREATE TABLE IF NOT EXISTS trusted.tb_sessoes_aula (
+    id_sessao SERIAL PRIMARY KEY,
+    dt_sessao DATE DEFAULT CURRENT_DATE,
+    hr_inicio TIME DEFAULT CURRENT_TIME,
+    dt_criacao_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Historico de Execucao (Cada item que ficou vermelho na tela)
+CREATE TABLE IF NOT EXISTS trusted.tb_treinos_executados (
+    id_execucao SERIAL PRIMARY KEY,
+    id_sessao INTEGER REFERENCES trusted.tb_sessoes_aula(id_sessao) ON DELETE CASCADE,
+    id_treino INTEGER REFERENCES trusted.tb_treinos_catalogo(id_treino) ON DELETE SET NULL,
+    dsc_treino_customizado VARCHAR(150),
+    flg_nivel VARCHAR(20),
+    num_minutos INTEGER NOT NULL,
+    dt_execucao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
 -----------------------------------------------------------
 -- 3. CAMADA REFINED (Consumo/Dashboards)
 -----------------------------------------------------------
