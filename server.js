@@ -11,16 +11,40 @@ require('dotenv').config();
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Middleware de Logging Global
+app.use((req, res, next) => {
+  console.log(`[REQUEST] ${new Date().toISOString()} - ${req.method} ${req.url}`);
+  next();
+});
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(express.static(__dirname)); // Servir HTML, CSS e JS da raiz
 
 // Rotas Explícitas para HTML (Garantia)
-app.get('/', (req, res) => res.redirect('/login.html'));
-app.get('/login.html', (req, res) => res.sendFile(path.join(__dirname, 'login.html')));
-app.get('/dashboard.html', (req, res) => res.sendFile(path.join(__dirname, 'dashboard.html')));
-app.get('/admin.html', (req, res) => res.sendFile(path.join(__dirname, 'admin.html')));
-app.get('/checkin.html', (req, res) => res.sendFile(path.join(__dirname, 'checkin.html')));
-app.get('/cadastro.html', (req, res) => res.sendFile(path.join(__dirname, 'cadastro.html')));
+app.get('/', (req, res) => {
+  console.log('[ACCESS] Rota / -> Redirecionando para /login.html');
+  res.redirect('/login.html');
+});
+app.get('/login.html', (req, res) => {
+  console.log(`[ACCESS] Solicitando login.html de: ${path.join(__dirname, 'login.html')}`);
+  res.sendFile(path.join(__dirname, 'login.html'));
+});
+app.get('/dashboard.html', (req, res) => {
+  console.log('[ACCESS] Solicitando dashboard.html');
+  res.sendFile(path.join(__dirname, 'dashboard.html'));
+});
+app.get('/admin.html', (req, res) => {
+  console.log('[ACCESS] Solicitando admin.html');
+  res.sendFile(path.join(__dirname, 'admin.html'));
+});
+app.get('/checkin.html', (req, res) => {
+  console.log('[ACCESS] Solicitando checkin.html');
+  res.sendFile(path.join(__dirname, 'checkin.html'));
+});
+app.get('/cadastro.html', (req, res) => {
+  console.log('[ACCESS] Solicitando cadastro.html');
+  res.sendFile(path.join(__dirname, 'cadastro.html'));
+});
 app.get('/test-ping', (req, res) => res.send('pong'));
 
 // Rota de Diagnóstico
@@ -302,10 +326,7 @@ app.put('/api/update-password', authenticateToken, async (req, res) => {
   }
 });
 
-// Rota Raiz (Evita o "Cannot GET /")
-app.get('/', (req, res) => {
-  res.send('🚀 Spin4All API está ativa! Version: ' + Date.now());
-});
+// Rota Raiz removida (duplicada no topo)
 
 // Rota de Teste de Conexão
 app.get('/api/health', (req, res) => {
