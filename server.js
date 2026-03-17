@@ -663,16 +663,7 @@ app.get('/api/admin/advanced-metrics', authenticateToken, isAdmin, async (req, r
   }
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, '0.0.0.0', async () => {
-    console.log('=============================================');
-    console.log(`🚀 SERVIDOR SPIN4ALL ATIVO NA PORTA ${PORT}`);
-    console.log(`🔗 Local: http://localhost:${PORT}`);
-    console.log('=============================================');
-    
-    // Executar migraÃ§Ãµes
-    await runMigrations();
-});
+
 
 // Helper: Registrar Snapshot de Skills para EvoluÃ§Ã£o
 async function recordSkillSnapshot(userId, skills) {
@@ -1053,4 +1044,15 @@ app.post('/api/user/upload-photo', authenticateToken, upload.single('photo'), as
     console.error(err);
     res.status(500).json({ success: false, error: 'Erro ao salvar caminho da foto.' });
   }
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, '0.0.0.0', async () => {
+    console.log('=============================================');
+    console.log(`🚀 SERVIDOR SPIN4ALL ATIVO NA PORTA ${PORT}`);
+    console.log(`🔗 Local: http://localhost:${PORT}`);
+    console.log('=============================================');
+    
+    // Executar migrações
+    await runMigrations();
 });

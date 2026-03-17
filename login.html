@@ -215,6 +215,9 @@
                     const API_URL = isLocal 
                         ? 'http://localhost:3000/api'
                         : 'https://spin4all-motor.h5rvsp.easypanel.host/api';
+                    
+                    console.log(`[DEBUG] Conectando atavés de: ${API_URL}`);
+                    console.log(`[DEBUG] Ambiente local detectado: ${isLocal}`);
 
                     try {
                         const response = await fetch(`${API_URL}/login`, {

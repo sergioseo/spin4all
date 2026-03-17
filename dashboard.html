@@ -808,6 +808,9 @@
             ? 'http://localhost:3000/api'
             : 'https://spin4all-motor.h5rvsp.easypanel.host/api';
 
+        console.log(`[DEBUG Dashboard] API_URL: ${API_URL}`);
+        console.log(`[DEBUG Dashboard] Hostname: ${window.location.hostname}`);
+
         let userData = null;
 
         function switchTab(tab) {
