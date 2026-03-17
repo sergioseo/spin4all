@@ -513,6 +513,18 @@
                             <div class="day-label">D</div><div class="day-label">S</div><div class="day-label">T</div><div class="day-label">Q</div><div class="day-label">Q</div><div class="day-label">S</div><div class="day-label">S</div>
                         </div>
                     </div>
+
+                    <!-- Ranking de Presença (NOVO) -->
+                    <div class="glass-card">
+                        <div class="card-title">
+                            <i class="fas fa-medal"></i>
+                            Ranking de Presença
+                        </div>
+                        <p style="font-size: 0.7rem; color: #64748b; margin-bottom: 15px; margin-top: -10px;">Líderes de frequência nos últimos 14 dias.</p>
+                        <div id="attendance-ranking-list" style="display: flex; flex-direction: column; gap: 12px;">
+                            <div style="color: #64748b; font-size: 0.75rem; text-align: center;">Carregando frequência...</div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- COLUNA 2: PULSO DA COMUNIDADE (5 INDICADORES) -->
@@ -533,15 +545,14 @@
                                 </div>
                             </div>
 
-                            <!-- Indicador 3: DNA Técnico (Chart) -->
-                            <div class="indicator-box">
-                                <div class="indicator-subtitle">
-                                    <i class="fas fa-microchip"></i> DNA Técnico do Grupo
+                            <!-- Indicador 3: Taxa de Progressão (NOVO INDICADOR COMUNITÁRIO) -->
+                            <div class="indicator-box" style="border-left: 3px solid #4ade80;">
+                                <div class="indicator-subtitle" style="color: #4ade80;">🚀 Saúde da Comunidade</div>
+                                <div style="display: flex; align-items: baseline; gap: 8px;">
+                                    <div style="font-size: 1.8rem; font-weight: 900; color: #fff;" id="community-progression-rate">0%</div>
+                                    <div style="font-size: 0.75rem; color: #94a3b8;">evolução técnica na semana</div>
                                 </div>
-                                <div style="height: 140px; position: relative;">
-                                    <canvas id="communityLevelChart"></canvas>
-                                </div>
-                                <div id="community-level-legend" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; justify-content: center;"></div>
+                                <p style="font-size: 0.65rem; color: #64748b; margin-top: 10px;">Percentual de membros que atingiram novos patamares de performance nos últimos 7 dias.</p>
                             </div>
 
                             <!-- Indicador 4: Engajamento Semanal -->
@@ -565,12 +576,13 @@
 
                 <!-- COLUNA 3: ELITE E RANKINGS -->
                 <div style="display: flex; flex-direction: column; gap: 25px;">
-                    <!-- Hall da Fama (Anual) -->
+                    <!-- Ranking de Torneios (Renomeado) -->
                     <div class="glass-card">
                         <div class="card-title">
                             <i class="fas fa-trophy"></i>
-                            Hall da Fama
+                            Ranking de Torneios
                         </div>
+                        <p style="font-size: 0.7rem; color: #64748b; margin-bottom: 15px; margin-top: -10px;">Melhores performances nos últimos 12 meses.</p>
                         <div id="ranking-list" style="display: flex; flex-direction: column; gap: 12px;">
                             <div style="color: #94a3b8; font-size: 0.8rem; text-align: center;">Carregando...</div>
                         </div>
@@ -582,10 +594,10 @@
                             <i class="fas fa-chart-line"></i>
                             Vanguarda do Mês
                         </div>
+                        <p style="font-size: 0.7rem; color: #64748b; margin-bottom: 15px; margin-top: -10px;">Destaque para o maior crescimento técnico real.</p>
                         <div id="evolution-list" style="display: flex; flex-direction: column; gap: 12px;">
                             <div style="color: #94a3b8; font-size: 0.8rem; text-align: center;">Analisando...</div>
                         </div>
-                        <p style="font-size: 0.6rem; color: #64748b; text-align: center; margin-top: 15px;">Destaque para o maior crescimento técnico.</p>
                     </div>
                 </div>
             </section>

@@ -832,11 +832,11 @@ SET
 WHERE id_usuario > 0;
 
 -- 7. Evolução Histórica (Ranking Mensal) - 30 DIAS PARA TODOS OS MEMBROS
--- Gera 30 registros por membro com uma tendência levemente ascendente
+-- Gera 30 registros por membro com uma tendência ACENDENTE REAL para a Vanguarda do Mês
 INSERT INTO trusted.tb_membros_evolucao (id_usuario, num_skill_avg_total, dt_registro)
 SELECT 
     u.id_usuario, 
-    (30 + floor(random() * 40) + (i * 0.3))::float as skill, 
+    (30 + floor(random() * 20) + (i * 0.8))::float as skill, -- Crescimento mais visível (0.8 por dia)
     (CURRENT_DATE - (30 - i) * INTERVAL '1 day')::date
 FROM trusted.tb_usuarios u
 CROSS JOIN generate_series(1, 30) i
