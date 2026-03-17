@@ -116,8 +116,13 @@
             z-index: 9999;
         }
 
-        .nav-link.active {
-            background: rgba(56, 189, 248, 0.1);
+        .nav-link {
+            color: #94a3b8;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255, 255, 255, 0.05);
             color: #38bdf8;
         }
         .radar-filter {
@@ -157,18 +162,16 @@
             <span style="font-weight: 800; font-size: 1.5rem;">ADMIN<span style="color:#38bdf8">SHIELD</span></span>
         </div>
         <nav class="nav-menu" style="flex-grow: 1;">
-            <a href="dashboard.html" class="nav-link" style="margin-bottom: 10px; display: flex; align-items: center; gap: 12px; padding: 12px; color: #94a3b8; text-decoration: none;">
+            <a href="dashboard.html" class="nav-link" style="margin-bottom: 10px; display: flex; align-items: center; gap: 12px; padding: 12px; text-decoration: none; border-radius: 8px;">
                 <i class="fas fa-arrow-left"></i> Voltar ao Portal
             </a>
-            <a href="#" class="nav-link active" style="margin-bottom: 10px; display: flex; align-items: center; gap: 12px; padding: 12px; color: #fff; text-decoration: none; border-radius: 8px;">
+            <a href="#" class="nav-link" style="margin-bottom: 10px; display: flex; align-items: center; gap: 12px; padding: 12px; text-decoration: none; border-radius: 8px;">
                 <i class="fas fa-chart-pie"></i> Dashboard
             </a>
-            <a href="checkin.html" class="nav-link" style="margin-bottom: 10px; display: flex; align-items: center; gap: 12px; padding: 12px; color: #4ade80; text-decoration: none;">
-                <i class="fas fa-tablet-screen-button"></i> Lançar Check-in (Tablet)
+            <a href="checkin.html" class="nav-link" style="margin-bottom: 10px; display: flex; align-items: center; gap: 12px; padding: 12px; text-decoration: none; border-radius: 8px;">
+                <i class="fas fa-tablet-screen-button"></i> Treinamentos
             </a>
-            <a href="torneios.html" class="nav-link" style="margin-bottom: 10px; display: flex; align-items: center; gap: 12px; padding: 12px; color: #fbbf24; text-decoration: none;">
-                <i class="fas fa-trophy"></i> Painel do Torneio (Sextão)
-            </a>
+
         </nav>
         <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
             <p style="font-size: 0.8rem; color: #64748b;">Acesso Restrito</p>
