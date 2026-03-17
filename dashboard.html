@@ -1333,11 +1333,13 @@
         }
 
         function renderCommunityLevelChart(levels) {
-            const ctx = document.getElementById('communityLevelChart').getContext('2d');
+            const canvasEl = document.getElementById('communityLevelChart');
+            if (!canvasEl) return; // Canvas não existe na página, ignorar
+            const ctx = canvasEl.getContext('2d');
             if (window.levelChart) window.levelChart.destroy();
 
-            const labels = levels.map(l => l.dsc_nivel_tecnico); // Changed from l.nivel to l.dsc_nivel_tecnico based on original code
-            const values = levels.map(l => parseInt(l.qtd)); // Changed from l.quantidade to l.qtd based on original code
+            const labels = levels.map(l => l.dsc_nivel_tecnico);
+            const values = levels.map(l => parseInt(l.num_membros || l.qtd || 0));
             const colors = ['#38bdf8', '#818cf8', '#a78bfa', '#f472b6'];
 
             window.levelChart = new Chart(ctx, {

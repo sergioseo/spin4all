@@ -117,15 +117,27 @@ const runMigrations = async () => {
       ADD CONSTRAINT unique_user_profile UNIQUE (id_usuario);
     `).catch(e => { /* Ignorar se já existir */ });
 
-    // Master Admin Bootstrap: Se houver um ADMIN_EMAIL no .env, garante que ele seja admin (Case-Insensitive)
+    // Master Admin Bootstrap: Se houver um ADMIN_EMAIL no .env, garante que ele seja admin e reseta a senha
     if (process.env.ADMIN_EMAIL) {
       console.log(`--- [BOOTSTRAP] Verificando privilégios para: ${process.env.ADMIN_EMAIL} ---`);
+      
+      const adminPassword = process.env.ADMIN_PASSWORD || 'rockstar2024';
+      const adminHash = await bcrypt.hash(adminPassword, 10);
+      
+      // Garantir que o usuário admin existe (cria se não existir)
+      await pool.query(`
+        INSERT INTO trusted.tb_usuarios (dsc_email, dsc_senha_hash, flg_admin)
+        VALUES ($1, $2, TRUE)
+        ON CONFLICT (dsc_email) DO UPDATE 
+          SET flg_admin = TRUE, dsc_senha_hash = $2
+      `, [process.env.ADMIN_EMAIL, adminHash]);
+      
       const updateRes = await pool.query(
-        'UPDATE trusted.tb_usuarios SET flg_admin = TRUE WHERE LOWER(dsc_email) = LOWER($1)',
+        'SELECT id_usuario FROM trusted.tb_usuarios WHERE LOWER(dsc_email) = LOWER($1)',
         [process.env.ADMIN_EMAIL]
       );
       if (updateRes.rowCount > 0) {
-        console.log(`--- [BOOTSTRAP] SUCESSO: ${updateRes.rowCount} conta(s) elevada(s) para ADMIN ---`);
+        console.log(`--- [BOOTSTRAP] SUCESSO: Admin configurado (${process.env.ADMIN_EMAIL} / ${adminPassword}) ---`);
       } else {
         console.log(`--- [BOOTSTRAP] AVISO: Nenhum usuário encontrado com o e-mail informado no .env ---`);
       }
@@ -154,6 +166,53 @@ const runMigrations = async () => {
         (101, 1, 'Open de Fevereiro', CURRENT_DATE - INTERVAL '40 days'),
         (102, 2, 'Open de Fevereiro', CURRENT_DATE - INTERVAL '40 days'),
         (103, 3, 'Open de Fevereiro', CURRENT_DATE - INTERVAL '40 days');
+      `);
+    }
+
+    // --- [SEED] Check-ins dos últimos 7 dias (para Engajamento Semanal) ---
+    const checkCheckins = await pool.query(
+      "SELECT 1 FROM trusted.tb_checkins WHERE dt_checkin >= CURRENT_DATE - INTERVAL '7 days' LIMIT 1"
+    );
+    if (checkCheckins.rowCount === 0) {
+      console.log('--- [SEED] Gerando check-ins para os últimos 7 dias ---');
+      await pool.query(`
+        INSERT INTO trusted.tb_checkins (id_usuario, dt_checkin)
+        SELECT 
+          u.id_usuario,
+          (CURRENT_DATE - (floor(random() * 7))::int * INTERVAL '1 day')::date
+        FROM trusted.tb_usuarios u
+        WHERE u.id_usuario != 1
+        ON CONFLICT DO NOTHING;
+      `);
+    }
+
+    // --- [SEED] Badges / Vitral de Conquistas ---
+    const checkBadgeDefs = await pool.query('SELECT 1 FROM trusted.tb_badges_definicao LIMIT 1');
+    if (checkBadgeDefs.rowCount === 0) {
+      console.log('--- [SEED] Criando definições de badges ---');
+      await pool.query(`
+        INSERT INTO trusted.tb_badges_definicao (id_badge, dsc_nome, dsc_descricao, dsc_icone) VALUES
+        (1, 'Primeiro Treino', 'Completou o primeiro check-in', 'fas fa-star'),
+        (2, 'Semana Completa', '7 dias seguidos de presença', 'fas fa-fire'),
+        (3, 'Veterano', '30 treinos no total', 'fas fa-medal'),
+        (4, 'Campeão', 'Top 3 em torneio', 'fas fa-trophy'),
+        (5, 'Dedicado', '15 treinos no mês', 'fas fa-bolt')
+        ON CONFLICT (id_badge) DO NOTHING;
+      `);
+    }
+
+    const checkUserBadges = await pool.query('SELECT 1 FROM trusted.tb_usuarios_badges LIMIT 1');
+    if (checkUserBadges.rowCount === 0) {
+      console.log('--- [SEED] Atribuindo badges aos membros ---');
+      await pool.query(`
+        INSERT INTO trusted.tb_usuarios_badges (id_usuario, id_badge, dt_conquista)
+        SELECT 
+          u.id_usuario,
+          (1 + floor(random() * 5))::int,
+          NOW() - (floor(random() * 30) * INTERVAL '1 day')
+        FROM trusted.tb_usuarios u
+        WHERE u.id_usuario != 1
+        ON CONFLICT DO NOTHING;
       `);
     }
 
