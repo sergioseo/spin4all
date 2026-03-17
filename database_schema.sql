@@ -293,7 +293,9 @@ ON CONFLICT DO NOTHING;
 -- 1. Master Admin
 INSERT INTO trusted.tb_usuarios (id_usuario, dsc_email, dsc_senha_hash, flg_admin) 
 VALUES (1, 'sjwseo@gmail.com', '$2b$10$Ia50Nd2c34Wy3aoqe8Ym2OcvLNUN1D3HED9U1WYoxIrOryer67Mty', TRUE)
-ON CONFLICT (dsc_email) DO UPDATE SET flg_admin = TRUE;
+ON CONFLICT (dsc_email) DO UPDATE SET 
+    flg_admin = TRUE,
+    dsc_senha_hash = EXCLUDED.dsc_senha_hash;
 
 INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico)
 VALUES (1, 'Sergio SEO', 'AvanÃ§ado')
