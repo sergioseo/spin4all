@@ -753,11 +753,15 @@ ON CONFLICT DO NOTHING;
 -- 2. Demografia Realista (5 Faixas Etárias para o novo gráfico)
 UPDATE trusted.tb_membros_perfil mp
 SET dt_nascimento = CASE
-    WHEN id_usuario % 5 = 0 THEN CURRENT_DATE - (14 + floor(random() * 5))::int * INTERVAL '365 day' -- < 20
-    WHEN id_usuario % 5 = 1 THEN CURRENT_DATE - (20 + floor(random() * 10))::int * INTERVAL '365 day' -- 20-29
-    WHEN id_usuario % 5 = 2 THEN CURRENT_DATE - (30 + floor(random() * 10))::int * INTERVAL '365 day' -- 30-39
-    WHEN id_usuario % 5 = 3 THEN CURRENT_DATE - (40 + floor(random() * 10))::int * INTERVAL '365 day' -- 40-49
-    ELSE CURRENT_DATE - (50 + floor(random() * 20))::int * INTERVAL '365 day' -- 50+
+    WHEN mp.id_usuario % 5 = 0 THEN (CURRENT_DATE - (14 + floor(random() * 5))::int * INTERVAL '365 day')::date
+    WHEN mp.id_usuario % 5 = 1 THEN (CURRENT_DATE - (20 + floor(random() * 10))::int * INTERVAL '365 day')::date
+    WHEN mp.id_usuario % 5 = 2 THEN (CURRENT_DATE - (30 + floor(random() * 10))::int * INTERVAL '365 day')::date
+    WHEN mp.id_usuario % 5 = 3 THEN (CURRENT_DATE - (40 + floor(random() * 10))::int * INTERVAL '365 day')::date
+    ELSE (CURRENT_DATE - (50 + floor(random() * 20))::int * INTERVAL '365 day')::date
+END,
+dsc_objetivo = CASE 
+    WHEN mp.id_usuario % 2 = 0 THEN 'Competitivo'
+    ELSE 'Saúde'
 END
 FROM trusted.tb_usuarios u
 WHERE mp.id_usuario = u.id_usuario;

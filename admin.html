@@ -199,34 +199,51 @@
             </div>
         </section>
 
-        <section class="dashboard-grid" style="grid-template-columns: 2fr 1fr; gap: 30px; margin-bottom: 30px;">
+        <section class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; margin-bottom: 30px;">
             <!-- Gráficos Principais -->
-            <div class="charts-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; grid-column: span 2;">
-                <div class="glass-card chart-container">
-                    <h3 style="margin-bottom: 5px; color: #38bdf8;"><i class="fas fa-calendar-check"></i> Volume de Presença</h3>
-                    <p style="font-size: 0.7rem; color: #64748b; margin-bottom: 15px;">Frequência total de check-ins nos últimos 14 dias.</p>
-                    <div style="height: 250px;">
-                        <canvas id="checkinChart"></canvas>
-                    </div>
+            <div class="glass-card chart-container" style="height: auto; min-height: 380px;">
+                <h3 style="margin-bottom: 5px; color: #38bdf8;"><i class="fas fa-calendar-check"></i> Volume de Presença</h3>
+                <p style="font-size: 0.7rem; color: #64748b; margin-bottom: 15px;">Frequência total de check-ins nos últimos 14 dias.</p>
+                <div style="height: 250px;">
+                    <canvas id="checkinChart"></canvas>
                 </div>
-                <div class="glass-card chart-container">
-                    <h3 style="margin-bottom: 5px; color: #fbbf24;"><i class="fas fa-users"></i> Distribuição por Nível</h3>
-                    <p style="font-size: 0.7rem; color: #64748b; margin-bottom: 15px;">Segmentação da base de alunos por patamar técnico atual.</p>
-                    <div style="height: 250px;">
-                        <canvas id="levelChart"></canvas>
-                    </div>
-                </div>
-                <div class="glass-card chart-container" style="grid-column: span 2;">
-                    <h3 style="margin-bottom: 5px; color: #a855f7;"><i class="fas fa-id-card"></i> Demografia e Nível Técnico</h3>
-                    <p style="font-size: 0.7rem; color: #64748b; margin-bottom: 15px;">Distribuição de idades cruzada com o nível de jogo para análise de renovação.</p>
-                    <div style="height: 300px;">
-                        <canvas id="ageDemographicChart"></canvas>
-                    </div>
+            </div>
+            <div class="glass-card chart-container" style="height: auto; min-height: 380px;">
+                <h3 style="margin-bottom: 5px; color: #fbbf24;"><i class="fas fa-users"></i> Distribuição por Nível</h3>
+                <p style="font-size: 0.7rem; color: #64748b; margin-bottom: 15px;">Segmentação da base de alunos por patamar técnico atual.</p>
+                <div style="height: 250px;">
+                    <canvas id="levelChart"></canvas>
                 </div>
             </div>
         </section>
 
-        <section class="dashboard-grid" style="grid-template-columns: 2fr 1fr; gap: 30px;">
+        <section class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; margin-bottom: 30px;">
+            <div class="glass-card chart-container" style="height: auto; min-height: 400px;">
+                <h3 style="margin-bottom: 5px; color: #a855f7;"><i class="fas fa-id-card"></i> Demografia e Nível Técnico</h3>
+                <p style="font-size: 0.7rem; color: #64748b; margin-bottom: 15px;">Distribuição de idades cruzada com o nível de jogo para análise de renovação.</p>
+                <div style="height: 300px;">
+                    <canvas id="ageDemographicChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Foco Coletivo -->
+            <div class="glass-card" style="height: auto; min-height: 400px;">
+                <h3 style="margin-bottom: 20px; color: #a855f7;"><i class="fas fa-bullseye"></i> Foco e Objetivos do Grupo</h3>
+                
+                <div style="background: rgba(168, 85, 247, 0.05); border: 1px solid rgba(168, 85, 247, 0.1); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                    <div style="font-size: 0.7rem; color: #a855f7; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px;">Síntese da Comunidade</div>
+                    <p id="objectives-synthesis" style="font-size: 1.1rem; font-weight: 500; color: #e2e8f0; line-height: 1.6; margin: 0;">
+                        Analisando metas e objetivos dos membros...
+                    </p>
+                </div>
+
+                <div id="objectives-tags" style="display: flex; flex-wrap: wrap; gap: 10px;">
+                    <!-- Gerado via JS -->
+                </div>
+            </div>
+        </section>
+
+        <section class="dashboard-grid" style="grid-template-columns: 1fr; gap: 30px; margin-bottom: 30px;">
             <!-- Pico de Performance -->
             <div class="glass-card">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
@@ -240,22 +257,6 @@
                 </div>
                 <div style="height: 350px;">
                     <canvas id="performanceLineChart"></canvas>
-                </div>
-            </div>
-
-            <!-- Foco Coletivo -->
-            <div class="glass-card">
-                <h3 style="margin-bottom: 20px; color: #a855f7;"><i class="fas fa-bullseye"></i> Foco e Objetivos do Grupo</h3>
-                
-                <div style="background: rgba(168, 85, 247, 0.05); border: 1px solid rgba(168, 85, 247, 0.1); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
-                    <div style="font-size: 0.7rem; color: #a855f7; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px;">Síntese da Comunidade</div>
-                    <p id="objectives-synthesis" style="font-size: 1.1rem; font-weight: 500; color: #e2e8f0; line-height: 1.6; margin: 0;">
-                        Analisando metas e objetivos dos membros...
-                    </p>
-                </div>
-
-                <div id="objectives-tags" style="display: flex; flex-wrap: wrap; gap: 10px;">
-                    <!-- Gerado via JS -->
                 </div>
             </div>
         </section>
@@ -322,18 +323,6 @@
 
         </section>
 
-        <!-- Demografia por Faixas -->
-        <section class="glass-card" style="margin-top: 30px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-                <div>
-                    <h3 style="margin-bottom: 5px; color: #fbbf24;"><i class="fas fa-id-card"></i> Demografia: Faixas Etárias por Nível</h3>
-                    <p style="font-size: 0.8rem; color: #64748b;">Distribuição de membros em 5 faixas etárias segmentadas por nível técnico</p>
-                </div>
-            </div>
-            <div style="height: 350px;">
-                <canvas id="ageDemographicChart"></canvas>
-            </div>
-        </section>
 
         <section id="membros" class="glass-card" style="margin-top: 40px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -483,6 +472,10 @@
 
         function renderCheckinChart(data) {
             const ctx = document.getElementById('checkinChart').getContext('2d');
+            
+            // Destruir instância anterior se existir
+            Chart.getChart(ctx.canvas)?.destroy();
+
             new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -747,8 +740,8 @@
 
             document.querySelectorAll('.radar-filter').forEach(btn => btn.classList.remove('active'));
             const btnId = level === 'all' ? 'btn-radar-all' : 
-                         level === 'Iniciante' ? 'btn-radar-ini' :
-                         level === 'Intermediário' ? 'btn-radar-int' : 'btn-radar-ava';
+                         normalizeLevel(level) === 'Iniciante' ? 'btn-radar-ini' :
+                         normalizeLevel(level) === 'Intermediário' ? 'btn-radar-int' : 'btn-radar-ava';
             document.getElementById(btnId).classList.add('active');
             const normLevel = normalizeLevel(level);
 
@@ -785,13 +778,13 @@
         }
 
         function renderGroupRadar(canvasId, data, color) {
-            const ctx = document.getElementById(canvasId).getContext('2d');
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
             
-            if (radarChartInstance) {
-                radarChartInstance.destroy();
-            }
+            // Destruir instância anterior de forma robusta
+            Chart.getChart(canvas)?.destroy();
 
-            radarChartInstance = new Chart(ctx, {
+            new Chart(canvas.getContext('2d'), {
                 type: 'radar',
                 data: {
                     labels: [
@@ -907,28 +900,11 @@
                 });
             }
 
-            const ctx = document.getElementById('performanceLineChart').getContext('2d');
-            const colors = ['#4ade80', '#38bdf8', '#fbbf24', '#f43f5e', '#a855f7'];
-            
-            const allDates = new Set();
-            data.forEach(m => m.history.forEach(h => allDates.add(new Date(h.dt_registro).toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'}))));
-            const labels = Array.from(allDates).sort();
+            const canvas = document.getElementById('performanceLineChart');
+            if (!canvas) return;
+            Chart.getChart(canvas)?.destroy();
 
-            let datasets = data.map((m, i) => ({
-                label: m.name,
-                data: m.history.map(h => h.val),
-                borderColor: colors[i % colors.length],
-                backgroundColor: colors[i % colors.length] + '20',
-                fill: false,
-                tension: 0.3,
-                pointRadius: activePerfIndex === 'all' || activePerfIndex === i ? 4 : 0,
-                borderWidth: activePerfIndex === 'all' || activePerfIndex === i ? 2 : 1,
-                hidden: activePerfIndex !== 'all' && activePerfIndex !== i
-            }));
-
-            if (performanceChartInstance) performanceChartInstance.destroy();
-
-            performanceChartInstance = new Chart(ctx, {
+            performanceChartInstance = new Chart(canvas.getContext('2d'), {
                 type: 'line',
                 data: { labels, datasets },
                 options: {

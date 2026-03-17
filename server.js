@@ -402,7 +402,7 @@ app.post('/api/checkin', authenticateToken, isAdmin, async (req, res) => {
 
     if (!userId && email) {
       // Buscar usuário pelo e-mail se o ID não for fornecido
-      const userRes = await pool.query('SELECT id_usuario, dsc_nome_completo FROM trusted.tb_membros_perfil p JOIN trusted.tb_usuarios u ON p.id_usuario = u.id_usuario WHERE u.dsc_email = $1', [email]);
+      const userRes = await pool.query('SELECT u.id_usuario, p.dsc_nome_completo FROM trusted.tb_membros_perfil p JOIN trusted.tb_usuarios u ON p.id_usuario = u.id_usuario WHERE u.dsc_email = $1', [email]);
       if (userRes.rows.length === 0) {
         return res.status(404).json({ success: false, message: 'Membro não encontrado.' });
       }
@@ -440,8 +440,8 @@ app.get('/api/checkin-list', authenticateToken, isAdmin, async (req, res) => {
         p.id_usuario, 
         p.dsc_nome_completo,
         EXISTS (
-          SELECT 1 FROM trusted.tb_checkins 
-          WHERE id_usuario = p.id_usuario AND dt_checkin = CURRENT_DATE
+          SELECT 1 FROM trusted.tb_checkins c
+          WHERE c.id_usuario = p.id_usuario AND c.dt_checkin = CURRENT_DATE
         ) as flg_presente
       FROM trusted.tb_membros_perfil p
       JOIN trusted.tb_usuarios u ON p.id_usuario = u.id_usuario
