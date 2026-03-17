@@ -89,8 +89,15 @@ const runMigrations = async () => {
     await pool.query(`
       ALTER TABLE trusted.tb_membros_perfil 
       ADD COLUMN IF NOT EXISTS dsc_foto_perfil TEXT,
-      ADD COLUMN IF NOT EXISTS dsc_lateralidade TEXT DEFAULT 'Destro',
+      ADD COLUMN IF NOT EXISTS dt_nascimento DATE,
+      ADD COLUMN IF NOT EXISTS vlr_lateralidade TEXT DEFAULT 'Destro',
       ADD COLUMN IF NOT EXISTS dsc_empunhadura TEXT DEFAULT 'Clássica',
+      ADD COLUMN IF NOT EXISTS dsc_objetivo TEXT,
+      ADD COLUMN IF NOT EXISTS dsc_metas TEXT,
+      ADD COLUMN IF NOT EXISTS num_altura_cm INTEGER,
+      ADD COLUMN IF NOT EXISTS num_peso_kg INTEGER,
+      ADD COLUMN IF NOT EXISTS num_telefone VARCHAR(20),
+      ADD COLUMN IF NOT EXISTS dsc_mensagem_mentor TEXT,
       ADD COLUMN IF NOT EXISTS num_skill_forehand INTEGER DEFAULT 50,
       ADD COLUMN IF NOT EXISTS num_skill_backhand INTEGER DEFAULT 50,
       ADD COLUMN IF NOT EXISTS num_skill_cozinhada INTEGER DEFAULT 50,
@@ -152,7 +159,7 @@ const runMigrations = async () => {
 
     console.log('--- Migrações Concluídas com Sucesso ---');
   } catch (err) {
-    console.error('Erro nas migrações:', err.message);
+    console.error('❌ ERRO NAS MIGRAÇÕES:', err);
   }
 };
 
@@ -360,7 +367,7 @@ app.post('/api/register', async (req, res) => {
     // 3. Criar Perfil na TRUSTED (Estado Atual)
     await client.query(`
         INSERT INTO trusted.tb_membros_perfil 
-          (id_usuario, dsc_nome_completo, dt_nascimento, num_altura_cm, num_peso_kg, num_telefone, vlr_lateralidade, vlr_empunhadura, dsc_nivel_tecnico, dsc_objetivo_principal, dsc_metas)
+          (id_usuario, dsc_nome_completo, dt_nascimento, num_altura_cm, num_peso_kg, num_telefone, vlr_lateralidade, dsc_empunhadura, dsc_nivel_tecnico, dsc_objetivo, dsc_metas)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
       `, [
         userId, 
@@ -368,7 +375,9 @@ app.post('/api/register', async (req, res) => {
         profileData.birthDate || null, 
         profileData.height, 
         profileData.weight,
-        profileData.phone || '', // Novo campo telefone
+        profileData.phone || '',
+        profileData.lateralidade || 'Destro',
+        profileData.grip || 'Clássica',
         profileData.level, 
         profileData.objective, 
         profileData.goals
