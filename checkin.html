@@ -350,154 +350,122 @@
             margin: 2rem auto 0;
         }
 
-        /* --- RESPONSIVIDADE --- */
+        /* ─── RESPONSIVIDADE ─────────────────────────────── */
+
+        /* Tablet (768–1200px): split-screen com coluna esquerda menor */
         @media (max-width: 1200px) {
             .checkin-container {
-                grid-template-columns: 300px 1fr;
+                grid-template-columns: 260px 1fr;
                 gap: 15px;
             }
+            .present-list-col { width: 260px; flex: 0 0 260px; }
         }
 
-        @media (max-width: 1024px) {
-            .checkin-container {
-                grid-template-columns: 240px 1fr; /* Largura um pouco menor para o tablet */
-                gap: 12px;
-                height: 75vh;
+        /* Mobile grande (480–768px): split-screen compacto */
+        @media (max-width: 768px) {
+            body { padding: 1rem 0.5rem; }
+
+            /* Reposicionar botão Voltar para não sobrepor header */
+            .top-bar {
+                position: static;
+                padding: 0 0 8px 0;
                 width: 100%;
-                max-width: 100%;
+                display: flex;
+                justify-content: flex-start;
+            }
+
+            .checkin-header { margin-bottom: 1.5rem; }
+
+            .massive-clock-checkin {
+                font-size: min(8rem, 20vw);
+                margin-bottom: 1rem;
+            }
+
+            .checkin-container {
+                grid-template-columns: 200px 1fr;
+                gap: 12px;
+                height: 65vh;
+                width: 100%;
                 box-sizing: border-box;
             }
 
-            .present-list-col {
-                flex: none;
-                width: 240px;
-            }
+            .present-list-col { width: 200px; flex: 0 0 200px; }
 
-            .absent-grid-col {
-                height: 100%;
-                overflow: hidden;
-            }
-            
-            .massive-clock-checkin {
-                font-size: 6rem; /* Reduzido mais um pouco */
-                margin-bottom: 1rem;
-            }
-            
-            .playlist-card { padding: 8px; gap: 8px; }
-            .playlist-card .name { font-size: 0.85rem; }
-            .playlist-card .time-entry { font-size: 0.7rem; display: block !important; }
+            .absent-grid-col { height: 100%; overflow: hidden; }
+
+            .playlist-card .time-entry { display: block !important; }
         }
 
-        @media (max-width: 768px) {
+        /* Mobile pequeno (<480px): layout vertical, sem split */
+        @media (max-width: 480px) {
+            html, body {
+                overflow-x: hidden;
+                padding: 0;
+                min-height: 100vh;
+            }
+
+            body { padding: 0.5rem; box-sizing: border-box; }
+
             .top-bar {
-                position: relative;
-                top: 0;
-                left: 0;
-                right: 0;
-                padding: 10px;
-                justify-content: center;
-                margin-bottom: -10px;
+                position: static;
+                padding: 0.5rem 0;
+                width: 100%;
+                justify-content: flex-start;
             }
 
             .checkin-header {
-                margin-top: 0;
-                padding-top: 0;
-                margin-bottom: 1.5rem;
+                margin-bottom: 1rem;
             }
 
-            .header-right {
+            .checkin-header h1 { font-size: 2rem; }
+
+            .massive-clock-checkin {
+                font-size: min(3.5rem, 13vw);
+                margin-bottom: 0.75rem;
+            }
+
+            /* Empilhamento vertical no mobile pequeno */
+            .checkin-container {
+                grid-template-columns: 1fr;
+                height: auto;
+                gap: 12px;
+            }
+
+            /* Lista de Presença: altura fixa + scroll */
+            .present-list-col {
                 width: 100%;
-                justify-content: center;
+                flex: none;
+                max-height: 220px;
+                overflow: hidden;
+            }
+
+            /* Grade de check-in: altura fixa + scroll */
+            .absent-grid-col {
+                height: auto;
+                min-height: 350px;
+                max-height: 55vh;
+                overflow: hidden;
+            }
+
+            /* FORÇA scroll nas duas colunas */
+            .scrollable-area {
+                overflow-y: scroll !important;
+                -webkit-overflow-scrolling: touch !important;
+            }
+
+            .members-grid {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
                 gap: 10px;
             }
 
-            .search-container {
-                width: 100%;
-            }
+            .member-card { padding: 12px 8px; }
+            .avatar { width: 50px; height: 50px; font-size: 1.2rem; }
+            .member-name { font-size: 0.9rem; }
 
-            #memberSearch {
-                width: 100% !important;
-            }
+            .playlist-card .time-entry { display: block !important; }
 
-            .clock-box {
-                font-size: 1rem;
-            }
-
-            .playlist-card {
-                padding: 10px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            body { padding: 0.5rem; overflow: hidden; height: 100vh; } 
-            
-            #view-checkin {
-                width: 100%;
-                height: calc(100vh - 120px);
-                overflow: hidden;
-                display: flex;
-                flex-direction: column;
-            }
-
-            .checkin-container {
-                padding: 0;
-                grid-template-columns: 80px 1fr;
-                gap: 8px;
-                flex: 1;
-                min-height: 0;
-                width: 100%;
-                overflow: hidden;
-                margin-top: 1rem;
-            }
-
-            .present-list-col {
-                width: 80px;
-                flex: 0 0 80px;
-                background: rgba(15, 23, 42, 0.6);
-            }
-            
-            .present-list-col .col-header { padding: 8px 4px; }
-            .present-list-col .col-header h2 i { margin: 0 !important; font-size: 1rem; }
-            .present-list-col .col-header h2 { font-size: 0; }
-            .present-list-col .col-header h2::after { content: "P"; font-size: 0.8rem; font-weight: 800; }
-            .present-list-col .col-header span { display: none; }
-            
-            .scrollable-area { padding: 6px !important; flex: 1; overflow-y: auto !important; }
-
-            .massive-clock-checkin {
-                font-size: 12vw; /* Escala dinâmica */
-                margin-bottom: 0.5rem;
-                text-align: center;
-                width: 100%;
-                display: block;
-                line-height: 1;
-            }
-
-            .member-grid {
-                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-                gap: 6px;
-                padding-bottom: 2rem;
-            }
-
-            .member-card { padding: 8px 4px; }
-            .avatar { width: 32px; height: 32px; font-size: 0.8rem; }
-            .member-name { font-size: 0.65rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-            
-            .checkin-header h1 { font-size: 1.5rem; margin-bottom: 2px; }
-            .checkin-header .subtitle { font-size: 0.7rem; letter-spacing: 1px; }
-            
-            .playlist-card { flex-direction: column; padding: 4px; gap: 2px; text-align: center; }
-            .playlist-card .avatar { width: 28px; height: 28px; }
-            .playlist-card .info { align-items: center; padding: 0; }
-            .playlist-card .name { font-size: 0.6rem; font-weight: 600; }
-            .playlist-card .time-entry { font-size: 0.5rem; display: block !important; }
-            
-            .view-toggle { padding: 0.2rem; margin-bottom: 0.5rem; }
-            .toggle-btn { padding: 0.5rem 0.8rem; font-size: 0.75rem; }
-            
-            .search-container { margin-bottom: 1rem; }
-            .search-container input { padding: 0.8rem 1rem 0.8rem 2.5rem; font-size: 0.9rem; }
-            .search-container i { left: 1rem; font-size: 1rem; }
+            .view-toggle { flex-wrap: wrap; }
+            .toggle-btn { padding: 0.6rem 1.2rem; font-size: 0.9rem; }
         }
 
         .present-list-col {
