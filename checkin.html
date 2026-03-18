@@ -389,16 +389,20 @@
         }
 
         @media (max-width: 768px) {
-            header {
-                flex-direction: column;
-                height: auto;
-                padding: 15px;
-                gap: 15px;
+            .top-bar {
+                position: relative;
+                top: 0;
+                left: 0;
+                right: 0;
+                padding: 10px;
+                justify-content: center;
+                margin-bottom: -10px;
             }
 
-            .header-left {
-                width: 100%;
-                justify-content: center;
+            .checkin-header {
+                margin-top: 0;
+                padding-top: 0;
+                margin-bottom: 1.5rem;
             }
 
             .header-right {
@@ -425,67 +429,75 @@
         }
 
         @media (max-width: 480px) {
-            body { padding: 1rem 0.5rem; }
+            body { padding: 0.5rem; overflow: hidden; height: 100vh; } 
             
             #view-checkin {
                 width: 100%;
-                overflow-x: hidden;
+                height: calc(100vh - 120px);
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
             }
 
             .checkin-container {
                 padding: 0;
-                grid-template-columns: 100px 1fr; /* Ainda mais compacto no mobile */
+                grid-template-columns: 80px 1fr;
                 gap: 8px;
-                height: 70vh;
+                flex: 1;
+                min-height: 0;
                 width: 100%;
-                max-width: 100vw;
+                overflow: hidden;
+                margin-top: 1rem;
             }
 
             .present-list-col {
-                width: 100px;
+                width: 80px;
+                flex: 0 0 80px;
+                background: rgba(15, 23, 42, 0.6);
             }
             
-            .present-list-col .col-header h2 i { margin-right: 0 !important; font-size: 0.9rem; }
-            .present-list-col .col-header h2 { font-size: 0.7rem; text-align: center; line-height: 1.1; }
+            .present-list-col .col-header { padding: 8px 4px; }
+            .present-list-col .col-header h2 i { margin: 0 !important; font-size: 1rem; }
+            .present-list-col .col-header h2 { font-size: 0; }
+            .present-list-col .col-header h2::after { content: "P"; font-size: 0.8rem; font-weight: 800; }
             .present-list-col .col-header span { display: none; }
             
-            .scrollable-area { padding: 8px !important; }
+            .scrollable-area { padding: 6px !important; flex: 1; overflow-y: auto !important; }
 
             .massive-clock-checkin {
-                font-size: 3.5rem; /* Um pouco menor para garantir que não estoura */
+                font-size: 12vw; /* Escala dinâmica */
                 margin-bottom: 0.5rem;
+                text-align: center;
+                width: 100%;
+                display: block;
+                line-height: 1;
             }
 
             .member-grid {
-                grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
                 gap: 6px;
+                padding-bottom: 2rem;
             }
 
-            .member-card {
-                padding: 8px 4px;
-            }
-
-            .avatar {
-                width: 35px;
-                height: 35px;
-                font-size: 0.9rem;
-            }
-
-            .member-name {
-                font-size: 0.7rem;
-            }
+            .member-card { padding: 8px 4px; }
+            .avatar { width: 32px; height: 32px; font-size: 0.8rem; }
+            .member-name { font-size: 0.65rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
             
-            .checkin-header h1 { font-size: 1.8rem; margin-bottom: 5px; }
-            .checkin-header .subtitle { font-size: 0.8rem; letter-spacing: 2px; }
+            .checkin-header h1 { font-size: 1.5rem; margin-bottom: 2px; }
+            .checkin-header .subtitle { font-size: 0.7rem; letter-spacing: 1px; }
             
-            .playlist-card { flex-direction: column; padding: 6px; gap: 4px; text-align: center; }
-            .playlist-card .avatar { width: 30px; height: 30px; }
-            .playlist-card .info { align-items: center; }
-            .playlist-card .name { font-size: 0.65rem; line-height: 1.1; }
-            .playlist-card .time-entry { font-size: 0.55rem; display: block !important; }
+            .playlist-card { flex-direction: column; padding: 4px; gap: 2px; text-align: center; }
+            .playlist-card .avatar { width: 28px; height: 28px; }
+            .playlist-card .info { align-items: center; padding: 0; }
+            .playlist-card .name { font-size: 0.6rem; font-weight: 600; }
+            .playlist-card .time-entry { font-size: 0.5rem; display: block !important; }
             
-            .view-toggle { padding: 0.3rem; margin-bottom: 1rem; }
-            .toggle-btn { padding: 0.6rem 1rem; font-size: 0.8rem; }
+            .view-toggle { padding: 0.2rem; margin-bottom: 0.5rem; }
+            .toggle-btn { padding: 0.5rem 0.8rem; font-size: 0.75rem; }
+            
+            .search-container { margin-bottom: 1rem; }
+            .search-container input { padding: 0.8rem 1rem 0.8rem 2.5rem; font-size: 0.9rem; }
+            .search-container i { left: 1rem; font-size: 1rem; }
         }
 
         .present-list-col {
