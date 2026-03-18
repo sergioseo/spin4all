@@ -1539,6 +1539,8 @@
                 const data = await response.json();
                 if (data.success) {
                     allMembers = data.members;
+                    console.log("--- DEBUG RAW DATA ---");
+                    if (allMembers.length > 0) console.log("Primeiro membro:", allMembers[0]);
                     renderMembers(allMembers);
                 }
             } catch (err) {
@@ -1547,6 +1549,9 @@
         }
 
         function renderMembers(members) {
+            console.log("--- DEBUG RENDER MEMBERS ---");
+            console.table(members.map(m => ({ nome: m.dsc_nome_completo, foto: m.dsc_foto_perfil })));
+            
             const grid = document.getElementById('membersGrid');
             const presentList = document.getElementById('presentList');
             const countLabel = document.getElementById('presentCount');
