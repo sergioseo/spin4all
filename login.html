@@ -212,8 +212,7 @@
                         ? 'https://spin4all-motor.h5rvsp.easypanel.host/api'
                         : window.location.origin + '/api';
                     
-                    console.log(`[DEBUG] Conectando atavés de: ${API_URL}`);
-                    console.log(`[DEBUG] Ambiente local detectado: ${isLocal}`);
+                    console.log(`[DEBUG] Conectando através de: ${API_URL}`);
 
                     try {
                         const response = await fetch(`${API_URL}/login`, {

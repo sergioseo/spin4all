@@ -297,9 +297,9 @@
     </div>
 
     <script>
-        const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-            ? 'http://localhost:3000/api'
-            : 'https://spin4all-motor.h5rvsp.easypanel.host/api';
+        const API_URL = (window.location.hostname.includes('spin4all.com.br'))
+            ? 'https://spin4all-motor.h5rvsp.easypanel.host/api'
+            : window.location.origin + '/api';
         
         // Verificar se o servidor está online ao carregar
         async function checkApiStatus() {
