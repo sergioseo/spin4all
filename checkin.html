@@ -572,10 +572,12 @@
 
         #view-workout {
             display: none;
+            flex-direction: column;  /* Timer fica no TOPO */
+            align-items: center;
+            width: 100%;
             max-width: 1400px;
             gap: 2rem;
-            margin-top: 4rem;
-            /* compensar clock */
+            margin-top: 2rem;
         }
 
         .search-container {
@@ -791,6 +793,20 @@
         .queue-title .clear-btn:hover {
             background: rgba(239, 68, 68, 0.3);
             color: #fff;
+        }
+
+        /* Badge de Tempo Total da Fila */
+        .queue-total {
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #4ade80;
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid rgba(74, 222, 128, 0.2);
+            border-radius: 10px;
+            padding: 6px 12px;
+            margin-bottom: 1rem;
+            letter-spacing: 0.5px;
         }
 
         /* Status Colors */
@@ -1083,6 +1099,7 @@
                         <button class="clear-btn" onclick="clearQueue('iniciante')" title="Limpar Fila"><i
                                 class="fas fa-trash"></i></button>
                     </div>
+                    <div class="queue-total" id="queue-total-iniciante"><span style="color:#64748b">Fila vazia</span></div>
                     <div class="playcards-area" id="list-iniciante"></div>
                 </div>
                 <div class="queue-col" id="col-intermediario">
@@ -1091,6 +1108,7 @@
                         <button class="clear-btn" onclick="clearQueue('intermediario')" title="Limpar Fila"><i
                                 class="fas fa-trash"></i></button>
                     </div>
+                    <div class="queue-total" id="queue-total-intermediario"><span style="color:#64748b">Fila vazia</span></div>
                     <div class="playcards-area" id="list-intermediario"></div>
                 </div>
                 <div class="queue-col" id="col-avancado">
@@ -1099,6 +1117,7 @@
                         <button class="clear-btn" onclick="clearQueue('avancado')" title="Limpar Fila"><i
                                 class="fas fa-trash"></i></button>
                     </div>
+                    <div class="queue-total" id="queue-total-avancado"><span style="color:#64748b">Fila vazia</span></div>
                     <div class="playcards-area" id="list-avancado"></div>
                 </div>
             </div>
@@ -1260,6 +1279,9 @@
         }
 
         function deleteCatalogItem(id) {
+            const item = catalogItems.find(c => c.id === id);
+            if (!item) return;
+            if (!confirm(`Excluir "${item.name}" do catálogo permanentemente?\nEsta ação não pode ser desfeita.`)) return;
             catalogItems = catalogItems.filter(c => c.id !== id);
             localStorage.setItem('spin4all_catalog', JSON.stringify(catalogItems));
             renderCatalog();
@@ -1363,6 +1385,22 @@
             renderQueue(level);
         }
 
+        // Editar tempo de card verde (ainda não iniciado)
+        function editGreenCardTime(level, id) {
+            const card = queues[level].find(p => p.id === id);
+            if (!card || card.status !== 'green') return;
+            const currentMins = Math.round(card.totalSeconds / 60);
+            const newMins = prompt(`Editar tempo de "${card.desc}":\nTempo atual: ${currentMins} min\n\nDigite o novo tempo em minutos:`, currentMins);
+            if (newMins === null || newMins.trim() === '') return;
+            const val = parseInt(newMins);
+            if (!isNaN(val) && val > 0) {
+                card.totalSeconds = val * 60;
+                card.remainingSeconds = val * 60;
+                saveState();
+                renderQueue(level);
+            }
+        }
+
         function fastForwardCard(level, id) {
             const card = queues[level].find(p => p.id === id);
             if (card && card.status === 'yellow') {
@@ -1417,6 +1455,14 @@
             }
         }
 
+        function calcQueueTotal(level) {
+            return queues[level].reduce((sum, item) => {
+                // somar apenas cards não concluídos (status red = concluíd o)
+                if (item.status !== 'red') return sum + (item.remainingSeconds || item.totalSeconds);
+                return sum;
+            }, 0);
+        }
+
         function renderAllQueues() {
             renderQueue('iniciante');
             renderQueue('intermediario');
@@ -1433,20 +1479,32 @@
             const col = document.getElementById(`list-${level}`);
             col.innerHTML = '';
 
+            // --- Atualizar totalizador ---
+            const totalSecs = calcQueueTotal(level);
+            const totalEl = document.getElementById(`queue-total-${level}`);
+            if (totalEl) {
+                totalEl.innerHTML = totalSecs > 0
+                    ? `<i class="fas fa-sigma" style="font-size:0.8rem; margin-right:4px;"></i> ${formatTime(totalSecs)} total`
+                    : '<span style="color:#64748b">Fila vazia</span>';
+            }
+
             queues[level].forEach(item => {
                 let statusClass = item.status === 'yellow' && item.isRest ? 'status-rest' : `status-${item.status}`;
                 let actionBtns = '';
 
                 if (item.status === 'green') {
-                    actionBtns = `<button class="action-btn delete" title="Remover" onclick="removePlaycard('${level}', '${item.id}')"><i class="fas fa-times"></i></button>`;
+                    actionBtns = `
+                        <button class="action-btn" title="Editar Tempo" onclick="editGreenCardTime('${level}', '${item.id}')" style="color:#38bdf8;"><i class="fas fa-pen"></i></button>
+                        <button class="action-btn delete" title="Remover" onclick="removePlaycard('${level}', '${item.id}')"><i class="fas fa-times"></i></button>
+                    `;
                 } else if (item.status === 'yellow') {
                     const pauseIcon = item.paused ? 'fa-play' : 'fa-pause';
                     const pauseTitle = item.paused ? 'Retomar' : 'Pausar';
                     const pauseClass = item.paused ? 'resume' : 'pause';
 
                     actionBtns = `
-                        <button class="action-btn edit-time" title="Ajustar Tempo Agora (+/-)" onclick="adjustRunningTime('${level}', '${item.id}')" style="margin-right: -4px;"><i class="fas fa-pen"></i></button>
-                        <button class="action-btn ${pauseClass}" title="${pauseTitle}" onclick="toggleCardPause('${level}', '${item.id}')" style="margin-right: -4px;"><i class="fas ${pauseIcon}"></i></button>
+                        <button class="action-btn" title="Ajustar Tempo (+/-)" onclick="adjustRunningTime('${level}', '${item.id}')" style="color:#38bdf8;"><i class="fas fa-pen"></i></button>
+                        <button class="action-btn ${pauseClass}" title="${pauseTitle}" onclick="toggleCardPause('${level}', '${item.id}')"><i class="fas ${pauseIcon}"></i></button>
                         <button class="action-btn finish" title="Concluir Imediatamente" onclick="fastForwardCard('${level}', '${item.id}')"><i class="fas fa-forward"></i></button>
                     `;
                 }
@@ -1459,10 +1517,10 @@
                 const pausedClass = item.paused ? 'is-paused' : '';
 
                 col.innerHTML += `
-                    <div class="playcard ${statusClass} ${pausedClass}" style="padding-bottom: ${finalPadding}rem;">
-                        <div class="desc">${item.desc}</div>
+                    <div class="playcard ${statusClass} ${pausedClass}">
+                        <div class="desc" style="padding-right: 0; margin-right: 0;">${item.desc}</div>
                         <div class="time"><i class="fas fa-clock"></i> ${formatTime(item.remainingSeconds)}</div>
-                        <div class="card-actions">${actionBtns}</div>
+                        <div class="card-actions" style="position: static; margin-top: 10px; display: flex; gap: 6px; justify-content: flex-end;">${actionBtns}</div>
                     </div>
                 `;
             });
