@@ -158,6 +158,76 @@ a {
   opacity: 0.8;
 }
 
+/* --- Mobile Menu Btn --- */
+.mobile-menu-btn {
+  display: flex;
+  background: transparent;
+  border: none;
+  font-size: 2rem;
+  color: var(--c-heading);
+  cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  .mobile-menu-btn {
+    display: none;
+  }
+}
+
+/* --- Mobile Nav Overlay --- */
+.mobile-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.mobile-nav.active {
+  transform: translateX(0);
+}
+
+.mobile-nav-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: transparent;
+  border: none;
+  font-size: 3rem;
+  color: var(--c-heading);
+  cursor: pointer;
+}
+
+.mobile-nav-content {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  text-align: center;
+}
+
+.mobile-nav-content a {
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-family: var(--f-display);
+  color: var(--c-heading);
+}
+
+.mobile-nav-cta {
+  background: var(--grad-cta);
+  color: #fff !important;
+  padding: 12px 32px;
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-glow);
+}
+
 /* --- Section Structure --- */
 .section {
   padding: 80px 0;
@@ -1301,4 +1371,57 @@ a {
   0% { transform: scale(1); }
   50% { transform: scale(1.05); }
   100% { transform: scale(1); }
+}
+
+/* --- FINAL RESPONSIVE OVERRIDES --- */
+
+@media (max-width: 768px) {
+  .section { padding: 40px 0; }
+  
+  .hero .title { font-size: 3rem; letter-spacing: -1px; }
+  .hero .subtitle { font-size: 1.25rem; }
+  .hero .description { font-size: 1rem; margin-bottom: 32px; }
+  .hero-logo { width: 100px; height: 100px; }
+
+  .section-title { font-size: 2rem; }
+
+  .schedule-highlight {
+    flex-direction: column;
+    padding: 30px 24px;
+    border-radius: 24px;
+    text-align: center;
+    gap: 16px;
+  }
+  
+  .schedule-info { text-align: center; }
+  .schedule-disclaimer { margin-top: 20px; }
+
+  .hero-actions { width: 100%; }
+  .cta-button { width: 100%; justify-content: center; padding: 16px 24px; font-size: 1rem; }
+
+  .split-content { text-align: center; }
+  .text-left { text-align: center; }
+
+  .membership-cta { gap: 15px; }
+
+  .footer-copyright { width: 100%; padding: 24px 20px; }
+}
+
+@media (max-width: 480px) {
+  .hero .title { font-size: 2.5rem; }
+  .hero .subtitle { font-size: 1.1rem; }
+  
+  .cards-grid, .levels-grid, .membership-grid, .mentors-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .value-card, .level-card, .member-benefit-card, .mentor-card {
+    padding: 30px 20px;
+  }
+
+  .gallery-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
 }

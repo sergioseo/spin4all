@@ -67,4 +67,28 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.overflow = 'auto'; // Restore scroll
     };
 
+    // MOBILE MENU LOGIC
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileNav = document.getElementById('mobileNav');
+    const mobileNavClose = document.getElementById('mobileNavClose');
+    const mobileLinks = document.querySelectorAll('.mobile-nav-content a');
+
+    if (mobileMenuBtn && mobileNav) {
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileNav.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent scroll
+        });
+
+        const closeMenu = () => {
+            mobileNav.classList.remove('active');
+            document.body.style.overflow = '';
+        };
+
+        if (mobileNavClose) mobileNavClose.addEventListener('click', closeMenu);
+
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', closeMenu);
+        });
+    }
+
 });
