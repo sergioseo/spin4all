@@ -359,9 +359,13 @@
                 gap: 15px;
             }
             .present-list-col { width: 260px; flex: 0 0 260px; }
+            
+            /* Ajuste Painel Treino para Tablet Médio */
+            .workout-grid { grid-template-columns: 240px 1fr; gap: 1rem; }
+            .queues-container { grid-template-columns: repeat(3, 1fr); gap: 0.8rem; }
         }
 
-        /* Mobile grande (480–768px): split-screen compacto */
+        /* Mobile grande (480–768px): Layout Empilhado no Painel Treino */
         @media (max-width: 768px) {
             body { padding: 1rem 0.5rem; }
 
@@ -394,6 +398,12 @@
             .absent-grid-col { height: 100%; overflow: hidden; }
 
             .playlist-card .time-entry { display: block !important; }
+
+            /* Painel Treino Empilhado (<768px) */
+            #view-workout { margin-top: 1rem; }
+            .workout-grid { grid-template-columns: 1fr !important; gap: 1.5rem; }
+            .queues-container { grid-template-columns: 1fr !important; gap: 1.5rem; }
+            .catalog-col { max-width: 100%; width: 100%; }
         }
 
         /* Mobile pequeno (<480px): layout vertical, sem split */
@@ -429,6 +439,22 @@
                 grid-template-columns: 1fr;
                 height: auto;
                 gap: 12px;
+            }
+
+            /* Responsividade para o Painel Treino no mobile */
+            .workout-grid {
+                grid-template-columns: 1fr !important;
+                gap: 2rem;
+            }
+
+            .queues-container {
+                grid-template-columns: 1fr !important;
+                gap: 2rem;
+            }
+
+            .catalog-col {
+                width: 100%;
+                max-width: 100%;
             }
 
             /* Lista de Presença: altura fixa + scroll */
@@ -605,6 +631,7 @@
             flex-direction: column;
             align-items: center;
             margin-top: -25px;
+            width: 100%;
         }
 
         .timer-label {
@@ -617,7 +644,7 @@
         }
 
         .massive-timer {
-            font-size: 16rem;
+            font-size: min(16rem, 25vw);
             font-weight: 800;
             color: #eab308;
             line-height: 1;
@@ -1099,7 +1126,6 @@
                         <button class="clear-btn" onclick="clearQueue('iniciante')" title="Limpar Fila"><i
                                 class="fas fa-trash"></i></button>
                     </div>
-                    <div class="queue-total" id="queue-total-iniciante"><span style="color:#64748b">Fila vazia</span></div>
                     <div class="playcards-area" id="list-iniciante"></div>
                 </div>
                 <div class="queue-col" id="col-intermediario">
@@ -1108,7 +1134,6 @@
                         <button class="clear-btn" onclick="clearQueue('intermediario')" title="Limpar Fila"><i
                                 class="fas fa-trash"></i></button>
                     </div>
-                    <div class="queue-total" id="queue-total-intermediario"><span style="color:#64748b">Fila vazia</span></div>
                     <div class="playcards-area" id="list-intermediario"></div>
                 </div>
                 <div class="queue-col" id="col-avancado">
@@ -1117,7 +1142,6 @@
                         <button class="clear-btn" onclick="clearQueue('avancado')" title="Limpar Fila"><i
                                 class="fas fa-trash"></i></button>
                     </div>
-                    <div class="queue-total" id="queue-total-avancado"><span style="color:#64748b">Fila vazia</span></div>
                     <div class="playcards-area" id="list-avancado"></div>
                 </div>
             </div>
@@ -1455,14 +1479,6 @@
             }
         }
 
-        function calcQueueTotal(level) {
-            return queues[level].reduce((sum, item) => {
-                // somar apenas cards não concluídos (status red = concluíd o)
-                if (item.status !== 'red') return sum + (item.remainingSeconds || item.totalSeconds);
-                return sum;
-            }, 0);
-        }
-
         function renderAllQueues() {
             renderQueue('iniciante');
             renderQueue('intermediario');
@@ -1478,15 +1494,6 @@
         function renderQueue(level) {
             const col = document.getElementById(`list-${level}`);
             col.innerHTML = '';
-
-            // --- Atualizar totalizador ---
-            const totalSecs = calcQueueTotal(level);
-            const totalEl = document.getElementById(`queue-total-${level}`);
-            if (totalEl) {
-                totalEl.innerHTML = totalSecs > 0
-                    ? `<i class="fas fa-sigma" style="font-size:0.8rem; margin-right:4px;"></i> ${formatTime(totalSecs)} total`
-                    : '<span style="color:#64748b">Fila vazia</span>';
-            }
 
             queues[level].forEach(item => {
                 let statusClass = item.status === 'yellow' && item.isRest ? 'status-rest' : `status-${item.status}`;
