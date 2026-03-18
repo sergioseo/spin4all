@@ -15,16 +15,17 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 4rem 2rem;
-            /* Aumentado padding superior */
+            padding: 2rem 1rem;
+            /* Reduzido padding superior para mobile */
             font-family: 'Outfit', sans-serif;
             color: #fff;
             margin: 0;
+            overflow-x: hidden;
         }
 
         .checkin-header {
             text-align: center;
-            margin-bottom: 4rem;
+            margin-bottom: 2rem;
             width: 100%;
             display: flex;
             flex-direction: column;
@@ -359,21 +360,24 @@
 
         @media (max-width: 1024px) {
             .checkin-container {
-                grid-template-columns: 1fr;
-                height: auto;
-                overflow-y: visible;
-                padding-bottom: 50px;
+                grid-template-columns: 280px 1fr;
+                gap: 15px;
+                height: 70vh; /* Altura controlada para forçar scroll interno */
             }
 
             .present-list-col {
                 flex: none;
-                width: 100%;
-                max-height: 400px;
+                width: 280px;
             }
 
             .absent-grid-col {
-                height: auto;
-                min-height: 500px;
+                height: 100%;
+                overflow: hidden;
+            }
+            
+            .massive-clock-checkin {
+                font-size: 8rem;
+                margin-bottom: 1rem;
             }
         }
 
@@ -415,27 +419,51 @@
 
         @media (max-width: 480px) {
             .checkin-container {
-                padding: 10px;
+                padding: 5px;
+                grid-template-columns: 110px 1fr; /* Colunas bem estreitas para mobile */
+                gap: 10px;
+                height: 65vh;
+            }
+
+            .present-list-col {
+                width: 110px;
+            }
+            
+            .present-list-col .col-header h2 i { margin-right: 0 !important; }
+            .present-list-col .col-header h2 { font-size: 0.8rem; text-align: center; }
+            .present-list-col .col-header span { display: none; } /* Esconder count no mobile lateral */
+            
+            .scrollable-area { padding: 10px !important; }
+
+            .massive-clock-checkin {
+                font-size: 4rem;
+                margin-bottom: 0.5rem;
             }
 
             .member-grid {
-                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-                gap: 10px;
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+                gap: 8px;
             }
 
             .member-card {
-                padding: 15px 10px;
+                padding: 10px 5px;
             }
 
             .avatar {
-                width: 60px;
-                height: 60px;
-                font-size: 1.4rem;
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
             }
 
             .member-name {
-                font-size: 0.9rem;
+                font-size: 0.75rem;
             }
+            
+            .checkin-header h1 { font-size: 2rem; }
+            .playlist-card { flex-direction: column; padding: 8px; gap: 5px; }
+            .playlist-card .avatar { width: 35px; height: 35px; }
+            .playlist-card .name { font-size: 0.7rem; text-align: center; }
+            .playlist-card .time-entry { font-size: 0.6rem; }
         }
 
         .present-list-col {
