@@ -161,11 +161,27 @@ a {
 /* --- Mobile Menu Btn --- */
 .mobile-menu-btn {
   display: flex;
-  background: transparent;
-  border: none;
-  font-size: 2rem;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  font-size: 1.5rem;
   color: var(--c-heading);
   cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+  padding: 0;
+  outline: none;
+}
+
+.mobile-menu-btn:active {
+  transform: scale(0.9);
+  background: #fff;
 }
 
 @media (min-width: 768px) {

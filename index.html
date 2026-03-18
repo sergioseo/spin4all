@@ -31,22 +31,22 @@
                 <a href="login.html" class="header-cta" style="background: var(--grad-cta); color: #fff; padding: 8px 20px; border-radius: 20px; margin-left: 10px;">Portal do Membro</a>
             </nav>
 
-            <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Abrir Menu">
                 <i class="ph-bold ph-list"></i>
             </button>
-
-            <div class="mobile-nav" id="mobileNav">
-                <button class="mobile-nav-close" id="mobileNavClose">&times;</button>
-                <div class="mobile-nav-content">
-                    <a href="#sobre">Sobre</a>
-                    <a href="#treinos">Treinos</a>
-                    <a href="#faq">Dúvidas</a>
-                    <a href="login.html" class="mobile-nav-cta">Portal do Membro</a>
-                </div>
-            </div>
-
         </div>
     </header>
+
+    <!-- Mobile Navigation Overlay (Moved outside header for better render) -->
+    <div class="mobile-nav" id="mobileNav">
+        <button class="mobile-nav-close" id="mobileNavClose">&times;</button>
+        <div class="mobile-nav-content">
+            <a href="#sobre">Sobre</a>
+            <a href="#treinos">Treinos</a>
+            <a href="#faq">Dúvidas</a>
+            <a href="login.html" class="mobile-nav-cta">Portal do Membro</a>
+        </div>
+    </div>
 
     <!-- SECTION 1 — HERO -->
     <section id="hero" class="hero">
