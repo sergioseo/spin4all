@@ -1119,7 +1119,9 @@
     </main>
 
     <script>
-        const API_URL = window.location.origin + '/api';
+        const API_URL = (window.location.hostname.includes('spin4all.com.br'))
+            ? 'https://spin4all-motor.h5rvsp.easypanel.host/api'
+            : window.location.origin + '/api';
 
         console.log(`[DEBUG Dashboard] API_URL: ${API_URL}`);
         console.log(`[DEBUG Dashboard] Hostname: ${window.location.hostname}`);

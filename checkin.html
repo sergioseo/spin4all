@@ -339,13 +339,103 @@
 
         /* Layout Dinâminco (Dual Column) */
         .checkin-container {
-            display: flex;
+            display: grid;
+            grid-template-columns: 350px 1fr;
             gap: 2rem;
             width: 100%;
             max-width: 1400px;
             align-items: stretch;
             height: calc(100vh - 250px);
-            margin-top: 2rem;
+            margin: 2rem auto 0;
+        }
+
+        /* --- RESPONSIVIDADE --- */
+        @media (max-width: 1200px) {
+            .checkin-container {
+                grid-template-columns: 300px 1fr;
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .checkin-container {
+                grid-template-columns: 1fr;
+                height: auto;
+                overflow-y: visible;
+                padding-bottom: 50px;
+            }
+
+            .present-list-col {
+                flex: none;
+                width: 100%;
+                max-height: 400px;
+            }
+
+            .absent-grid-col {
+                height: auto;
+                min-height: 500px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                height: auto;
+                padding: 15px;
+                gap: 15px;
+            }
+
+            .header-left {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .header-right {
+                width: 100%;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .search-container {
+                width: 100%;
+            }
+
+            #memberSearch {
+                width: 100% !important;
+            }
+
+            .clock-box {
+                font-size: 1rem;
+            }
+
+            .playlist-card {
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .checkin-container {
+                padding: 10px;
+            }
+
+            .member-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 10px;
+            }
+
+            .member-card {
+                padding: 15px 10px;
+            }
+
+            .avatar {
+                width: 60px;
+                height: 60px;
+                font-size: 1.4rem;
+            }
+
+            .member-name {
+                font-size: 0.9rem;
+            }
         }
 
         .present-list-col {
@@ -357,6 +447,7 @@
             flex-direction: column;
             overflow: hidden;
             backdrop-filter: blur(10px);
+            height: 100%;
         }
 
         .absent-grid-col {
@@ -365,6 +456,8 @@
             flex-direction: column;
             gap: 1.5rem;
             min-width: 0; /* fix grid blowout */
+            height: 100%;
+            overflow: hidden;
         }
 
         .col-header {
@@ -855,20 +948,23 @@
 
         /* Scrollbar */
         ::-webkit-scrollbar {
-            width: 8px;
+            width: 10px;
         }
 
         ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.2);
             border-radius: 10px;
         }
 
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+
         ::-webkit-scrollbar-thumb:hover {
-            background: rgba(56, 189, 248, 0.3);
+            background: rgba(56, 189, 248, 0.5);
         }
     </style>
 </head>
@@ -1051,7 +1147,9 @@
     <audio id="audioBeep" src="https://www.myinstants.com/media/sounds/beep-07a.mp3" preload="auto"></audio>
 
     <script>
-        const API_URL = window.location.origin + '/api';
+        const API_URL = (window.location.hostname.includes('spin4all.com.br'))
+            ? 'https://spin4all-motor.h5rvsp.easypanel.host/api'
+            : window.location.origin + '/api';
 
         // --- RELOGIO DE PAREDE ---
         function updateMainClock() {
