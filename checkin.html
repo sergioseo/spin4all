@@ -1051,9 +1051,7 @@
     <audio id="audioBeep" src="https://www.myinstants.com/media/sounds/beep-07a.mp3" preload="auto"></audio>
 
     <script>
-        const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-            ? 'http://localhost:3000/api'
-            : 'https://spin4all-motor.h5rvsp.easypanel.host/api';
+        const API_URL = window.location.origin + '/api';
 
         // --- RELOGIO DE PAREDE ---
         function updateMainClock() {
