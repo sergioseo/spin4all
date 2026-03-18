@@ -399,11 +399,21 @@
 
             .playlist-card .time-entry { display: block !important; }
 
-            /* Painel Treino Empilhado (<768px) */
-            #view-workout { margin-top: 1rem; }
-            .workout-grid { grid-template-columns: 1fr !important; gap: 1.5rem; }
-            .queues-container { grid-template-columns: 1fr !important; gap: 1.5rem; }
-            .catalog-col { max-width: 100%; width: 100%; }
+            /* Painel Treino Colunar (<768px) */
+            #view-workout { margin-top: 1rem; width: 100%; overflow-x: auto; }
+            .workout-grid { 
+                grid-template-columns: 140px 1fr !important; /* Catálogo estreito */
+                gap: 0.8rem !important; 
+                width: 100%;
+                min-width: 700px; /* Força scroll horizontal se for muito pequeno */
+            }
+            .queues-container { 
+                grid-template-columns: repeat(3, 1fr) !important; 
+                gap: 0.8rem !important; 
+            }
+            .catalog-col { max-width: 140px; }
+            .catalog-btn { padding: 0.8rem 0.5rem; font-size: 0.8rem; flex-direction: column; gap: 4px; text-align: center; }
+            .catalog-btn i { font-size: 1rem; }
         }
 
         /* Mobile pequeno (<480px): layout vertical, sem split */
@@ -441,21 +451,24 @@
                 gap: 12px;
             }
 
-            /* Responsividade para o Painel Treino no mobile */
-            .workout-grid {
-                grid-template-columns: 1fr !important;
-                gap: 2rem;
+            /* Painel Treino Colunar (<480px) */
+            .workout-grid { 
+                grid-template-columns: 120px 1fr !important; 
+                gap: 0.5rem !important;
+                min-width: 600px; 
             }
-
-            .queues-container {
-                grid-template-columns: 1fr !important;
-                gap: 2rem;
+            .queues-container { 
+                grid-template-columns: repeat(3, 1fr) !important; 
+                gap: 0.5rem !important; 
             }
-
-            .catalog-col {
-                width: 100%;
-                max-width: 100%;
-            }
+            .catalog-col { max-width: 120px; padding: 0.5rem; }
+            .catalog-title { font-size: 0.8rem; }
+            .catalog-btn { padding: 0.5rem 0.3rem; font-size: 0.7rem; }
+            .catalog-btn i { font-size: 0.9rem; }
+            
+            .playcard { padding: 0.8rem !important; }
+            .playcard .desc { font-size: 0.75rem !important; }
+            .queue-title { font-size: 0.8rem !important; padding: 6px !important; }
 
             /* Lista de Presença: altura fixa + scroll */
             .present-list-col {
