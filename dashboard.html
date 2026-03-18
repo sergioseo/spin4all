@@ -872,7 +872,7 @@
 
         <!-- ABA: MEU PERFIL (Habilidades & Objetivos) -->
         <div id="tab-profile" class="tab-content" style="display: none;">
-            <div style="display: grid; grid-template-columns: 1fr 1fr 340px; gap: 25px; align-items: start;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr 340px; gap: 25px; align-items: stretch;">
                 <!-- Célula 1: Evolução das Habilidades (Larga) -->
                 <div class="glass-card" style="grid-column: span 2;">
                     <div class="card-title"><i class="fas fa-chart-line"></i> Evolução das Habilidades</div>
@@ -1104,9 +1104,7 @@
                 // Mostrar foto se existir
                 if (userData.dsc_foto_perfil) {
                     const img = document.getElementById('user-photo-img');
-                    img.src = userData.dsc_foto_perfil.startsWith('http') 
-                        ? userData.dsc_foto_perfil 
-                        : `${API_URL.replace('/api', '')}${userData.dsc_foto_perfil}`;
+                    img.src = userData.dsc_foto_perfil + '?t=' + new Date().getTime();
                     img.style.display = 'block';
                     document.querySelector('#user-profile-img-container i').style.display = 'none';
                 }

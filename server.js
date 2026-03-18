@@ -545,6 +545,11 @@ app.get('/api/checkin-list', authenticateToken, isAdmin, async (req, res) => {
       SELECT 
         p.id_usuario, 
         p.dsc_nome_completo,
+        p.dsc_foto_perfil,
+        (
+          SELECT COUNT(*) FROM trusted.tb_checkins c2
+          WHERE c2.id_usuario = p.id_usuario
+        ) as qtd_presenca,
         EXISTS (
           SELECT 1 FROM trusted.tb_checkins c
           WHERE c.id_usuario = p.id_usuario AND c.dt_checkin = CURRENT_DATE
@@ -1154,14 +1159,14 @@ app.post('/api/user/upload-photo', authenticateToken, upload.single('photo'), as
   }
 
   const userId = req.user.id;
-  const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+  const relativeUrl = `/uploads/${req.file.filename}`;
 
   try {
     await pool.query(
       'UPDATE trusted.tb_membros_perfil SET dsc_foto_perfil = $1 WHERE id_usuario = $2',
-      [imageUrl, userId]
+      [relativeUrl, userId]
     );
-    res.json({ success: true, imageUrl });
+    res.json({ success: true, url: relativeUrl, imageUrl: relativeUrl });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, error: 'Erro ao salvar caminho da foto.' });

@@ -150,6 +150,14 @@
             font-weight: 700;
             color: #fff;
             box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+            overflow: hidden; /* Garantir que a imagem siga o círculo */
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .member-card.present .avatar {
@@ -329,9 +337,110 @@
             box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);
         }
 
+        /* Layout Dinâminco (Dual Column) */
+        .checkin-container {
+            display: flex;
+            gap: 2rem;
+            width: 100%;
+            max-width: 1400px;
+            align-items: stretch;
+            height: calc(100vh - 250px);
+            margin-top: 2rem;
+        }
+
+        .present-list-col {
+            flex: 0 0 350px;
+            background: rgba(15, 23, 42, 0.4);
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .absent-grid-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            min-width: 0; /* fix grid blowout */
+        }
+
+        .col-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .col-header h2 {
+            font-size: 1.1rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 0;
+            color: #38bdf8;
+        }
+
+        .scrollable-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+            scrollbar-width: thin;
+        }
+
+        /* Playlist Card Style (Compact) */
+        .playlist-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .playlist-card:hover {
+            background: rgba(56, 189, 248, 0.1);
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+
+        .playlist-card .avatar {
+            width: 45px;
+            height: 45px;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .playlist-card .info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .playlist-card .name {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #f1f5f9;
+        }
+
+        .playlist-card .time-entry {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #4ade80;
+            text-transform: uppercase;
+        }
+
         /* Views */
-        #view-checkin,
-        #view-workout {
+        #view-checkin {
             width: 100%;
             display: flex;
             flex-direction: column;
@@ -788,13 +897,30 @@
     <div id="view-checkin">
         <div class="massive-clock-checkin" id="bigClockCheckin">--:--</div>
 
-        <div class="search-container">
-            <i class="fas fa-search"></i>
-            <input type="text" id="memberSearch" placeholder="Quem está treinando agora?">
-        </div>
+        <div class="checkin-container">
+            <!-- Esquerda: Playlist de Presença -->
+            <aside class="present-list-col">
+                <div class="col-header">
+                    <h2><i class="fas fa-users-check" style="margin-right: 10px;"></i> Presença Agora</h2>
+                    <span id="presentCount" style="font-size: 0.9rem; color: #4ade80; font-weight: 800; background: rgba(74, 222, 128, 0.1); padding: 2px 8px; border-radius: 10px;">0</span>
+                </div>
+                <div class="scrollable-area" id="presentList">
+                    <!-- Membros presentes via JS -->
+                </div>
+            </aside>
 
-        <div class="members-grid" id="membersGrid">
-            <!-- Membros via JS -->
+            <!-- Direita: Grade de Check-in -->
+            <section class="absent-grid-col">
+                <div class="search-container" style="margin-bottom: 0; max-width: 100%; position: relative; top: 0; z-index: 5;">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="memberSearch" placeholder="Quem está treinando agora?">
+                </div>
+                <div class="scrollable-area">
+                    <div class="members-grid" id="membersGrid" style="max-width: 100%; padding: 0;">
+                        <!-- Membros ausentes via JS -->
+                    </div>
+                </div>
+            </section>
         </div>
     </div>
 
@@ -1388,6 +1514,24 @@
         let allMembers = [];
         let selectedMember = null;
 
+        function getCheckinTime(userId) {
+            const times = JSON.parse(localStorage.getItem('spin4all_checkin_times') || '{}');
+            return times[userId];
+        }
+
+        function setCheckinTime(userId) {
+            const times = JSON.parse(localStorage.getItem('spin4all_checkin_times') || '{}');
+            const now = new Date();
+            times[userId] = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+            localStorage.setItem('spin4all_checkin_times', JSON.stringify(times));
+        }
+
+        function removeCheckinTime(userId) {
+            const times = JSON.parse(localStorage.getItem('spin4all_checkin_times') || '{}');
+            delete times[userId];
+            localStorage.setItem('spin4all_checkin_times', JSON.stringify(times));
+        }
+
         async function fetchMembers() {
             const token = localStorage.getItem('spin4all_token');
             try {
@@ -1406,19 +1550,67 @@
 
         function renderMembers(members) {
             const grid = document.getElementById('membersGrid');
+            const presentList = document.getElementById('presentList');
+            const countLabel = document.getElementById('presentCount');
+            
             grid.innerHTML = '';
+            presentList.innerHTML = '';
+            let pCount = 0;
 
-            members.forEach(m => {
-                const initials = m.dsc_nome_completo.split(' ').filter(n => n.length > 2).map(n => n[0]).join('').substring(0, 2);
-                const card = document.createElement('div');
-                card.className = `member-card ${m.flg_presente ? 'present' : ''}`;
-                card.innerHTML = `
-                    <div class="avatar">${initials || m.dsc_nome_completo[0]}</div>
-                    <div class="member-name">${m.dsc_nome_completo}</div>
-                `;
-                card.onclick = () => handleCardClick(m);
-                grid.appendChild(card);
+            // Separar listas para aplicar ordenações diferentes se necessário
+            const present = members.filter(m => m.flg_presente);
+            const absent = members.filter(m => !m.flg_presente);
+
+            // Ordenar ausentes por frequência (quem treina mais no topo) e depois nome
+            absent.sort((a, b) => {
+                if ((b.qtd_presenca || 0) !== (a.qtd_presenca || 0)) {
+                    return (b.qtd_presenca || 0) - (a.qtd_presenca || 0);
+                }
+                return a.dsc_nome_completo.localeCompare(b.dsc_nome_completo);
             });
+
+            // Ordenar presentes por nome (ou se preferir, poderia ser por hora de chegada)
+            present.sort((a, b) => a.dsc_nome_completo.localeCompare(b.dsc_nome_completo));
+
+            const allToRender = [...present, ...absent];
+
+            allToRender.forEach(m => {
+                const initials = m.dsc_nome_completo.split(' ').filter(n => n.length > 2).map(n => n[0]).join('').substring(0, 2);
+                
+                // Helper para gerar o HTML do avatar (com foto ou iniciais)
+                const avatarHtml = m.dsc_foto_perfil 
+                    ? `<div class="avatar"><img src="${m.dsc_foto_perfil}?t=${new Date().getTime()}" alt="${m.dsc_nome_completo}"></div>`
+                    : `<div class="avatar">${initials || m.dsc_nome_completo[0]}</div>`;
+
+                if (m.flg_presente) {
+                    pCount++;
+                    const card = document.createElement('div');
+                    card.className = 'playlist-card';
+                    
+                    const time = getCheckinTime(m.id_usuario) || "--:--"; 
+
+                    card.innerHTML = `
+                        ${avatarHtml}
+                        <div class="info">
+                            <span class="name">${m.dsc_nome_completo}</span>
+                            <span class="time-entry"><i class="far fa-clock" style="margin-right:4px;"></i> CHEGOU ÀS ${time}</span>
+                        </div>
+                    `;
+                    card.onclick = () => handleCardClick(m);
+                    presentList.appendChild(card);
+                } else {
+                    const card = document.createElement('div');
+                    card.className = 'member-card';
+                    card.innerHTML = `
+                        ${avatarHtml}
+                        <div class="member-name">${m.dsc_nome_completo}</div>
+                    `;
+                    card.onclick = () => handleCardClick(m);
+                    grid.appendChild(card);
+                }
+            });
+
+            if (countLabel) countLabel.innerText = pCount;
         }
 
         function handleCardClick(member) {
@@ -1456,7 +1648,10 @@
 
                 const data = await response.json();
                 showFeedback(data.success, fullName, data.message);
-                if (data.success) fetchMembers();
+                if (data.success) {
+                    setCheckinTime(userId);
+                    fetchMembers();
+                }
             } catch (error) {
                 showFeedback(false, "Erro", "Houve um problema com a conexão.");
             }
@@ -1477,7 +1672,10 @@
 
                 const data = await response.json();
                 showFeedback(data.success, "Corrigido", data.message);
-                if (data.success) fetchMembers();
+                if (data.success) {
+                    removeCheckinTime(userId);
+                    fetchMembers();
+                }
             } catch (error) {
                 showFeedback(false, "Erro", "Houve um problema com a conexão.");
             }
