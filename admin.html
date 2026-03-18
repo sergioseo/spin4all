@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -87,12 +88,12 @@
             text-align: left;
             padding: 12px;
             color: #38bdf8;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         td {
             padding: 12px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             color: #cbd5e1;
         }
 
@@ -103,12 +104,22 @@
             font-weight: 600;
         }
 
-        .status-active { background: rgba(34, 197, 94, 0.1); color: #4ade80; }
-        .status-admin { background: rgba(251, 191, 36, 0.1); color: #fbbf24; }
+        .status-active {
+            background: rgba(34, 197, 94, 0.1);
+            color: #4ade80;
+        }
+
+        .status-admin {
+            background: rgba(251, 191, 36, 0.1);
+            color: #fbbf24;
+        }
 
         .loader {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: #0f172a;
             display: flex;
             justify-content: center;
@@ -121,10 +132,12 @@
             transition: all 0.3s ease;
         }
 
-        .nav-link:hover, .nav-link.active {
+        .nav-link:hover,
+        .nav-link.active {
             background: rgba(255, 255, 255, 0.05);
             color: #38bdf8;
         }
+
         .radar-filter {
             background: rgba(30, 41, 59, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -151,6 +164,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <div id="loader" class="loader">
@@ -162,31 +176,26 @@
             <span style="font-weight: 800; font-size: 1.5rem;">ADMIN<span style="color:#38bdf8">SHIELD</span></span>
         </div>
         <nav class="nav-menu" style="flex-grow: 1;">
-            <a href="dashboard.html" class="nav-link" style="margin-bottom: 10px; display: flex; align-items: center; gap: 12px; padding: 12px; text-decoration: none; border-radius: 8px;">
+            <a href="dashboard.html" class="nav-link"
+                style="margin-bottom: 10px; display: flex; align-items: center; gap: 12px; padding: 12px; text-decoration: none; border-radius: 8px;">
                 <i class="fas fa-arrow-left"></i> Voltar ao Portal
             </a>
-            <a href="#" class="nav-link" style="margin-bottom: 10px; display: flex; align-items: center; gap: 12px; padding: 12px; text-decoration: none; border-radius: 8px;">
+            <a href="#" class="nav-link"
+                style="margin-bottom: 10px; display: flex; align-items: center; gap: 12px; padding: 12px; text-decoration: none; border-radius: 8px;">
                 <i class="fas fa-chart-pie"></i> Dashboard
-            </a>
-            <a href="checkin.html" class="nav-link" style="margin-bottom: 10px; display: flex; align-items: center; gap: 12px; padding: 12px; text-decoration: none; border-radius: 8px;">
-                <i class="fas fa-tablet-screen-button"></i> Treinamentos
             </a>
 
         </nav>
-        <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
-            <p style="font-size: 0.8rem; color: #64748b;">Acesso Restrito</p>
-        </div>
     </aside>
 
     <main class="main-content">
-        <header style="margin-bottom: 40px; background: rgba(30, 41, 59, 0.4); padding: 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center;">
+        <header
+            style="margin-bottom: 40px; background: rgba(30, 41, 59, 0.4); padding: 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center;">
             <div>
-                <h1 style="font-size: 2.2rem; margin-bottom: 5px; font-weight: 800; background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Relatórios Analíticos</h1>
+                <h1
+                    style="font-size: 2.2rem; margin-bottom: 5px; font-weight: 800; background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+                    Relatórios Analíticos</h1>
                 <p style="color: #94a3b8; font-size: 1.1rem;">Visão consolidada da comunidade Spin4All</p>
-            </div>
-            <div style="text-align: right;">
-                <div style="font-size: 0.8rem; color: #38bdf8; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;">Sistema Operacional</div>
-                <div style="font-size: 1.2rem; font-weight: 600;">AdminShield v2.4</div>
             </div>
         </header>
 
@@ -205,40 +214,52 @@
             </div>
         </section>
 
-        <section class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; margin-bottom: 30px;">
+        <section class="dashboard-grid"
+            style="grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; margin-bottom: 30px;">
             <!-- Gráficos Principais -->
             <div class="glass-card chart-container" style="height: auto; min-height: 380px;">
-                <h3 style="margin-bottom: 5px; color: #38bdf8;"><i class="fas fa-calendar-check"></i> Volume de Presença</h3>
-                <p style="font-size: 0.7rem; color: #64748b; margin-bottom: 15px;">Frequência total de check-ins nos últimos 14 dias.</p>
+                <h3 style="margin-bottom: 5px; color: #38bdf8;"><i class="fas fa-calendar-check"></i> Volume de Presença
+                </h3>
+                <p style="font-size: 0.7rem; color: #64748b; margin-bottom: 15px;">Frequência total de check-ins nos
+                    últimos 14 dias.</p>
                 <div style="height: 250px;">
                     <canvas id="checkinChart"></canvas>
                 </div>
             </div>
             <div class="glass-card chart-container" style="height: auto; min-height: 380px;">
                 <h3 style="margin-bottom: 5px; color: #fbbf24;"><i class="fas fa-users"></i> Distribuição por Nível</h3>
-                <p style="font-size: 0.7rem; color: #64748b; margin-bottom: 15px;">Segmentação da base de alunos por patamar técnico atual.</p>
+                <p style="font-size: 0.7rem; color: #64748b; margin-bottom: 15px;">Segmentação da base de alunos por
+                    patamar técnico atual.</p>
                 <div style="height: 250px;">
                     <canvas id="levelChart"></canvas>
                 </div>
             </div>
         </section>
 
-        <section class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; margin-bottom: 30px;">
+        <section class="dashboard-grid"
+            style="grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; margin-bottom: 30px;">
             <div class="glass-card chart-container" style="height: auto; min-height: 400px;">
-                <h3 style="margin-bottom: 5px; color: #a855f7;"><i class="fas fa-id-card"></i> Demografia e Nível Técnico</h3>
-                <p style="font-size: 0.7rem; color: #64748b; margin-bottom: 15px;">Distribuição de idades cruzada com o nível de jogo para análise de renovação.</p>
+                <h3 style="margin-bottom: 5px; color: #a855f7;"><i class="fas fa-id-card"></i> Demografia e Nível
+                    Técnico</h3>
+                <p style="font-size: 0.7rem; color: #64748b; margin-bottom: 15px;">Distribuição de idades cruzada com o
+                    nível de jogo para análise de renovação.</p>
                 <div style="height: 300px;">
                     <canvas id="ageDemographicChart"></canvas>
                 </div>
             </div>
-            
+
             <!-- Foco Coletivo -->
             <div class="glass-card" style="height: auto; min-height: 400px;">
-                <h3 style="margin-bottom: 20px; color: #a855f7;"><i class="fas fa-bullseye"></i> Foco e Objetivos do Grupo</h3>
-                
-                <div style="background: rgba(168, 85, 247, 0.05); border: 1px solid rgba(168, 85, 247, 0.1); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
-                    <div style="font-size: 0.7rem; color: #a855f7; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px;">Síntese da Comunidade</div>
-                    <p id="objectives-synthesis" style="font-size: 1.1rem; font-weight: 500; color: #e2e8f0; line-height: 1.6; margin: 0;">
+                <h3 style="margin-bottom: 20px; color: #a855f7;"><i class="fas fa-bullseye"></i> Foco e Objetivos do
+                    Grupo</h3>
+
+                <div
+                    style="background: rgba(168, 85, 247, 0.05); border: 1px solid rgba(168, 85, 247, 0.1); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                    <div
+                        style="font-size: 0.7rem; color: #a855f7; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px;">
+                        Síntese da Comunidade</div>
+                    <p id="objectives-synthesis"
+                        style="font-size: 1.1rem; font-weight: 500; color: #e2e8f0; line-height: 1.6; margin: 0;">
                         Analisando metas e objetivos dos membros...
                     </p>
                 </div>
@@ -254,8 +275,10 @@
             <div class="glass-card">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
                     <div>
-                        <h3 style="margin-bottom: 5px; color: #4ade80;"><i class="fas fa-chart-line"></i> Evolução de Performance</h3>
-                        <p style="font-size: 0.8rem; color: #64748b;">Acompanhamento dos top 5 membros (últimos 30 dias)</p>
+                        <h3 style="margin-bottom: 5px; color: #4ade80;"><i class="fas fa-chart-line"></i> Evolução de
+                            Performance</h3>
+                        <p style="font-size: 0.8rem; color: #64748b;">Acompanhamento dos top 5 membros (últimos 30 dias)
+                        </p>
                     </div>
                     <div id="performance-filters" style="display: flex; gap: 5px;">
                         <!-- Gerado via JS -->
@@ -271,36 +294,49 @@
             <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
                 <h2 style="font-size: 1.8rem; margin: 0;">Insights do Técnico</h2>
             </div>
-            
+
             <div class="dashboard-grid" style="grid-template-columns: 1fr 1fr; gap: 30px;">
                 <!-- Gargalo Técnico Coletivo Unificado -->
                 <div class="glass-card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                         <h3 style="margin: 0; font-size: 1.2rem; color: #38bdf8;">DNA Técnico do Grupo</h3>
                         <div class="filter-group" style="display: flex; gap: 8px;">
-                            <button onclick="changeRadarFilter('all')" class="radar-filter active" id="btn-radar-all">Geral</button>
-                            <button onclick="changeRadarFilter('Iniciante')" class="radar-filter" id="btn-radar-ini">Iniciante</button>
-                            <button onclick="changeRadarFilter('Intermediário')" class="radar-filter" id="btn-radar-int">Intermediário</button>
-                            <button onclick="changeRadarFilter('Avançado')" class="radar-filter" id="btn-radar-ava">Avançado</button>
+                            <button onclick="changeRadarFilter('all')" class="radar-filter active"
+                                id="btn-radar-all">Geral</button>
+                            <button onclick="changeRadarFilter('Iniciante')" class="radar-filter"
+                                id="btn-radar-ini">Iniciante</button>
+                            <button onclick="changeRadarFilter('Intermediário')" class="radar-filter"
+                                id="btn-radar-int">Intermediário</button>
+                            <button onclick="changeRadarFilter('Avançado')" class="radar-filter"
+                                id="btn-radar-ava">Avançado</button>
                         </div>
                     </div>
                     <div style="height: 380px; position: relative;">
                         <canvas id="groupRadarChart"></canvas>
                     </div>
-                    
+
                     <!-- Central de Inteligência Técnica (Espaço preenchido) -->
                     <div style="margin-top: 25px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                        <div style="background: rgba(74, 222, 128, 0.1); border: 1px solid rgba(74, 222, 128, 0.2); padding: 15px; border-radius: 12px;">
-                            <div style="font-size: 0.7rem; color: #4ade80; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 1px;">Top Força</div>
+                        <div
+                            style="background: rgba(74, 222, 128, 0.1); border: 1px solid rgba(74, 222, 128, 0.2); padding: 15px; border-radius: 12px;">
+                            <div
+                                style="font-size: 0.7rem; color: #4ade80; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 1px;">
+                                Top Força</div>
                             <div id="top-strength" style="font-size: 1.1rem; font-weight: 700;">--</div>
                         </div>
-                        <div style="background: rgba(244, 63, 94, 0.1); border: 1px solid rgba(244, 63, 94, 0.2); padding: 15px; border-radius: 12px;">
-                            <div style="font-size: 0.7rem; color: #f43f5e; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 1px;">Gargalo Crítico</div>
+                        <div
+                            style="background: rgba(244, 63, 94, 0.1); border: 1px solid rgba(244, 63, 94, 0.2); padding: 15px; border-radius: 12px;">
+                            <div
+                                style="font-size: 0.7rem; color: #f43f5e; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 1px;">
+                                Gargalo Crítico</div>
                             <div id="top-weakness" style="font-size: 1.1rem; font-weight: 700;">--</div>
                         </div>
                     </div>
-                    <div style="margin-top: 15px; padding: 12px; background: rgba(56,189,248,0.05); border-radius: 10px;">
-                        <p id="radar-analysis-text" style="font-size: 0.75rem; color: #94a3b8; margin: 0; line-height: 1.4;">
+                    <div
+                        style="margin-top: 15px; padding: 12px; background: rgba(56,189,248,0.05); border-radius: 10px;">
+                        <p id="radar-analysis-text"
+                            style="font-size: 0.75rem; color: #94a3b8; margin: 0; line-height: 1.4;">
                             Selecione um nível para análise preditiva.
                         </p>
                     </div>
@@ -310,7 +346,8 @@
                 <div style="display: flex; flex-direction: column; gap: 30px;">
                     <!-- Risco de Lesão -->
                     <div class="glass-card" style="border-left: 4px solid #ef4444;">
-                        <h3 style="margin-bottom: 15px; color: #ef4444; font-size: 1.1rem;"><i class="fas fa-triangle-exclamation"></i> Alerta de Risco Biomecânico</h3>
+                        <h3 style="margin-bottom: 15px; color: #ef4444; font-size: 1.1rem;"><i
+                                class="fas fa-triangle-exclamation"></i> Alerta de Risco Biomecânico</h3>
                         <div id="injury-risk-list">
                             <div style="color: #64748b; font-size: 0.8rem;">Analisando dados biomecânicos...</div>
                         </div>
@@ -318,7 +355,8 @@
 
                     <!-- Matriz de Sparring -->
                     <div class="glass-card" style="border-left: 4px solid #fbbf24;">
-                        <h3 style="margin-bottom: 15px; color: #fbbf24; font-size: 1.1rem;"><i class="fas fa-people-arrows"></i> Sugestões de Sparring Ideal</h3>
+                        <h3 style="margin-bottom: 15px; color: #fbbf24; font-size: 1.1rem;"><i
+                                class="fas fa-people-arrows"></i> Sugestões de Sparring Ideal</h3>
                         <div id="sparring-list" style="display: flex; flex-direction: column; gap: 10px;">
                             <div style="color: #64748b; font-size: 0.8rem;">Calculando combinações...</div>
                         </div>
@@ -333,13 +371,16 @@
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h3 style="color: #38bdf8;">Lista de Membros</h3>
                 <div style="display: flex; gap: 10px;">
-                    <button onclick="exportData('csv')" style="background: rgba(56, 189, 248, 0.1); border: 1px solid #38bdf8; color: #38bdf8; padding: 8px 15px; border-radius: 8px; font-size: 0.8rem; cursor: pointer;">
+                    <button onclick="exportData('csv')"
+                        style="background: rgba(56, 189, 248, 0.1); border: 1px solid #38bdf8; color: #38bdf8; padding: 8px 15px; border-radius: 8px; font-size: 0.8rem; cursor: pointer;">
                         <i class="fas fa-file-csv"></i> Exportar CSV
                     </button>
-                    <button onclick="exportData('xlsx')" style="background: rgba(74, 222, 128, 0.1); border: 1px solid #4ade80; color: #4ade80; padding: 8px 15px; border-radius: 8px; font-size: 0.8rem; cursor: pointer;">
+                    <button onclick="exportData('xlsx')"
+                        style="background: rgba(74, 222, 128, 0.1); border: 1px solid #4ade80; color: #4ade80; padding: 8px 15px; border-radius: 8px; font-size: 0.8rem; cursor: pointer;">
                         <i class="fas fa-file-excel"></i> Exportar Excel
                     </button>
-                    <input type="text" placeholder="Buscar membro..." id="search-membros" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 8px 15px; border-radius: 8px; width: 250px;">
+                    <input type="text" placeholder="Buscar membro..." id="search-membros"
+                        style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 8px 15px; border-radius: 8px; width: 250px;">
                 </div>
             </div>
             <div style="overflow-x: auto;">
@@ -396,7 +437,7 @@
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const data = await response.json();
-                
+
                 if (!data.success || !data.user.flg_admin) {
                     alert('Acesso negado. Apenas administradores.');
                     window.location.href = 'dashboard.html';
@@ -411,7 +452,7 @@
 
         async function initDashboard() {
             const token = localStorage.getItem('spin4all_token');
-            
+
             try {
                 // 1. Relatórios
                 const reportRes = await fetch(`${API_URL}/admin/reports`, {
@@ -432,14 +473,14 @@
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const members = await memberRes.json();
-                
+
                 if (members.success) {
                     renderMembers(members.members);
                 }
 
                 // 3. Insights do Técnico
                 loadCoachInsights();
-                
+
                 // 4. Métricas Avançadas (Churn & Presença 14 dias)
                 // loadAdvancedMetrics(); // Comentado por não estar implementado
 
@@ -459,7 +500,7 @@
         function updateMetrics(data) {
             document.getElementById('total-members').textContent = data.total_membros || '--';
             document.getElementById('active-today').textContent = data.ativos_hoje || '--';
-            
+
             if (data.demografia && data.demografia.length > 0) {
                 let totalIdade = 0;
                 let totalPessoas = 0;
@@ -477,14 +518,14 @@
 
         function renderCheckinChart(data) {
             const ctx = document.getElementById('checkinChart').getContext('2d');
-            
+
             // Destruir instância anterior se existir
             Chart.getChart(ctx.canvas)?.destroy();
 
             new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: data.map(d => new Date(d.dt_checkin).toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'})),
+                    labels: data.map(d => new Date(d.dt_checkin).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })),
                     datasets: [{
                         label: 'Check-ins',
                         data: data.map(d => parseInt(d.num_checkins)),
@@ -498,14 +539,14 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
-                        y: { 
-                            beginAtZero: true, 
+                        y: {
+                            beginAtZero: true,
                             grid: { color: 'rgba(255,255,255,0.05)' },
                             ticks: { color: '#64748b' }
                         },
-                        x: { 
+                        x: {
                             grid: { display: false },
-                            ticks: { 
+                            ticks: {
                                 color: '#64748b',
                                 font: { size: 9 }
                             }
@@ -519,7 +560,7 @@
         function renderLevelChart(data) {
             // Conversão de array para objeto se necessário, mas vamos padronizar para o array da API
             const levelCtx = document.getElementById('levelChart').getContext('2d');
-            
+
             // Se vier como objeto (da lógica antiga do loadMembers), converter para array
             let chartData = Array.isArray(data) ? data : Object.entries(data).map(([level, count]) => ({ dsc_nivel_tecnico: level, num_membros: count }));
 
@@ -569,7 +610,7 @@
                                 const { x, y } = datapoint.tooltipPosition();
                                 const val = data.datasets[i].data[index];
                                 const percent = ((val / total) * 100).toFixed(0) + '%';
-                                
+
                                 ctx.fillStyle = '#0f172a'; // Escurecido para melhor contraste
                                 ctx.font = 'bold 11px sans-serif';
                                 ctx.textAlign = 'center';
@@ -667,13 +708,13 @@
             try {
                 const response = await fetch(`${API_URL}/admin/toggle-admin`, {
                     method: 'PUT',
-                    headers: { 
+                    headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ id_usuario: userId, flg_admin: newStatus })
                 });
-                
+
                 const data = await response.json();
                 if (data.success) {
                     alert(data.message);
@@ -688,7 +729,7 @@
         }
         async function loadCoachInsights() {
             const token = localStorage.getItem('spin4all_token');
-            
+
             try {
                 // 1. Gargalo Técnico
                 const bottleneckRes = await fetch(`${API_URL}/admin/technical-bottleneck`, {
@@ -744,14 +785,14 @@
             if (!cachedBottleneckData) return;
 
             document.querySelectorAll('.radar-filter').forEach(btn => btn.classList.remove('active'));
-            const btnId = level === 'all' ? 'btn-radar-all' : 
-                         normalizeLevel(level) === 'Iniciante' ? 'btn-radar-ini' :
-                         normalizeLevel(level) === 'Intermediário' ? 'btn-radar-int' : 'btn-radar-ava';
+            const btnId = level === 'all' ? 'btn-radar-all' :
+                normalizeLevel(level) === 'Iniciante' ? 'btn-radar-ini' :
+                    normalizeLevel(level) === 'Intermediário' ? 'btn-radar-int' : 'btn-radar-ava';
             document.getElementById(btnId).classList.add('active');
             const normLevel = normalizeLevel(level);
 
-            let plotData = level === 'all' ? cachedBottleneckData.data : 
-                          cachedBottleneckData.by_level.find(l => normalizeLevel(l.level) === normLevel);
+            let plotData = level === 'all' ? cachedBottleneckData.data :
+                cachedBottleneckData.by_level.find(l => normalizeLevel(l.level) === normLevel);
 
             if (!plotData) return;
 
@@ -759,7 +800,7 @@
             const scores = Object.entries(plotData)
                 .filter(([key]) => technicalLabels[key])
                 .map(([key, val]) => ({ key, name: technicalLabels[key], val }));
-            
+
             scores.sort((a, b) => b.val - a.val);
             const strength = scores[0];
             const weakness = scores[scores.length - 1];
@@ -767,7 +808,7 @@
             document.getElementById('top-strength').innerText = strength.name;
             document.getElementById('top-weakness').innerText = weakness.name;
 
-            const analysisText = level === 'all' 
+            const analysisText = level === 'all'
                 ? `A comunidade possui ${strength.name} como principal diferencial, mas precisa focar em treinos de ${weakness.name} para elevar o nível médio.`
                 : `No nível ${level}, o grupo domina ${strength.name}. Sugerimos sessões intensivas de ${weakness.name} para transição ao próximo nível.`;
             document.getElementById('radar-analysis-text').innerText = analysisText;
@@ -785,7 +826,7 @@
         function renderGroupRadar(canvasId, data, color) {
             const canvas = document.getElementById(canvasId);
             if (!canvas) return;
-            
+
             // Destruir instância anterior de forma robusta
             Chart.getChart(canvas)?.destroy();
 
@@ -793,15 +834,15 @@
                 type: 'radar',
                 data: {
                     labels: [
-                        'Forehand', 'Backhand', 'Cozinhada', 'Topspin', 
-                        'Saque', 'Rally', 'Ataque', 'Defesa', 
+                        'Forehand', 'Backhand', 'Cozinhada', 'Topspin',
+                        'Saque', 'Rally', 'Ataque', 'Defesa',
                         'Bloqueio', 'Controle', 'Movimentação'
                     ],
                     datasets: [{
                         label: 'Média Técnica',
                         data: [
-                            data.forehand, data.backhand, data.cozinhada, data.topspin, 
-                            data.saque, data.rally, data.ataque, data.defesa, 
+                            data.forehand, data.backhand, data.cozinhada, data.topspin,
+                            data.saque, data.rally, data.ataque, data.defesa,
                             data.bloqueio, data.controle, data.movimentacao || 50
                         ],
                         backgroundColor: color + '20',
@@ -821,15 +862,15 @@
                         r: {
                             angleLines: { color: 'rgba(255,255,255,0.1)' },
                             grid: { color: 'rgba(255,255,255,0.1)' },
-                            pointLabels: { 
-                                color: '#94a3b8', 
+                            pointLabels: {
+                                color: '#94a3b8',
                                 font: { size: 10, weight: '600' }
                             },
                             ticks: { display: false, stepSize: 20 },
                             suggestedMin: 0, suggestedMax: 100
                         }
                     },
-                    plugins: { 
+                    plugins: {
                         legend: { display: false },
                         tooltip: { enabled: true }
                     }
@@ -862,7 +903,7 @@
                 // Melhorar lógica para mostrar ao menos 10 pares (se houver gente suficiente)
                 const pairs = [];
                 for (let i = 0; i < data.length - 1; i += 2) {
-                    pairs.push([data[i], data[i+1]]);
+                    pairs.push([data[i], data[i + 1]]);
                 }
 
                 html = pairs.slice(0, 10).map(p => `
@@ -895,7 +936,7 @@
             if (filterContainer.children.length === 0) {
                 let html = `<button onclick="changePerformanceFilter('all')" class="radar-filter ${activePerfIndex === 'all' ? 'active' : ''}">Geral</button>`;
                 data.forEach((m, i) => {
-                    html += `<button onclick="changePerformanceFilter(${i})" class="radar-filter ${activePerfIndex === i ? 'active' : ''}">${i+1}º ${m.name.split(' ')[0]}</button>`;
+                    html += `<button onclick="changePerformanceFilter(${i})" class="radar-filter ${activePerfIndex === i ? 'active' : ''}">${i + 1}º ${m.name.split(' ')[0]}</button>`;
                 });
                 filterContainer.innerHTML = html;
             } else {
@@ -914,10 +955,10 @@
 
             if (data && data.length > 0) {
                 const colors = ['#38bdf8', '#4ade80', '#fbbf24', '#f43f5e', '#a855f7'];
-                
+
                 // Pega as labels (datas) do primeiro membro que tem histórico
                 const refHist = data.find(m => m.history && m.history.length > 0)?.history || [];
-                labels = refHist.map(h => new Date(h.dt_registro).toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'}));
+                labels = refHist.map(h => new Date(h.dt_registro).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }));
 
                 if (activePerfIndex === 'all') {
                     datasets = data.map((m, i) => ({
@@ -955,12 +996,12 @@
                         legend: { display: false }
                     },
                     scales: {
-                        y: { 
+                        y: {
                             grid: { color: 'rgba(255,255,255,0.05)' },
                             ticks: { color: '#64748b' },
                             suggestedMin: 40, suggestedMax: 100
                         },
-                        x: { 
+                        x: {
                             grid: { display: false },
                             ticks: { color: '#64748b' }
                         }
@@ -1002,7 +1043,7 @@
                 });
 
                 const topTags = tagCloud.slice(0, 10);
-                
+
                 // Gerar frase síntese
                 const topCategories = [...new Set(topTags.map(t => t.category))].slice(0, 2);
                 const sampleTags = topTags.slice(0, 3).map(t => t.text).join(', ');
@@ -1025,7 +1066,7 @@
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const result = await response.json();
-            
+
             if (!result.success) return alert('Erro ao exportar dados.');
 
             const members = result.members || result.data;
@@ -1067,7 +1108,7 @@
                 if (data.success) {
                     // Atualizar contador de Churn
                     document.getElementById('churn-count').textContent = data.churn.length;
-                    
+
                     // Opcional: Renderizar lista de churn se houver um container específico
                 }
             } catch (err) {
@@ -1088,4 +1129,5 @@
         checkAdmin();
     </script>
 </body>
+
 </html>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,7 +15,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 4rem 2rem; /* Aumentado padding superior */
+            padding: 4rem 2rem;
+            /* Aumentado padding superior */
             font-family: 'Outfit', sans-serif;
             color: #fff;
             margin: 0;
@@ -27,8 +29,10 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 15px; /* Aumentado gap entre título e subtítulo */
-            position: relative; /* Garante que segue o fluxo normal */
+            gap: 15px;
+            /* Aumentado gap entre título e subtítulo */
+            position: relative;
+            /* Garante que segue o fluxo normal */
         }
 
         .checkin-header h1 {
@@ -36,11 +40,14 @@
             font-weight: 800;
             margin: 0;
             line-height: 1.2;
-            color: #fff; /* Força a cor branca para o 'Spin' */
+            color: #fff;
+            /* Força a cor branca para o 'Spin' */
         }
 
-        .checkin-header h1 span { color: #38bdf8; }
-        
+        .checkin-header h1 span {
+            color: #38bdf8;
+        }
+
         .checkin-header .subtitle {
             font-size: 1.2rem;
             font-weight: 400;
@@ -56,7 +63,8 @@
             max-width: 600px;
             margin-bottom: 3rem;
             position: relative;
-            z-index: 10; /* Garante que não fique atrás de nada */
+            z-index: 10;
+            /* Garante que não fique atrás de nada */
         }
 
         .search-container input {
@@ -64,12 +72,13 @@
             padding: 1.2rem 1.5rem 1.2rem 3.5rem;
             border-radius: 50px;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(30, 41, 59, 0.8); /* Fundo mais sólido */
+            background: rgba(30, 41, 59, 0.8);
+            /* Fundo mais sólido */
             color: #fff;
             font-size: 1.2rem;
             backdrop-filter: blur(10px);
             box-sizing: border-box;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
         }
 
         .search-container i {
@@ -182,8 +191,15 @@
         }
 
         @keyframes pop {
-            0% { transform: scale(0.5); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
 
         .modal-card h2 {
@@ -209,11 +225,25 @@
             text-transform: uppercase;
         }
 
-        .btn-yes { background: #38bdf8; color: #fff; }
-        .btn-no { background: rgba(255, 255, 255, 0.05); color: #94a3b8; border: 1px solid rgba(255, 255, 255, 0.1); }
-        .btn-undo { background: #ef4444; color: #fff; }
+        .btn-yes {
+            background: #38bdf8;
+            color: #fff;
+        }
 
-        .btn:active { transform: scale(0.95); }
+        .btn-no {
+            background: rgba(255, 255, 255, 0.05);
+            color: #94a3b8;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-undo {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
 
         /* Feedback Card specific */
         .feedback-card i {
@@ -259,7 +289,7 @@
             font-size: 3.8rem;
             font-weight: 800;
             color: #f8fafc;
-            text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
             font-variant-numeric: tabular-nums;
             margin-bottom: -15px;
             position: relative;
@@ -300,7 +330,8 @@
         }
 
         /* Views */
-        #view-checkin, #view-workout {
+        #view-checkin,
+        #view-workout {
             width: 100%;
             display: flex;
             flex-direction: column;
@@ -311,7 +342,8 @@
             display: none;
             max-width: 1400px;
             gap: 2rem;
-            margin-top: 4rem; /* compensar clock */
+            margin-top: 4rem;
+            /* compensar clock */
         }
 
         .search-container {
@@ -376,12 +408,17 @@
             margin-bottom: 2rem;
             line-height: 1;
         }
-        
+
         @keyframes pulse-paused {
-            0% { opacity: 0.8; }
-            100% { opacity: 0.4; }
+            0% {
+                opacity: 0.8;
+            }
+
+            100% {
+                opacity: 0.4;
+            }
         }
-        
+
         .massive-timer.ending {
             color: #ef4444;
             text-shadow: 0 0 40px rgba(239, 68, 68, 0.5);
@@ -394,8 +431,13 @@
         }
 
         @keyframes pulse {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.05); }
+            0% {
+                transform: scale(1);
+            }
+
+            100% {
+                transform: scale(1.05);
+            }
         }
 
         .workout-grid {
@@ -448,7 +490,10 @@
             transform: translateX(5px);
         }
 
-        .catalog-btn i { color: #38bdf8; font-size: 1.2rem; }
+        .catalog-btn i {
+            color: #38bdf8;
+            font-size: 1.2rem;
+        }
 
         .btn-start-all {
             background: linear-gradient(135deg, #22c55e, #16a34a);
@@ -465,7 +510,11 @@
             box-shadow: 0 10px 20px -5px rgba(34, 197, 94, 0.4);
             transition: all 0.3s;
         }
-        .btn-start-all:hover { transform: translateY(-3px); box-shadow: 0 15px 25px -5px rgba(34, 197, 94, 0.5); }
+
+        .btn-start-all:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px -5px rgba(34, 197, 94, 0.5);
+        }
 
         .queues-container {
             display: grid;
@@ -495,7 +544,7 @@
             justify-content: space-between;
             align-items: center;
         }
-        
+
         .queue-title .clear-btn {
             background: rgba(239, 68, 68, 0.1);
             color: #fca5a5;
@@ -506,12 +555,24 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-        .queue-title .clear-btn:hover { background: rgba(239, 68, 68, 0.3); color: #fff; }
+
+        .queue-title .clear-btn:hover {
+            background: rgba(239, 68, 68, 0.3);
+            color: #fff;
+        }
 
         /* Status Colors */
-        .color-iniciante { color: #facc15; }
-        .color-intermediario { color: #38bdf8; }
-        .color-avancado { color: #ef4444; }
+        .color-iniciante {
+            color: #facc15;
+        }
+
+        .color-intermediario {
+            color: #38bdf8;
+        }
+
+        .color-avancado {
+            color: #ef4444;
+        }
 
         .playcard {
             background: rgba(30, 41, 59, 0.9);
@@ -522,29 +583,100 @@
             margin-bottom: 10px;
         }
 
-        .playcard.status-green { border-color: #4ade80; }
-        .playcard.status-yellow { border-color: #eab308; background: rgba(234, 179, 8, 0.1); }
-        .playcard.status-red { border-color: #ef4444; opacity: 0.4; filter: grayscale(80%); }
-        .playcard.status-rest { border-color: #0ea5e9; background: rgba(14, 165, 233, 0.15); }
+        .playcard.status-green {
+            border-color: #4ade80;
+        }
 
-        .playcard.status-rest .time { color: #7dd3fc; }
-        .playcard.status-rest .desc { color: #bae6fd; }
+        .playcard.status-yellow {
+            border-color: #eab308;
+            background: rgba(234, 179, 8, 0.1);
+        }
 
-        .playcard .desc { font-weight: 700; color: #fff; font-size: 1.05rem; margin-right: 25px; line-height: 1.3; word-break: break-word;}
-        .playcard .time { color: #cbd5e1; font-size: 0.9rem; margin-top: 8px; font-weight: 600; display: flex; align-items: center; gap: 5px;}
-        
+        .playcard.status-red {
+            border-color: #ef4444;
+            opacity: 0.4;
+            filter: grayscale(80%);
+        }
+
+        .playcard.status-rest {
+            border-color: #0ea5e9;
+            background: rgba(14, 165, 233, 0.15);
+        }
+
+        .playcard.status-rest .time {
+            color: #7dd3fc;
+        }
+
+        .playcard.status-rest .desc {
+            color: #bae6fd;
+        }
+
+        .playcard .desc {
+            font-weight: 700;
+            color: #fff;
+            font-size: 1.05rem;
+            margin-right: 25px;
+            line-height: 1.3;
+            word-break: break-word;
+        }
+
+        .playcard .time {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            margin-top: 8px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
         .playcard .card-actions {
-            position: absolute; right: 10px; top: 10px; display: flex; gap: 8px;
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            display: flex;
+            gap: 8px;
         }
+
         .playcard .action-btn {
-            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); border-radius: 5px; cursor: pointer; color: #f1f5f9; padding: 5px 8px; font-size: 0.9rem; transition: all 0.2s;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            cursor: pointer;
+            color: #f1f5f9;
+            padding: 5px 8px;
+            font-size: 0.9rem;
+            transition: all 0.2s;
         }
-        .playcard .action-btn:hover { background: rgba(255,255,255,0.2); }
-        .playcard .action-btn.delete:hover { border-color: #ef4444; color: #ef4444; }
-        .playcard .action-btn.finish:hover { border-color: #4ade80; color: #4ade80; }
-        .playcard .action-btn.pause:hover { border-color: #eab308; color: #eab308; }
-        .playcard .action-btn.resume { background: #eab308; color: #000; border-color: #eab308; }
-        .playcard .action-btn.resume:hover { background: #fbbf24; }
+
+        .playcard .action-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .playcard .action-btn.delete:hover {
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+
+        .playcard .action-btn.finish:hover {
+            border-color: #4ade80;
+            color: #4ade80;
+        }
+
+        .playcard .action-btn.pause:hover {
+            border-color: #eab308;
+            color: #eab308;
+        }
+
+        .playcard .action-btn.resume {
+            background: #eab308;
+            color: #000;
+            border-color: #eab308;
+        }
+
+        .playcard .action-btn.resume:hover {
+            background: #fbbf24;
+        }
 
         .playcard.is-paused {
             opacity: 0.7;
@@ -552,7 +684,10 @@
         }
 
         /* Setup Modal */
-        #setupOverlay .modal-card { max-width: 450px; }
+        #setupOverlay .modal-card {
+            max-width: 450px;
+        }
+
         .time-selector {
             display: flex;
             align-items: center;
@@ -560,58 +695,99 @@
             gap: 1.5rem;
             margin: 2rem 0;
         }
+
         .btn-round {
             width: 50px;
             height: 50px;
             border-radius: 25px;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
             color: #fff;
             font-size: 1.5rem;
             cursor: pointer;
             transition: all 0.2s;
         }
-        .btn-round:hover { background: rgba(255,255,255,0.1); border-color: #38bdf8; }
-        .time-value { font-size: 3rem; font-weight: 800; color: #38bdf8; font-variant-numeric: tabular-nums; width: 80px; text-align: center; }
-        
+
+        .btn-round:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #38bdf8;
+        }
+
+        .time-value {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #38bdf8;
+            font-variant-numeric: tabular-nums;
+            width: 80px;
+            text-align: center;
+        }
+
         .level-selector-tags {
-            display: flex; gap: 10px; justify-content: center; margin-bottom: 2rem;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 2rem;
         }
+
         .level-tag {
-            padding: 8px 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); color: #fff; background: transparent; cursor: pointer;
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            background: transparent;
+            cursor: pointer;
         }
-        .level-tag.active { border-color: #38bdf8; background: rgba(56,189,248,0.2); color: #38bdf8;}
+
+        .level-tag.active {
+            border-color: #38bdf8;
+            background: rgba(56, 189, 248, 0.2);
+            color: #38bdf8;
+        }
 
         /* Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(56, 189, 248, 0.3); }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
 
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(56, 189, 248, 0.3);
+        }
     </style>
 </head>
+
 <body>
 
     <div class="top-bar">
-        <a href="admin.html" class="btn-back"><i class="fas fa-chevron-left"></i> Voltar</a>
+        <a href="dashboard.html" class="btn-back"><i class="fas fa-chevron-left"></i> Voltar</a>
         <!-- O relogio mudou para cima do timer! -->
     </div>
 
     <header class="checkin-header">
         <h1>Spin<span>4All</span></h1>
-        
+
         <div class="view-toggle">
-            <button class="toggle-btn active" onclick="switchView('checkin')" id="btn-view-checkin"><i class="fas fa-user-check"></i> Check-in</button>
-            <button class="toggle-btn" onclick="switchView('workout')" id="btn-view-workout"><i class="fas fa-stopwatch"></i> Painel Treino</button>
+            <button class="toggle-btn active" onclick="switchView('checkin')" id="btn-view-checkin"><i
+                    class="fas fa-user-check"></i> Check-in</button>
+            <button class="toggle-btn" onclick="switchView('workout')" id="btn-view-workout"><i
+                    class="fas fa-stopwatch"></i> Painel Treino</button>
         </div>
     </header>
 
     <!-- VIEWS -->
-    
+
     <!-- 1. CHECK-IN VIEW -->
     <div id="view-checkin">
         <div class="massive-clock-checkin" id="bigClockCheckin">--:--</div>
-        
+
         <div class="search-container">
             <i class="fas fa-search"></i>
             <input type="text" id="memberSearch" placeholder="Quem está treinando agora?">
@@ -631,17 +807,20 @@
         </div>
 
         <div class="workout-grid">
-            
+
             <div class="catalog-col">
                 <div class="catalog-title"><i class="fas fa-list-ul"></i> Catálogo</div>
-                
-                <div id="catalogList" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 2rem; max-height: 450px; overflow-y: auto; padding-right: 5px;">
+
+                <div id="catalogList"
+                    style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 2rem; max-height: 450px; overflow-y: auto; padding-right: 5px;">
                     <!-- Renderizado pelo JS do Catalogo -->
                 </div>
 
                 <div style="margin-top: auto; display:flex; flex-direction: column; gap: 15px;">
-                    <button class="catalog-btn" onclick="openCustomModal()" style="border-style: dashed;"><i class="fas fa-plus-circle"></i> Novo (Avulso)</button>
-                    <button class="btn-start-all" id="btnStartAll" onclick="toggleWorkoutState()"><i class="fas fa-play"></i> Iniciar Treino</button>
+                    <button class="catalog-btn" onclick="openCustomModal()" style="border-style: dashed;"><i
+                            class="fas fa-plus-circle"></i> Novo (Avulso)</button>
+                    <button class="btn-start-all" id="btnStartAll" onclick="toggleWorkoutState()"><i
+                            class="fas fa-play"></i> Iniciar Treino</button>
                 </div>
             </div>
 
@@ -649,21 +828,24 @@
                 <div class="queue-col" id="col-iniciante">
                     <div class="queue-title">
                         <span class="color-iniciante">Iniciante</span>
-                        <button class="clear-btn" onclick="clearQueue('iniciante')" title="Limpar Fila"><i class="fas fa-trash"></i></button>
+                        <button class="clear-btn" onclick="clearQueue('iniciante')" title="Limpar Fila"><i
+                                class="fas fa-trash"></i></button>
                     </div>
                     <div class="playcards-area" id="list-iniciante"></div>
                 </div>
                 <div class="queue-col" id="col-intermediario">
                     <div class="queue-title">
                         <span class="color-intermediario">Intermediário</span>
-                        <button class="clear-btn" onclick="clearQueue('intermediario')" title="Limpar Fila"><i class="fas fa-trash"></i></button>
+                        <button class="clear-btn" onclick="clearQueue('intermediario')" title="Limpar Fila"><i
+                                class="fas fa-trash"></i></button>
                     </div>
                     <div class="playcards-area" id="list-intermediario"></div>
                 </div>
                 <div class="queue-col" id="col-avancado">
                     <div class="queue-title">
                         <span class="color-avancado">Avançado</span>
-                        <button class="clear-btn" onclick="clearQueue('avancado')" title="Limpar Fila"><i class="fas fa-trash"></i></button>
+                        <button class="clear-btn" onclick="clearQueue('avancado')" title="Limpar Fila"><i
+                                class="fas fa-trash"></i></button>
                     </div>
                     <div class="playcards-area" id="list-avancado"></div>
                 </div>
@@ -709,14 +891,16 @@
         <div class="modal-card">
             <h2 id="setupTitle">Configurar Treino</h2>
             <div id="customNameContainer" style="display: none; margin-bottom: 1.5rem;">
-                <input type="text" id="customDescInput" placeholder="Nome do exercício..." style="width: 100%; padding: 12px; border-radius: 8px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.2); color: white; font-size: 1.1rem; text-align: center; margin-bottom: 10px;">
-                <label style="color: #94a3b8; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <input type="text" id="customDescInput" placeholder="Nome do exercício..."
+                    style="width: 100%; padding: 12px; border-radius: 8px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.2); color: white; font-size: 1.1rem; text-align: center; margin-bottom: 10px;">
+                <label
+                    style="color: #94a3b8; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
                     <input type="checkbox" id="saveToCatalogCheck">
                     Salvar no Catálogo Definitivo
                 </label>
             </div>
             <p id="setupType" style="color: #94a3b8; margin-bottom: 1rem; font-weight: 600; font-size: 1.2rem;"></p>
-            
+
             <div class="level-selector-tags" id="levelSelector">
                 <button class="level-tag active" data-level="todos">Todas Turmas</button>
                 <button class="level-tag" data-level="iniciante">Iniciante</button>
@@ -730,7 +914,7 @@
                 <button class="btn-round" onclick="adjustTime(1)"><i class="fas fa-plus"></i></button>
             </div>
             <p style="color: #64748b; font-size: 0.9rem; margin-top: -10px; margin-bottom: 2rem;">MINUTOS</p>
-            
+
             <div class="modal-actions">
                 <button class="btn btn-no" onclick="closeModals()">Cancelar</button>
                 <button class="btn btn-yes" onclick="addToQueue()">Adicionar à Fila</button>
@@ -751,9 +935,9 @@
             const h = String(now.getHours()).padStart(2, '0');
             const m = String(now.getMinutes()).padStart(2, '0');
             const timeStr = `${h}:${m}`;
-            
-            if(document.getElementById('mainClock')) document.getElementById('mainClock').innerText = timeStr;
-            if(document.getElementById('bigClockCheckin')) document.getElementById('bigClockCheckin').innerText = timeStr;
+
+            if (document.getElementById('mainClock')) document.getElementById('mainClock').innerText = timeStr;
+            if (document.getElementById('bigClockCheckin')) document.getElementById('bigClockCheckin').innerText = timeStr;
         }
         setInterval(updateMainClock, 1000);
         updateMainClock();
@@ -762,7 +946,7 @@
         function switchView(viewName) {
             document.getElementById('view-checkin').style.display = viewName === 'checkin' ? 'flex' : 'none';
             document.getElementById('view-workout').style.display = viewName === 'workout' ? 'flex' : 'none';
-            
+
             document.getElementById('btn-view-checkin').classList.toggle('active', viewName === 'checkin');
             document.getElementById('btn-view-workout').classList.toggle('active', viewName === 'workout');
         }
@@ -774,10 +958,10 @@
             const saved = localStorage.getItem('spin4all_queues');
             if (saved) return JSON.parse(saved);
 
-            return { 
-                iniciante: [{id: generateId(), desc: 'Aquecimento', totalSeconds: 600, remainingSeconds: 600, status:'green', isRest:false, paused: false}], 
-                intermediario: [{id: generateId(), desc: 'Aquecimento', totalSeconds: 600, remainingSeconds: 600, status:'green', isRest:false, paused: false}], 
-                avancado: [{id: generateId(), desc: 'Aquecimento', totalSeconds: 600, remainingSeconds: 600, status:'green', isRest:false, paused: false}] 
+            return {
+                iniciante: [{ id: generateId(), desc: 'Aquecimento', totalSeconds: 600, remainingSeconds: 600, status: 'green', isRest: false, paused: false }],
+                intermediario: [{ id: generateId(), desc: 'Aquecimento', totalSeconds: 600, remainingSeconds: 600, status: 'green', isRest: false, paused: false }],
+                avancado: [{ id: generateId(), desc: 'Aquecimento', totalSeconds: 600, remainingSeconds: 600, status: 'green', isRest: false, paused: false }]
             };
         }
 
@@ -832,7 +1016,7 @@
         // Recuperar se ja estava rodando
         const wasRunning = localStorage.getItem('spin4all_running') === 'true';
         renderCatalog(); // Pinta os cards do catalogo
-        if(wasRunning) toggleWorkoutState(); else renderAllQueues();
+        if (wasRunning) toggleWorkoutState(); else renderAllQueues();
 
         // Ao Abrir Modal Avulso
         function openCustomModal() {
@@ -848,12 +1032,12 @@
             setupTemp = { id: generateId(), desc, minutes: defaultMins, level: ['todos'], isRest };
             document.getElementById('setupTitle').innerText = isRest ? 'Pausa / Descanso' : 'Adicionar ao Treino';
             document.getElementById('setupType').innerText = desc;
-            
+
             document.getElementById('setupType').style.display = 'block';
             document.getElementById('customNameContainer').style.display = 'none';
 
             document.getElementById('setupMinutes').innerText = defaultMins;
-            
+
             // reset level btns
             document.querySelectorAll('.level-tag').forEach(b => b.classList.remove('active'));
             document.querySelector('.level-tag[data-level="todos"]').classList.add('active');
@@ -880,9 +1064,9 @@
                 } else {
                     document.querySelector('.level-tag[data-level="todos"]').classList.remove('active');
                     e.target.classList.toggle('active');
-                    
+
                     setupTemp.level = Array.from(document.querySelectorAll('.level-tag.active')).map(b => b.dataset.level);
-                    
+
                     if (setupTemp.level.length === 0 || setupTemp.level.length === 3) {
                         document.querySelectorAll('.level-tag').forEach(b => b.classList.remove('active'));
                         document.querySelector('.level-tag[data-level="todos"]').classList.add('active');
@@ -897,13 +1081,13 @@
                 const customVal = document.getElementById('customDescInput').value.trim();
                 setupTemp.desc = customVal || 'Exercício Extra';
 
-                if(document.getElementById('saveToCatalogCheck').checked) {
+                if (document.getElementById('saveToCatalogCheck').checked) {
                     saveToCatalogDB(setupTemp.desc, setupTemp.minutes);
                 }
             }
 
             const levels = setupTemp.level.includes('todos') ? ['iniciante', 'intermediario', 'avancado'] : setupTemp.level;
-            
+
             levels.forEach(lvl => {
                 queues[lvl].push({
                     id: generateId(),
@@ -929,7 +1113,7 @@
 
         function fastForwardCard(level, id) {
             const card = queues[level].find(p => p.id === id);
-            if(card && card.status === 'yellow') {
+            if (card && card.status === 'yellow') {
                 card.remainingSeconds = 1; // Forca a terminar no proximo tick
             }
         }
@@ -943,19 +1127,19 @@
 
         function adjustRunningTime(level, id) {
             const card = queues[level].find(p => p.id === id);
-            if(card && card.status === 'yellow') {
+            if (card && card.status === 'yellow') {
                 const addMins = prompt(`Ajustar Tempo de "${card.desc}": \nDigite os minutos a ADICIONAR ou REMOVER (use sinal negativo para remover. Ex: -1):`);
-                if(addMins !== null && addMins.trim() !== '') {
+                if (addMins !== null && addMins.trim() !== '') {
                     const val = parseInt(addMins);
-                    if(!isNaN(val)) {
+                    if (!isNaN(val)) {
                         card.remainingSeconds += val * 60;
-                        if(card.remainingSeconds < 1) card.remainingSeconds = 1;
+                        if (card.remainingSeconds < 1) card.remainingSeconds = 1;
                         card.totalSeconds += val * 60;
                         saveState();
                         renderQueue(level);
                         // forca master tick atualizar visualmente agora
-                        const secs = Math.max(...['iniciante','intermediario','avancado'].map(l => {
-                            const y = queues[l].find(q=>q.status==='yellow');
+                        const secs = Math.max(...['iniciante', 'intermediario', 'avancado'].map(l => {
+                            const y = queues[l].find(q => q.status === 'yellow');
                             return y ? y.remainingSeconds : 0;
                         }));
                         updateMasterDisplay(secs, card.isRest);
@@ -965,7 +1149,7 @@
         }
 
         function clearQueue(level) {
-            if(confirm(`Tem certeza que deseja zerar a fila de treino do nível ${level.toUpperCase()}?`)) {
+            if (confirm(`Tem certeza que deseja zerar a fila de treino do nível ${level.toUpperCase()}?`)) {
                 queues[level] = [];
                 saveState();
                 renderQueue(level);
@@ -974,7 +1158,7 @@
 
         function toggleCardPause(level, id) {
             const card = queues[level].find(p => p.id === id);
-            if(card && card.status === 'yellow') {
+            if (card && card.status === 'yellow') {
                 card.paused = !card.paused;
                 saveState();
                 renderQueue(level);
@@ -990,24 +1174,24 @@
         function formatTime(s) {
             const m = Math.floor(s / 60);
             const sec = s % 60;
-            return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+            return `${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
         }
 
         function renderQueue(level) {
             const col = document.getElementById(`list-${level}`);
             col.innerHTML = '';
-            
+
             queues[level].forEach(item => {
                 let statusClass = item.status === 'yellow' && item.isRest ? 'status-rest' : `status-${item.status}`;
                 let actionBtns = '';
-                
+
                 if (item.status === 'green') {
                     actionBtns = `<button class="action-btn delete" title="Remover" onclick="removePlaycard('${level}', '${item.id}')"><i class="fas fa-times"></i></button>`;
                 } else if (item.status === 'yellow') {
                     const pauseIcon = item.paused ? 'fa-play' : 'fa-pause';
                     const pauseTitle = item.paused ? 'Retomar' : 'Pausar';
                     const pauseClass = item.paused ? 'resume' : 'pause';
-                    
+
                     actionBtns = `
                         <button class="action-btn edit-time" title="Ajustar Tempo Agora (+/-)" onclick="adjustRunningTime('${level}', '${item.id}')" style="margin-right: -4px;"><i class="fas fa-pen"></i></button>
                         <button class="action-btn ${pauseClass}" title="${pauseTitle}" onclick="toggleCardPause('${level}', '${item.id}')" style="margin-right: -4px;"><i class="fas ${pauseIcon}"></i></button>
@@ -1017,9 +1201,9 @@
 
                 // Calcular altura proporcional
                 const baseMins = item.totalSeconds / 60;
-                let addedPadding = Math.min((baseMins * 3), 70); 
-                let finalPadding = 1.2 + (addedPadding / 16); 
-                
+                let addedPadding = Math.min((baseMins * 3), 70);
+                let finalPadding = 1.2 + (addedPadding / 16);
+
                 const pausedClass = item.paused ? 'is-paused' : '';
 
                 col.innerHTML += `
@@ -1041,10 +1225,10 @@
             if (!isWorkoutRunning) {
                 // START (from zero)
                 // Checar se tem tasks green ou yellow pra rodar
-                const hasTasks = ['iniciante', 'intermediario', 'avancado'].some(lvl => 
+                const hasTasks = ['iniciante', 'intermediario', 'avancado'].some(lvl =>
                     queues[lvl].some(q => q.status === 'green' || q.status === 'yellow')
                 );
-                
+
                 if (!hasTasks) {
                     alert("Não há exercícios engatilhados na fila. Adicione algo do catálogo primeiro.");
                     return;
@@ -1081,13 +1265,13 @@
 
         function startAllQueuesLogic() {
             ['iniciante', 'intermediario', 'avancado'].forEach(level => {
-                if(!queues[level].find(q => q.status === 'yellow')) {
+                if (!queues[level].find(q => q.status === 'yellow')) {
                     const firstGreen = queues[level].find(q => q.status === 'green');
-                    if(firstGreen) firstGreen.status = 'yellow';
+                    if (firstGreen) firstGreen.status = 'yellow';
                 }
             });
             renderAllQueues();
-            if(masterTimerInterval) clearInterval(masterTimerInterval);
+            if (masterTimerInterval) clearInterval(masterTimerInterval);
             masterTimerInterval = setInterval(tickAll, 1000);
         }
 
@@ -1098,31 +1282,31 @@
 
             ['iniciante', 'intermediario', 'avancado'].forEach(level => {
                 const active = queues[level].find(q => q.status === 'yellow');
-                if(active) {
+                if (active) {
                     activeTasks = true;
-                    if(!active.isRest) isGlobalRest = false;
-                    
-                    if(!isWorkoutPaused && !active.paused) {
+                    if (!active.isRest) isGlobalRest = false;
+
+                    if (!isWorkoutPaused && !active.paused) {
                         active.remainingSeconds--;
                     }
-                    
-                    if(lowestSecs === null || active.remainingSeconds < lowestSecs) {
+
+                    if (lowestSecs === null || active.remainingSeconds < lowestSecs) {
                         lowestSecs = active.remainingSeconds;
                     }
 
                     // Checa Fim do Exce
-                    if(active.remainingSeconds <= 0) {
+                    if (active.remainingSeconds <= 0) {
                         active.status = 'red'; // Fim
                         recordWorkoutHistory(active.desc, level, active.totalSeconds / 60);
 
                         // Puxar proximo
                         const nextGreen = queues[level].find(q => q.status === 'green');
-                        if(nextGreen) nextGreen.status = 'yellow';
+                        if (nextGreen) nextGreen.status = 'yellow';
                     }
                 }
             });
 
-            if(!activeTasks) {
+            if (!activeTasks) {
                 clearInterval(masterTimerInterval);
                 isWorkoutRunning = false;
                 isWorkoutPaused = false;
@@ -1145,9 +1329,9 @@
         function updateMasterDisplay(secs, isRest) {
             const masterTimer = document.getElementById('masterTimer');
             const timerLabel = document.getElementById('masterTimerLabel');
-            
+
             masterTimer.innerText = formatTime(secs);
-            
+
             if (secs <= 3 && secs > 0) {
                 masterTimer.className = 'massive-timer ending';
                 timerLabel.innerText = "ATENÇÃO!";
@@ -1184,7 +1368,7 @@
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const data = await response.json();
-                
+
                 if (!data.success || !data.user.flg_admin) {
                     alert('Acesso restrito: Apenas administradores podem lançar o sistema de check-in.');
                     window.location.href = 'dashboard.html';
@@ -1240,7 +1424,7 @@
         function handleCardClick(member) {
             selectedMember = member;
             const firstName = member.dsc_nome_completo.split(' ')[0];
-            
+
             if (member.flg_presente) {
                 document.getElementById('undoTitle').textContent = `Oi, ${firstName}!`;
                 document.getElementById('undoOverlay').style.display = 'flex';
@@ -1263,7 +1447,7 @@
             try {
                 const response = await fetch(`${API_URL}/checkin`, {
                     method: 'POST',
-                    headers: { 
+                    headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
@@ -1284,7 +1468,7 @@
             try {
                 const response = await fetch(`${API_URL}/checkin`, {
                     method: 'DELETE',
-                    headers: { 
+                    headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
@@ -1320,7 +1504,7 @@
         // Filtro de Busca
         document.getElementById('memberSearch').addEventListener('input', (e) => {
             const term = e.target.value.toLowerCase();
-            const filtered = allMembers.filter(m => 
+            const filtered = allMembers.filter(m =>
                 m.dsc_nome_completo.toLowerCase().includes(term)
             );
             renderMembers(filtered);
@@ -1330,4 +1514,5 @@
         checkAdmin();
     </script>
 </body>
+
 </html>
