@@ -1440,4 +1440,10 @@ a {
     grid-template-columns: 1fr;
     gap: 16px;
   }
+
+  /* Core Mobile Adjustments */
+  .logo-text { font-size: 1.1rem; }
+  .header { padding: 12px 0; }
+  .header-container { padding: 0 16px; }
+  .mobile-menu-btn { width: 40px; height: 40px; font-size: 1.25rem; }
 }
