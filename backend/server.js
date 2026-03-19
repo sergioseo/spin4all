@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-require('dotenv').config();
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 const app = express();
 app.use(cors());
@@ -17,8 +17,9 @@ app.use((req, res, next) => {
   console.log(`[REQUEST] ${new Date().toISOString()} - ${req.method} ${req.url}`);
   next();
 });
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use(express.static(__dirname)); // Servir HTML, CSS e JS da raiz
+app.use('/assets', express.static(path.join(__dirname, '../assets')));
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+app.use(express.static(path.join(__dirname, '../frontend'))); // Servir HTML, CSS e JS da pasta frontend
 
 // Rotas Explícitas para HTML (Garantia)
 app.get('/', (req, res) => {
@@ -26,39 +27,39 @@ app.get('/', (req, res) => {
   res.redirect('/login.html');
 });
 app.get('/login.html', (req, res) => {
-  console.log(`[ACCESS] Solicitando login.html de: ${path.join(__dirname, 'login.html')}`);
-  res.sendFile(path.join(__dirname, 'login.html'));
+  console.log(`[ACCESS] Solicitando login.html de: ${path.join(__dirname, '../frontend/login.html')}`);
+  res.sendFile(path.join(__dirname, '../frontend/login.html'));
 });
 app.get('/dashboard.html', (req, res) => {
   console.log('[ACCESS] Solicitando dashboard.html');
-  res.sendFile(path.join(__dirname, 'dashboard.html'));
+  res.sendFile(path.join(__dirname, '../frontend/dashboard.html'));
 });
 app.get('/admin.html', (req, res) => {
   console.log('[ACCESS] Solicitando admin.html');
-  res.sendFile(path.join(__dirname, 'admin.html'));
+  res.sendFile(path.join(__dirname, '../frontend/admin.html'));
 });
 app.get('/checkin.html', (req, res) => {
   console.log('[ACCESS] Solicitando checkin.html');
-  res.sendFile(path.join(__dirname, 'checkin.html'));
+  res.sendFile(path.join(__dirname, '../frontend/checkin.html'));
 });
 app.get('/cadastro.html', (req, res) => {
   console.log('[ACCESS] Solicitando cadastro.html');
-  res.sendFile(path.join(__dirname, 'cadastro.html'));
+  res.sendFile(path.join(__dirname, '../frontend/cadastro.html'));
 });
 app.get('/test-ping', (req, res) => res.send('pong'));
 
 // Rota de Diagnóstico
 app.get('/debug-static', (req, res) => {
-  const loginPath = path.join(__dirname, 'login.html');
+  const loginPath = path.join(__dirname, '../frontend/login.html');
   const exists = fs.existsSync(loginPath);
-  res.json({ __dirname, loginPath, exists, files: fs.readdirSync(__dirname) });
+  res.json({ __dirname, loginPath, exists, files: fs.readdirSync(path.join(__dirname, '../frontend')) });
 });
 
 // Configuração do Multer para Upload de Fotos
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const dir = './uploads';
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+    const dir = path.join(__dirname, '../uploads');
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
     cb(null, dir);
   },
   filename: (req, file, cb) => {
@@ -314,36 +315,75 @@ app.put('/api/update-profile', authenticateToken, async (req, res) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
-    const { name, weight, height, lateralidade, grip, level, goals, mentor_message, birth } = req.body;
+    // Atualiza dados biomecânicos e técnicos (Estado Atual)
+    const { 
+      name, weight, height, lateralidade, grip, level, goals, mentor_message, birth,
+      skills // Novo: objeto com as habilidades
+    } = req.body;
     const userId = req.user.id;
 
-    // Atualiza dados biomecânicos e técnicos (Estado Atual)
+    // 1. Buscar dados antigos para auditoria
     const oldProfileRes = await client.query('SELECT * FROM trusted.tb_membros_perfil WHERE id_usuario = $1', [userId]);
     const oldData = oldProfileRes.rows[0];
 
-    // 1. Registrar no RAW (Auditoria Obrigatória)
+    // 2. Registrar no RAW (Auditoria Obrigatória)
     await client.query(
       `INSERT INTO raw.tb_perfil_atualizacoes (id_usuario, jsn_payload_antigo, jsn_payload_novo) 
        VALUES ($1, $2, $3)`,
       [userId, JSON.stringify(oldData), JSON.stringify(req.body)]
     );
 
-    // 2. Atualizar TRUSTED (Estado Atual)
+    // 3. Atualizar TRUSTED (Estado Atual) incluindo Skills
+    const sk = skills || {};
     await client.query(
       `UPDATE trusted.tb_membros_perfil 
        SET dsc_nome_completo = $1, 
            num_peso_kg = $2, 
            num_altura_cm = $3, 
-           dsc_lateralidade = $4,
+           vlr_lateralidade = $4,
            dsc_empunhadura = $5,
            dsc_nivel_tecnico = $6, 
            dsc_metas = $7, 
            dsc_mensagem_mentor = $8, 
            dt_nascimento = $9, 
+           num_skill_forehand = $10,
+           num_skill_backhand = $11,
+           num_skill_cozinhada = $12,
+           num_skill_topspin = $13,
+           num_skill_saque = $14,
+           num_skill_rally = $15,
+           num_skill_ataque = $16,
+           num_skill_defesa = $17,
+           num_skill_bloqueio = $18,
+           num_skill_controle = $19,
+           num_skill_movimentacao = $20,
            dt_atualizacao = CURRENT_TIMESTAMP
-       WHERE id_usuario = $10`,
-      [name, weight, height, lateralidade, grip, level, goals, mentor_message, birth || null, userId]
+       WHERE id_usuario = $21`,
+      [
+        name || oldData.dsc_nome_completo, 
+        weight || oldData.num_peso_kg, 
+        height || oldData.num_altura_cm, 
+        lateralidade || oldData.vlr_lateralidade, 
+        grip || oldData.dsc_empunhadura, 
+        level || oldData.dsc_nivel_tecnico, 
+        goals || oldData.dsc_metas, 
+        mentor_message || oldData.dsc_mensagem_mentor, 
+        birth || oldData.dt_nascimento,
+        sk.forehand || oldData.num_skill_forehand,
+        sk.backhand || oldData.num_skill_backhand,
+        sk.cozinhada || oldData.num_skill_cozinhada,
+        sk.topspin || oldData.num_skill_topspin,
+        sk.saque || oldData.num_skill_saque,
+        sk.rally || oldData.num_skill_rally,
+        sk.ataque || oldData.num_skill_ataque,
+        sk.defesa || oldData.num_skill_defesa,
+        sk.bloqueio || oldData.num_skill_bloqueio,
+        sk.controle || oldData.num_skill_controle,
+        sk.movimentacao || oldData.num_skill_movimentacao,
+        userId
+      ]
     );
+
 
     // 3. Registrar Evolução (Histórico se houve mudança de peso/nível)
     if (oldData.num_peso_kg !== weight || oldData.dsc_nivel_tecnico !== level) {

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Membro | Spin4All</title>
+    <!-- CSS Foundation -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="dashboard.css">
+    
+    <!-- App Bootstrap -->
+    <script type="module" src="app.js"></script>
+    <style>
+        #app-loader {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 10000; opacity: 0; visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        #app-loader.visible { opacity: 1; visibility: visible; }
+        .loader-spinner {
+            width: 50px; height: 50px;
+            border: 4px solid rgba(56, 189, 248, 0.1);
+            border-top: 4px solid #38bdf8;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #app { transition: opacity 0.3s ease; }
+        #app.loading-fade { opacity: 0.3; filter: blur(2px); }
+    </style>
+</head>
+
+<body>
+    <div id="app-loader"><div class="loader-spinner"></div></div>
+
+    <!-- SIDEBAR (SHELL) -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <img src="/assets/images/logo.png" alt="Spin4All">
+            <span style="font-weight: 800; font-size: 1.2rem;">SPIN<span style="color:#38bdf8">4</span>ALL</span>
+        </div>
+
+        <nav class="nav-menu">
+            <ul>
+                <li class="nav-item">
+                    <a href="javascript:void(0)" onclick="navTo('home')" class="nav-link active" id="nav-home">
+                        <i class="fas fa-home"></i>
+                        <span>Início</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="javascript:void(0)" onclick="navTo('profile')" class="nav-link" id="nav-profile">
+                        <i class="fas fa-user-cog"></i>
+                        <span>Meu Perfil</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="checkin.html" class="nav-link">
+                        <i class="fas fa-tablet-screen-button"></i>
+                        <span>Check-In</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="torneios.html" class="nav-link">
+                        <i class="fas fa-trophy"></i>
+                        <span>Painel do Torneio</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="javascript:void(0)" onclick="navTo('settings')" class="nav-link" id="nav-settings">
+                        <i class="fas fa-gear"></i>
+                        <span>Configurações</span>
+                    </a>
+                </li>
+                <li class="nav-item" id="admin-nav-item" style="display: none;">
+                    <a href="admin.html" class="nav-link">
+                        <i class="fas fa-shield"></i>
+                        <span>Administração</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="nav-item">
+            <a href="javascript:void(0)" onclick="logout()" class="nav-link" style="color: #ef4444;">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Sair</span>
+            </a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <!-- HEADER (SHELL) -->
+        <div class="header-split-container" style="display: flex; gap: 14px; margin-bottom: 40px; height: 110px;">
+            <!-- CARD ESQUERDO: SAUDAÇÃO -->
+            <div class="glass-card header-card-left"
+                style="flex: 0 0 calc(20% - 7px); display: flex; align-items: center; padding: 0 20px; background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; position: relative; overflow: hidden; margin: 0;">
+                <div style="display: flex; align-items: center; gap: 15px; width: 100%;">
+                    <div id="user-profile-img-container" 
+                        style="width: 55px; height: 55px; border-radius: 50%; border: 2px solid #38bdf8; overflow: hidden; background: #1e293b; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative;">
+                        <i class="fas fa-user" style="color: #94a3b8; font-size: 1.5rem;"></i>
+                        <img id="user-photo-img" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                    </div>
+                    <div class="user-greeting">
+                        <h1 id="user-welcome" style="font-size: 1.1rem; color: #fff; margin: 0; font-weight: 700;">Carregando...</h1>
+                        <span id="user-email" style="font-size: 0.75rem; color: #38bdf8; opacity: 0.9;">Aguarde...</span>
+                        <div id="user-level-badge" style="font-weight: 800; color: #fbbf24; text-transform: uppercase; font-size: 0.6rem; letter-spacing: 0.5px;">--</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD DIREITO: BANNER DE PATROCINADORES -->
+            <div class="glass-card header-card-right"
+                style="flex: 1; margin: 0; padding: 0; background: rgba(10, 26, 46, 0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; overflow: hidden; position: relative;">
+                <div id="sponsor-carousel" style="width: 100%; height: 100%; position: relative;">
+                    <!-- Slides injetados via JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- APP CONTAINER (MODULAR PAGES) -->
+        <div id="app">
+            <!-- Página carregada dinamicamente aqui -->
+             <div style="display: flex; justify-content: center; align-items: center; height: 200px;">
+                <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: #38bdf8;"></i>
+             </div>
+        </div>
+    </main>
+
+    <!-- Global Modals -->
+    <div id="tournamentModal" class="modal">
+        <div class="modal-content modal-tournament-content">
+            <span class="close-modal" onclick="closeTournamentModal()">&times;</span>
+            <div style="text-align: center; margin-bottom: 30px;">
+                <i class="fas fa-trophy" style="font-size: 3.5rem; color: #fbbf24; margin-bottom: 20px;"></i>
+                <h2 style="color: #fff; font-size: 1.8rem; font-weight: 800;">Torneio Interno</h2>
+            </div>
+            <div style="color: #cbd5e1; line-height: 1.8; font-size: 1rem;">
+                <p>A <span style="color: #38bdf8; font-weight: 800;">última sexta-feira de todo mês</span> é destinada ao nosso emocionante torneio interno.</p>
+                <div class="whatsapp-notice">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>Informações adicionais serão divulgadas em nosso grupo oficial.</span>
+                </div>
+            </div>
+            <button onclick="handleUnderstood()" class="btn-understood">Entendido!</button>
+        </div>
+    </div>
+</body>
+</html>

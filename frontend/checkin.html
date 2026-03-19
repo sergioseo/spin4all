@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check-in | Spin4All</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="checkin.css">
+</head>
+
+<body>
+
+    <div class="top-bar">
+        <a href="dashboard.html" class="btn-back"><i class="fas fa-chevron-left"></i> Voltar</a>
+        <!-- O relogio mudou para cima do timer! -->
+    </div>
+
+    <header class="checkin-header">
+        <h1>Spin<span>4All</span></h1>
+
+        <div class="view-toggle">
+            <button class="toggle-btn active" onclick="switchView('checkin')" id="btn-view-checkin"><i
+                    class="fas fa-user-check"></i> Check-in</button>
+            <button class="toggle-btn" onclick="switchView('workout')" id="btn-view-workout"><i
+                    class="fas fa-stopwatch"></i> Painel Treino</button>
+        </div>
+    </header>
+
+    <!-- VIEWS -->
+
+    <!-- 1. CHECK-IN VIEW -->
+    <div id="view-checkin">
+        <div class="massive-clock-checkin" id="bigClockCheckin">--:--</div>
+
+        <div class="checkin-container">
+            <!-- Esquerda: Playlist de Presença -->
+            <aside class="present-list-col">
+                <div class="col-header">
+                    <h2><i class="fas fa-users-check" style="margin-right: 10px;"></i> Presença Agora</h2>
+                    <span id="presentCount" style="font-size: 0.9rem; color: #4ade80; font-weight: 800; background: rgba(74, 222, 128, 0.1); padding: 2px 8px; border-radius: 10px;">0</span>
+                </div>
+                <div class="scrollable-area" id="presentList">
+                    <!-- Membros presentes via JS -->
+                </div>
+            </aside>
+
+            <!-- Direita: Grade de Check-in -->
+            <section class="absent-grid-col">
+                <div class="search-container" style="margin-bottom: 0; max-width: 100%; position: relative; top: 0; z-index: 5;">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="memberSearch" placeholder="Escreva seu nome aqui">
+                </div>
+                <div class="scrollable-area">
+                    <div class="members-grid" id="membersGrid" style="max-width: 100%; padding: 0;">
+                        <!-- Membros ausentes via JS -->
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- 2. WORKOUT ORCHESTRATOR VIEW -->
+    <div id="view-workout">
+        <div class="workout-timer-container">
+            <div class="clock-display" id="mainClock">--:--</div>
+            <div class="timer-label" id="masterTimerLabel">PRÓXIMA TROCA EM:</div>
+            <div class="massive-timer" id="masterTimer">00:00</div>
+        </div>
+
+        <div class="workout-grid">
+
+            <div class="catalog-col">
+                <div class="catalog-title"><i class="fas fa-list-ul"></i> Catálogo</div>
+
+                <div id="catalogList"
+                    style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 2rem; max-height: 450px; overflow-y: auto; padding-right: 5px;">
+                    <!-- Renderizado pelo JS do Catalogo -->
+                </div>
+
+                <div style="margin-top: auto; display:flex; flex-direction: column; gap: 15px;">
+                    <button class="catalog-btn" onclick="openCustomModal()" style="border-style: dashed;"><i
+                            class="fas fa-plus-circle"></i> Novo (Avulso)</button>
+                    <button class="btn-start-all" id="btnStartAll" onclick="toggleWorkoutState()"><i
+                            class="fas fa-play"></i> Iniciar Treino</button>
+                </div>
+            </div>
+
+            <div class="queues-container">
+                <div class="queue-col" id="col-iniciante">
+                    <div class="queue-title">
+                        <span class="color-iniciante">Iniciante</span>
+                        <button class="clear-btn" onclick="clearQueue('iniciante')" title="Limpar Fila"><i
+                                class="fas fa-trash"></i></button>
+                    </div>
+                    <div class="queue-total" id="total-iniciante">Tempo Total: 00:00</div>
+                    <div class="playcards-area" id="list-iniciante"></div>
+                </div>
+                <div class="queue-col" id="col-intermediario">
+                    <div class="queue-title">
+                        <span class="color-intermediario">Intermediário</span>
+                        <button class="clear-btn" onclick="clearQueue('intermediario')" title="Limpar Fila"><i
+                                class="fas fa-trash"></i></button>
+                    </div>
+                    <div class="queue-total" id="total-intermediario">Tempo Total: 00:00</div>
+                    <div class="playcards-area" id="list-intermediario"></div>
+                </div>
+                <div class="queue-col" id="col-avancado">
+                    <div class="queue-title">
+                        <span class="color-avancado">Avançado</span>
+                        <button class="clear-btn" onclick="clearQueue('avancado')" title="Limpar Fila"><i
+                                class="fas fa-trash"></i></button>
+                    </div>
+                    <div class="queue-total" id="total-avancado">Tempo Total: 00:00</div>
+                    <div class="playcards-area" id="list-avancado"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Confirmation Overlay -->
+    <div id="confirmOverlay" class="overlay">
+        <div class="modal-card">
+            <h2 id="confirmTitle">Você é Sergio?</h2>
+            <div class="modal-actions">
+                <button class="btn btn-no" onclick="closeModals()">NÃO</button>
+                <button id="btnConfirm" class="btn btn-yes">SIM, SOU EU</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Undo Overlay -->
+    <div id="undoOverlay" class="overlay">
+        <div class="modal-card">
+            <h2 id="undoTitle">Olá Sergio!</h2>
+            <p style="color: #94a3b8; margin-bottom: 2rem;">Sua presença já está marcada.</p>
+            <div class="modal-actions">
+                <button class="btn btn-no" onclick="closeModals()">FECHAR</button>
+                <button id="btnUndo" class="btn btn-undo">DESMARCAR PRESENÇA</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Feedback Overlay -->
+    <div id="successOverlay" class="overlay">
+        <div class="modal-card feedback-card">
+            <i class="fas fa-check-circle"></i>
+            <h2 id="feedback-name">Olá!</h2>
+            <p id="feedback-msg">Presença confirmada!</p>
+        </div>
+    </div>
+
+    <!-- Setup Workout Modal -->
+    <div id="setupOverlay" class="overlay">
+        <div class="modal-card">
+            <h2 id="setupTitle">Configurar Treino</h2>
+            <div id="customNameContainer" style="display: none; margin-bottom: 1.5rem;">
+                <input type="text" id="customDescInput" placeholder="Nome do exercício..."
+                    style="width: 100%; padding: 12px; border-radius: 8px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.2); color: white; font-size: 1.1rem; text-align: center; margin-bottom: 10px;">
+                <label
+                    style="color: #94a3b8; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <input type="checkbox" id="saveToCatalogCheck">
+                    Salvar no Catálogo Definitivo
+                </label>
+            </div>
+            <p id="setupType" style="color: #94a3b8; margin-bottom: 1rem; font-weight: 600; font-size: 1.2rem;"></p>
+
+            <div class="level-selector-tags" id="levelSelector">
+                <button class="level-tag active" data-level="todos">Todas Turmas</button>
+                <button class="level-tag" data-level="iniciante">Iniciante</button>
+                <button class="level-tag" data-level="intermediario">Intermediário</button>
+                <button class="level-tag" data-level="avancado">Avançado</button>
+            </div>
+
+            <div class="time-selector">
+                <button class="btn-round" onclick="adjustTime(-1)"><i class="fas fa-minus"></i></button>
+                <div class="time-value" id="setupMinutes">5</div>
+                <button class="btn-round" onclick="adjustTime(1)"><i class="fas fa-plus"></i></button>
+            </div>
+            <p style="color: #64748b; font-size: 0.9rem; margin-top: -10px; margin-bottom: 2rem;">MINUTOS</p>
+
+            <div class="modal-actions">
+                <button class="btn btn-no" onclick="closeModals()">Cancelar</button>
+                <button class="btn btn-yes" onclick="addToQueue()">Adicionar à Fila</button>
+            </div>
+        </div>
+    </div>
+
+    <audio id="audioBeep" src="https://www.myinstants.com/media/sounds/beep-07a.mp3" preload="auto"></audio>
+
+    <script src="checkin.js"></script>
+</body>
+
+</html>
