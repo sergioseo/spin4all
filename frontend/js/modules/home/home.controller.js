@@ -9,26 +9,43 @@ let currentViewYear = new Date().getFullYear();
 export async function init() {
     try {
         console.log('[HOME CONTROLLER] Initializing...');
-        
-        // 1. Get User Data
-        const userData = await userService.getUser();
-        updateStore('user', userData.user);
-        homeView.renderUserHeader(userData.user);
 
-        // 2. Get and Render Frequency/Calendar
-        await loadCalendar(currentViewMonth, currentViewYear);
+        // 1. Load Community Stats
+        console.log('[DEBUG-HOME] Fetching community stats...');
+        try {
+            const stats = await communityService.getStats();
+            if (stats.success) {
+                updateStore('communityStats', stats.data);
+                homeView.renderCommunityStats(stats.data);
+                renderWeeklyChart(stats.data.weekly_engagement);
+            }
+        } catch (err) {
+            console.error('[CRITICAL] Stats load failed:', err);
+        }
 
-        // 3. Community Stats
-        const stats = await communityService.getStats();
-        updateStore('communityStats', stats.data);
-        homeView.renderCommunityStats(stats.data);
+        // 2. Fill Rankings
+        console.log('[DEBUG-HOME] Fetching rankings...');
+        try {
+            const hallResources = await Promise.all([
+                communityService.getHallFama(),
+                communityService.getEvolutionRanking(),
+                communityService.getAttendanceRanking()
+            ]);
+            if (hallResources[0].success) homeView.renderTournamentsRanking(hallResources[0].ranking || []);
+            if (hallResources[1].success) homeView.renderEvolutionRanking(hallResources[1].ranking || []);
+            if (hallResources[2].success) homeView.renderAttendanceRanking(hallResources[2].ranking || []);
+        } catch (err) {
+            console.error('[CRITICAL] Rankings load failed:', err);
+        }
 
-        // 4. Ranking
-        const rankingData = await communityService.getHallFama();
-        updateStore('hallFama', rankingData.ranking);
-        homeView.renderRanking(rankingData.ranking);
+        // 3. Load Calendar and Frequency
+        console.log('[DEBUG-HOME] Loading calendar component...');
+        try {
+            await loadCalendar(currentViewMonth, currentViewYear);
+        } catch (err) {
+            console.error('[CRITICAL] Calendar load failed:', err);
+        }
 
-        // Set up event listeners unique to home
         setupEventListeners();
 
     } catch (err) {
@@ -41,13 +58,45 @@ async function loadCalendar(month, year) {
     if (data.success) {
         homeView.renderCalendar(month, year, data.dates);
         
+        // Update Frequency for Current Month
         const now = new Date();
         if (month === now.getMonth() + 1 && year === now.getFullYear()) {
-            const target = 12; // Example target
-            const pct = Math.min(Math.round((data.dates.length / target) * 100), 100);
-            homeView.updateFrequency(pct);
+            const attData = await userService.getAttendance();
+            if (attData.success) {
+                homeView.updateFrequency(attData.stats);
+            }
         }
     }
+}
+
+function renderWeeklyChart(engagementData) {
+    const canvas = document.getElementById('weeklyEngagementChart');
+    if (!canvas || !engagementData) return;
+
+    const ChartLib = window.Chart;
+    if (!ChartLib) return;
+
+    new ChartLib(canvas, {
+        type: 'bar',
+        data: {
+            labels: engagementData.map(d => d.label),
+            datasets: [{
+                label: 'Presenças',
+                data: engagementData.map(d => d.value),
+                backgroundColor: '#38bdf8',
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 10 } } },
+                y: { display: false, beginAtZero: true }
+            }
+        }
+    });
 }
 
 function setupEventListeners() {

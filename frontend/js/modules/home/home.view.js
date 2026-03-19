@@ -1,21 +1,9 @@
 export const homeView = {
-    renderUserHeader(user) {
-        document.getElementById('user-welcome').textContent = `Olá, ${user.dsc_nome_completo.split(' ')[0]}!`;
-        document.getElementById('user-email').textContent = user.dsc_email;
-        document.getElementById('user-level-badge').textContent = user.dsc_level || 'MEMBRO';
-        
-        if (user.dsc_foto_perfil) {
-            const img = document.getElementById('user-photo-img');
-            img.src = user.dsc_foto_perfil + '?t=' + new Date().getTime();
-            img.style.display = 'block';
-            const icon = document.querySelector('#user-profile-img-container i');
-            if (icon) icon.style.display = 'none';
-        }
-    },
-
-    updateFrequency(pct) {
+    updateFrequency(stats) {
+        console.log('[DEBUG-VIEW] Setting frequency pct:', stats.pct_frequencia);
+        const pct = stats.pct_frequencia || 0;
         const circle = document.getElementById('frequency-progress');
-        const radius = 54; // Adjusted to match SVG
+        const radius = 54; 
         const circumference = 2 * Math.PI * radius;
         const offset = circumference - (pct / 100) * circumference;
         
@@ -34,7 +22,6 @@ export const homeView = {
             }
         }
         
-        // Toggle buttons based on eligibility
         const btnSaibaMais = document.getElementById('btn-saiba-mais');
         const btnInscricao = document.getElementById('btn-inscricao-real');
         if (pct >= 60) {
@@ -54,7 +41,6 @@ export const homeView = {
         const monthYearEl = document.getElementById('calendar-month-year');
         if (monthYearEl) monthYearEl.textContent = `${monthNames[month - 1]} ${year}`;
 
-        // Keep labels
         const labels = Array.from(grid.querySelectorAll('.day-label'));
         grid.innerHTML = '';
         labels.forEach(l => grid.appendChild(l));
@@ -77,7 +63,7 @@ export const homeView = {
         }
     },
 
-    renderRanking(ranking) {
+    renderTournamentsRanking(ranking) {
         const list = document.getElementById('ranking-list');
         if (!list) return;
 
@@ -99,28 +85,52 @@ export const homeView = {
                         <span style="font-size: 0.9rem; font-weight: 600; color: #f8fafc;">${player.dsc_nome_completo}</span>
                     </div>
                     <div style="text-align: right;">
-                        <div style="font-size: 0.9rem; color: #38bdf8; font-weight: 800;">${player.total_pontos}</div>
+                        <div style="font-size: 0.9rem; color: #38bdf8; font-weight: 800;">${player.total_pontos || 0}</div>
                     </div>
                 </div>
             `;
         }).join('');
     },
 
+    renderEvolutionRanking(ranking) {
+        const list = document.getElementById('evolution-list');
+        if (!list) return;
+        list.innerHTML = ranking.map(p => `
+            <div class="ranking-item-compact">
+                <span style="font-size: 0.85rem; font-weight: 600; color: #f8fafc;">${p.dsc_nome_completo}</span>
+                <span style="font-size: 0.8rem; color: #4ade80; font-weight: 800;">+${p.num_evolucao || 0}%</span>
+            </div>
+        `).join('') || '<div style="color: #64748b; font-size: 0.7rem; text-align: center;">Vazio</div>';
+    },
+
+    renderAttendanceRanking(ranking) {
+        const list = document.getElementById('attendance-ranking-list');
+        if (!list) return;
+        list.innerHTML = ranking.map(p => `
+            <div class="ranking-item-compact">
+                <span style="font-size: 0.85rem; font-weight: 600; color: #f8fafc;">${p.dsc_nome_completo}</span>
+                <span style="font-size: 0.8rem; color: #a855f7; font-weight: 800;">${p.total_treinos || 0} pts</span>
+            </div>
+        `).join('') || '<div style="color: #64748b; font-size: 0.7rem; text-align: center;">Vazio</div>';
+    },
+
     renderCommunityStats(data) {
-        document.getElementById('community-active-count').textContent = data.active_today;
-        document.getElementById('community-main-focus').textContent = data.main_focus || 'Treino Geral';
-        
+        const activeEl = document.getElementById('community-active-count');
+        const focusEl = document.getElementById('community-main-focus');
+        const progEl = document.getElementById('community-progression-rate');
         const activityList = document.getElementById('community-activity-list');
-        if (activityList) {
+
+        if (activeEl) activeEl.textContent = data.active_today || 0;
+        if (focusEl) focusEl.textContent = data.main_focus;
+        if (progEl) progEl.textContent = `${data.progression_rate || 0}%`;
+
+        if (activityList && data.recent_activity) {
             activityList.innerHTML = data.recent_activity.map(act => `
-                <div class="activity-item">
-                    <i class="${act.dsc_icone || 'fas fa-medal'}" style="color: #fbbf24;"></i>
-                    <div>
-                        <div style="font-size: 0.85rem; font-weight: 800; color: #fff;">${act.dsc_nome_completo}</div>
-                        <div style="font-size: 0.7rem; color: #94a3b8;">${act.dsc_nome}</div>
-                    </div>
+                <div style="display: flex; align-items: center; gap: 10px; font-size: 0.75rem; color: #cbd5e1; padding: 5px 0;">
+                    <i class="fas ${act.dsc_icone || 'fa-medal'}" style="color: #fbbf24; font-size: 0.8rem;"></i>
+                    <span><strong>${act.dsc_nome_completo.split(' ')[0]}</strong> conquistou ${act.dsc_nome}</span>
                 </div>
-            `).join('') || '<div style="color: #64748b; font-size: 0.7rem; text-align: center;">Nenhuma atividade recente.</div>';
+            `).join('') || '<div style="color: #64748b; font-size: 0.7rem;">Nenhuma atividade recente</div>';
         }
     }
 };

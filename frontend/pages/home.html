@@ -21,101 +21,104 @@
     </div>
 </section>
 
-<!-- LAYOUT V3: 3 FAIXAS FULL-WIDTH EMPILHADAS -->
-<div style="display: flex; flex-direction: column; gap: 30px;">
-    <!-- FAIXA 1: MEU MOMENTO -->
-    <div>
-        <p style="font-size: 0.7rem; color: #64748b; text-transform: uppercase; letter-spacing: 2px; font-weight: 600; margin-bottom: 15px;">Meu Momento</p>
-        <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 20px; align-items: start;">
-            <!-- CARD: Minha Frequência -->
-            <div class="glass-card">
-                <div class="card-title"><i class="fas fa-calendar-check"></i> Minha Frequência</div>
-                <div style="display: flex; align-items: center; gap: 20px;">
-                    <div class="frequency-circle" style="width: 100px; height: 100px; margin: 0;">
-                        <svg viewBox="0 0 120 120">
-                            <circle class="circle-bg" cx="60" cy="60" r="54"></circle>
-                            <circle class="circle-progress" cx="60" cy="60" r="54" id="frequency-progress"></circle>
-                        </svg>
-                        <div class="percentage-text" style="font-size: 1.1rem;"><span id="frequency-pct">0</span>%</div>
-                    </div>
-                    <div style="flex: 1;">
-                        <div class="qualification-status" id="tournament-status" style="font-size: 0.75rem; margin-top: 0; padding: 8px;">Calculando...</div>
-                        <p style="font-size: 0.65rem; color: #94a3b8; margin-top: 5px; line-height: 1.4;">
-                            Mínimo <span style="color: #38bdf8; font-weight: 700;">60%</span> para torneios.
-                        </p>
-                    </div>
+<!-- LAYOUT V4: 3 COLUNAS VERTICAIS COM LABELS -->
+<div class="dashboard-grid">
+    <!-- COLUNA 1: MEU MOMENTO -->
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+        <p class="section-label">Meu Momento</p>
+        
+        <!-- CARD: Minha Frequência -->
+        <div class="glass-card">
+            <div class="card-title"><i class="fas fa-calendar-check"></i> Minha Frequência</div>
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <div class="frequency-circle" style="width: 100px; height: 100px; margin: 0;">
+                    <svg viewBox="0 0 120 120">
+                        <circle class="circle-bg" cx="60" cy="60" r="54"></circle>
+                        <circle class="circle-progress" cx="60" cy="60" r="54" id="frequency-progress"></circle>
+                    </svg>
+                    <div class="percentage-text" style="font-size: 1.1rem;"><span id="frequency-pct">0</span>%</div>
                 </div>
-                <!-- Calendário -->
-                <div id="calendar-header" style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding: 0 2px;">
-                    <button id="btn-prev-month" style="background: none; border: none; color: #38bdf8; cursor: pointer; padding: 5px;"><i class="fas fa-chevron-left"></i></button>
-                    <span id="calendar-month-year" style="font-weight: 800; font-size: 0.75rem; text-transform: uppercase; color: #cbd5e1;">--</span>
-                    <button id="btn-next-month" style="background: none; border: none; color: #38bdf8; cursor: pointer; padding: 5px;"><i class="fas fa-chevron-right"></i></button>
-                </div>
-                <div class="attendance-calendar" id="attendance-calendar-grid" style="grid-template-columns: repeat(7, 1fr); gap: 4px; padding: 5px; background: rgba(0,0,0,0.2); border-radius: 8px; margin-top: 10px; max-width: none;">
-                    <div class="day-label">D</div><div class="day-label">S</div><div class="day-label">T</div><div class="day-label">Q</div><div class="day-label">Q</div><div class="day-label">S</div><div class="day-label">S</div>
+                <div style="flex: 1;">
+                    <div class="qualification-status" id="tournament-status" style="font-size: 0.75rem; margin-top: 0; padding: 8px;">Calculando...</div>
+                    <p style="font-size: 0.65rem; color: #94a3b8; margin-top: 5px; line-height: 1.4;">
+                        Mínimo <span style="color: #38bdf8; font-weight: 700;">60%</span> para torneios.
+                    </p>
                 </div>
             </div>
-            <!-- CARD: Vitral de Conquistas -->
-            <div class="glass-card">
-                <div class="card-title"><i class="fas fa-gem"></i> Vitral de Conquistas</div>
-                <div id="community-activity-list" style="display: flex; flex-direction: column; gap: 10px;">
-                    <div style="color: #64748b; font-size: 0.7rem;">Carregando atividades...</div>
-                </div>
+            <!-- Calendário -->
+            <div id="calendar-header" style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding: 0 2px;">
+                <button id="btn-prev-month" style="background: none; border: none; color: #38bdf8; cursor: pointer; padding: 5px;"><i class="fas fa-chevron-left"></i></button>
+                <span id="calendar-month-year" style="font-weight: 800; font-size: 0.75rem; text-transform: uppercase; color: #cbd5e1;">--</span>
+                <button id="btn-next-month" style="background: none; border: none; color: #38bdf8; cursor: pointer; padding: 5px;"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div class="attendance-calendar" id="attendance-calendar-grid" style="grid-template-columns: repeat(7, 1fr); gap: 4px; padding: 5px; background: rgba(0,0,0,0.2); border-radius: 8px; margin-top: 10px; max-width: none;">
+                <div class="day-label">D</div><div class="day-label">S</div><div class="day-label">T</div><div class="day-label">Q</div><div class="day-label">Q</div><div class="day-label">S</div><div class="day-label">S</div>
+            </div>
+        </div>
+
+        <!-- CARD: Vitral de Conquistas -->
+        <div class="glass-card">
+            <div class="card-title"><i class="fas fa-gem"></i> Vitral de Conquistas</div>
+            <div id="community-activity-list" style="display: flex; flex-direction: column; gap: 10px;">
+                <div style="color: #64748b; font-size: 0.7rem;">Carregando atividades...</div>
             </div>
         </div>
     </div>
 
-    <!-- FAIXA 2: MINHA COMUNIDADE -->
-    <div>
-        <p style="font-size: 0.7rem; color: #64748b; text-transform: uppercase; letter-spacing: 2px; font-weight: 600; margin-bottom: 15px;">Minha Comunidade</p>
-        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; align-items: start;">
-            <div class="glass-card">
-                <div class="card-title"><i class="fas fa-satellite-dish"></i> Pulso Spin4All</div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                    <div class="indicator-box">
-                        <div class="indicator-subtitle">Ativos Hoje</div>
-                        <div style="font-size: 1.8rem; font-weight: 900; color: #fff;" id="community-active-count">0</div>
-                    </div>
-                    <div class="indicator-box" style="border-left: 3px solid #a855f7;">
-                        <div class="indicator-subtitle" style="color: #a855f7;">Foco Coletivo</div>
-                        <div style="font-size: 0.9rem; font-weight: 800; color: #fff; margin-top: 5px;" id="community-main-focus">Competição</div>
-                    </div>
+    <!-- COLUNA 2: MINHA COMUNIDADE -->
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+        <p class="section-label">Minha Comunidade</p>
+        
+        <div class="glass-card">
+            <div class="card-title"><i class="fas fa-satellite-dish"></i> Pulso Spin4All</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="indicator-box">
+                    <div class="indicator-subtitle">Ativos Hoje</div>
+                    <div style="font-size: 1.8rem; font-weight: 900; color: #fff;" id="community-active-count">0</div>
+                </div>
+                <div class="indicator-box" style="border-left: 3px solid #a855f7;">
+                    <div class="indicator-subtitle" style="color: #a855f7;">Foco Coletivo</div>
+                    <div style="font-size: 0.9rem; font-weight: 800; color: #fff; margin-top: 5px;" id="community-main-focus">Competição</div>
                 </div>
             </div>
-            <div class="glass-card">
-                <div class="indicator-subtitle" style="color: #4ade80;">🚀 Saúde da Comunidade</div>
-                <div style="display: flex; align-items: baseline; gap: 8px;">
-                    <div style="font-size: 1.8rem; font-weight: 900; color: #fff;" id="community-progression-rate">0%</div>
-                    <div style="font-size: 0.75rem; color: #94a3b8;">evolução técnica na semana</div>
-                </div>
-                <p style="font-size: 0.65rem; color: #64748b; margin-top: 10px;">Percentual de membros com evolução técnica recente.</p>
+        </div>
+
+        <div class="glass-card">
+            <div class="indicator-subtitle" style="color: #4ade80;">🚀 Saúde da Comunidade</div>
+            <div style="display: flex; align-items: baseline; gap: 8px;">
+                <div style="font-size: 1.8rem; font-weight: 900; color: #fff;" id="community-progression-rate">0%</div>
+                <div style="font-size: 0.75rem; color: #94a3b8;">evolução técnica na semana</div>
             </div>
-            <div class="glass-card">
-                <div class="card-title"><i class="fas fa-chart-bar"></i> Engajamento Semanal</div>
-                <div style="height: 100px;"><canvas id="weeklyEngagementChart"></canvas></div>
-            </div>
+            <p style="font-size: 0.65rem; color: #64748b; margin-top: 10px;">Percentual de membros com evolução técnica recente.</p>
+        </div>
+
+        <div class="glass-card">
+            <div class="card-title"><i class="fas fa-chart-bar"></i> Engajamento Semanal</div>
+            <div style="height: 100px;"><canvas id="weeklyEngagementChart"></canvas></div>
         </div>
     </div>
 
-    <!-- FAIXA 3: MINHA POSIÇÃO -->
-    <div>
-        <p style="font-size: 0.7rem; color: #64748b; text-transform: uppercase; letter-spacing: 2px; font-weight: 600; margin-bottom: 15px;">Minha Posição</p>
-        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; align-items: start;">
-            <!-- Ranking Torneios -->
-            <div class="glass-card">
-                <div class="card-title"><i class="fas fa-trophy"></i> Ranking de Torneios</div>
-                <div id="ranking-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
-            </div>
-            <!-- Vanguarda -->
-            <div class="glass-card">
-                <div class="card-title"><i class="fas fa-chart-line"></i> Vanguarda do Mês</div>
-                <div id="evolution-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
-            </div>
-            <!-- Presença -->
-            <div class="glass-card">
-                <div class="card-title"><i class="fas fa-medal"></i> Ranking de Presença</div>
-                <div id="attendance-ranking-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
-            </div>
+    <!-- COLUNA 3: MINHA POSIÇÃO -->
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+        <p class="section-label">Minha Posição</p>
+        
+        <!-- Ranking Torneios -->
+        <div class="glass-card">
+            <div class="card-title"><i class="fas fa-trophy"></i> Ranking de Torneios</div>
+            <div id="ranking-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
+        </div>
+        
+        <!-- Vanguarda -->
+        <div class="glass-card">
+            <div class="card-title"><i class="fas fa-chart-line"></i> Vanguarda do Mês</div>
+            <div id="evolution-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
+        </div>
+        
+        <!-- Presença -->
+        <div class="glass-card">
+            <div class="card-title"><i class="fas fa-medal"></i> Ranking de Presença</div>
+            <div id="attendance-ranking-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
         </div>
     </div>
 </div>
+

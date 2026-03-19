@@ -1,3 +1,4 @@
+console.log('--- SPIN4ALL SERVER VERSION 7730 ---');
 const express = require('express');
 const cors = require('cors');
 const { Pool } = require('pg');
@@ -9,6 +10,7 @@ const fs = require('fs');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 
@@ -628,19 +630,37 @@ app.delete('/api/checkin', authenticateToken, isAdmin, async (req, res) => {
 
 // Buscar Minha Frequência (Dashboard)
 app.get('/api/my-attendance', authenticateToken, async (req, res) => {
+  const userId = req.user.id;
   try {
-    const userId = req.user.id;
-
-    // 1. Dados consolidado de frequência
-    const statsRes = await pool.query('SELECT * FROM refined.vw_frequencia_mensal WHERE id_usuario = $1', [userId]);
+    const query = `
+      WITH training_days AS (
+          SELECT count(*)::float as expected
+          FROM generate_series(CURRENT_DATE - INTERVAL '30 days', CURRENT_DATE, '1 day') AS d
+          WHERE extract(DOW from d) IN (1, 3, 5) -- Seg, Qua, Sex
+      ),
+      user_presences AS (
+          SELECT count(*)::float as attended, array_agg(dt_checkin ORDER BY dt_checkin DESC) as dates
+          FROM trusted.tb_checkins
+          WHERE id_usuario = $1
+            AND dt_checkin >= CURRENT_DATE - INTERVAL '30 days'
+      )
+      SELECT attended, expected, dates, ROUND(LEAST((attended / NULLIF(expected, 0)) * 100, 100)) as pct
+      FROM training_days, user_presences
+    `;
+    const result = await pool.query(query, [userId]);
+    const stats = result.rows[0];
     
     res.json({ 
       success: true, 
-      stats: statsRes.rows[0] || { num_presencas: 0, pct_frequencia: 0, dsc_status_torneio: 'Pendente ❌' },
-      dates: datesRes.rows.map(r => r.dt_checkin)
+      stats: { 
+        num_presencas: parseInt(stats.attended || 0), 
+        pct_frequencia: parseInt(stats.pct || 0), 
+        dsc_status_torneio: stats.pct >= 60 ? 'QUALIFICADO ✅' : 'PENDENTE ❌' 
+      },
+      dates: stats.dates || []
     });
   } catch (err) {
-    console.error(err);
+    console.error('[ERRO FATAL NA ROTA FREQUENCIA]:', err);
     res.status(500).json({ success: false, error: 'Erro ao buscar dados de frequência.' });
   }
 });
@@ -988,16 +1008,24 @@ app.get('/api/community/stats', authenticateToken, async (req, res) => {
       ORDER BY ub.dt_conquista DESC LIMIT 4
     `);
 
-    res.json({
+    const progressionRate = await pool.query(`
+      SELECT ROUND((COUNT(*) FILTER (WHERE num_evolucao > 0)::float / NULLIF(COUNT(*), 0)::float) * 100) as rate 
+      FROM refined.vw_ranking_evolucao
+    `);
+
+    const stats = {
       success: true,
       data: {
         levels: levels.rows,
         active_today: parseInt(activeToday.rows[0].count),
         weekly_engagement: weeklyEngagement.rows,
         main_focus: mainFocus.rows[0]?.focus || 'Evolução',
-        recent_activity: recentActivity.rows
+        recent_activity: recentActivity.rows,
+        progression_rate: parseInt(progressionRate.rows[0]?.rate || 0)
       }
-    });
+    };
+    console.log('[DEBUG] ENVIANDO STATS:', JSON.stringify(stats.data));
+    res.json(stats);
   } catch (err) {
     res.status(500).json({ success: false, message: 'Erro ao buscar stats da comunidade.' });
   }

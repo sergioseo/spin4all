@@ -21,5 +21,10 @@ export const userService = {
 
     async saveSkills(skills) {
         return this.updateProfile({ skills });
+    },
+
+    // Busca dados de frequência e check-ins do usuário
+    async getAttendance() {
+        return await apiFetch('/my-attendance');
     }
 };
