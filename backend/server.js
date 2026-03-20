@@ -88,6 +88,49 @@ const runMigrations = async () => {
           UNIQUE(id_usuario, dt_referencia)
       );
     `);
+
+    // --- [MAESTRIA TÉCNICA] Histórico de Diagnósticos e Missões ---
+    console.log('--- Configurando Infraestrutura de Maestria Técnica ---');
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS trusted.tb_diagnostico_historico (
+          id_diagnostico SERIAL PRIMARY KEY,
+          id_usuario INTEGER REFERENCES trusted.tb_usuarios(id_usuario),
+          dt_referencia TIMESTAMP DEFAULT CURRENT_DATE,
+          jsn_respostas JSONB, 
+          num_score_geral FLOAT,
+          dsc_perfil_estilo TEXT,
+          num_skill_forehand INTEGER,
+          num_skill_backhand INTEGER,
+          num_skill_saque INTEGER,
+          num_skill_consistency INTEGER,
+          num_skill_ataque INTEGER,
+          num_skill_defesa INTEGER,
+          num_skill_controle INTEGER,
+          num_skill_movimentacao INTEGER
+      );
+
+      CREATE TABLE IF NOT EXISTS trusted.tb_missoes_usuario (
+          id_missao SERIAL PRIMARY KEY,
+          id_usuario INTEGER REFERENCES trusted.tb_usuarios(id_usuario),
+          dt_inicio DATE DEFAULT CURRENT_DATE,
+          dt_limite DATE,
+          dsc_titulo TEXT NOT NULL,
+          dsc_descricao TEXT,
+          dsc_categoria TEXT, 
+          num_xp_recompensa INTEGER DEFAULT 250,
+          flg_concluida BOOLEAN DEFAULT FALSE,
+          dt_conclusao TIMESTAMP
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_diagnostico_usuario ON trusted.tb_diagnostico_historico(id_usuario);
+      CREATE INDEX IF NOT EXISTS idx_missoes_usuario ON trusted.tb_missoes_usuario(id_usuario, dt_inicio);
+
+      ALTER TABLE trusted.tb_membros_evolucao 
+      ADD COLUMN IF NOT EXISTS num_peso_kg INTEGER,
+      ADD COLUMN IF NOT EXISTS num_altura_cm INTEGER,
+      ADD COLUMN IF NOT EXISTS dsc_nivel_tecnico VARCHAR(50);
+    `);
+
     // Colunas de habilidades técnicas
     await pool.query(`
       ALTER TABLE trusted.tb_membros_perfil 
@@ -111,7 +154,9 @@ const runMigrations = async () => {
       ADD COLUMN IF NOT EXISTS num_skill_defesa INTEGER DEFAULT 50,
       ADD COLUMN IF NOT EXISTS num_skill_bloqueio INTEGER DEFAULT 50,
       ADD COLUMN IF NOT EXISTS num_skill_controle INTEGER DEFAULT 50,
-      ADD COLUMN IF NOT EXISTS num_skill_movimentacao INTEGER DEFAULT 50;
+      ADD COLUMN IF NOT EXISTS num_skill_movimentacao INTEGER DEFAULT 50,
+      ADD COLUMN IF NOT EXISTS flg_perfil_concluido BOOLEAN DEFAULT FALSE,
+      ADD COLUMN IF NOT EXISTS flg_diagnostico_concluido BOOLEAN DEFAULT FALSE;
     `);
 
     // Garantir que a tabela de perfis tenha uma restrição UNIQUE no id_usuario para o ON CONFLICT funcionar
@@ -155,20 +200,6 @@ const runMigrations = async () => {
         SELECT u.id_usuario, (40 + floor(random() * 20))::float, DATE_TRUNC('month', CURRENT_DATE)
         FROM trusted.tb_usuarios u
         ON CONFLICT DO NOTHING;
-      `);
-    }
-
-    const checkTournaments = await pool.query('SELECT 1 FROM trusted.tb_torneios_resultados LIMIT 1');
-    if (checkTournaments.rowCount === 0) {
-      console.log('--- [SEED] Gerando resultados de torneios ---');
-      await pool.query(`
-        INSERT INTO trusted.tb_torneios_resultados (id_usuario, num_posicao, dsc_torneio_nome, dt_torneio) VALUES
-        (1, 1, 'Copa Spin4All Março', CURRENT_DATE - INTERVAL '10 days'),
-        (99, 2, 'Copa Spin4All Março', CURRENT_DATE - INTERVAL '10 days'),
-        (100, 3, 'Copa Spin4All Março', CURRENT_DATE - INTERVAL '10 days'),
-        (101, 1, 'Open de Fevereiro', CURRENT_DATE - INTERVAL '40 days'),
-        (102, 2, 'Open de Fevereiro', CURRENT_DATE - INTERVAL '40 days'),
-        (103, 3, 'Open de Fevereiro', CURRENT_DATE - INTERVAL '40 days');
       `);
     }
 
@@ -293,6 +324,8 @@ app.get('/api/me', authenticateToken, async (req, res) => {
         p.num_skill_controle,
         p.num_skill_movimentacao,
         p.dsc_mensagem_mentor,
+        p.flg_perfil_concluido,
+        p.flg_diagnostico_concluido,
         u.flg_admin,
         u.dt_criacao_registro
       FROM trusted.tb_usuarios u
@@ -309,6 +342,31 @@ app.get('/api/me', authenticateToken, async (req, res) => {
   } catch (err) {
     console.error('Erro ao buscar perfil:', err);
     res.status(500).json({ success: false, message: 'Erro interno ao buscar perfil.' });
+  }
+});
+
+// Buscar Histórico de Evolução Técnica
+app.get('/api/my-evolution', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const result = await pool.query(`
+      SELECT 
+        id_diagnostico,
+        dt_referencia,
+        num_score_geral,
+        dsc_perfil_estilo,
+        num_skill_forehand, num_skill_backhand, num_skill_saque,
+        num_skill_consistency, num_skill_ataque, num_skill_defesa,
+        num_skill_controle, num_skill_movimentacao
+      FROM trusted.tb_diagnostico_historico
+      WHERE id_usuario = $1
+      ORDER BY dt_referencia ASC
+    `, [userId]);
+
+    res.json({ success: true, history: result.rows });
+  } catch (err) {
+    console.error('[API] Erro ao buscar evolução:', err);
+    res.status(500).json({ success: false, error: 'Erro ao buscar histórico.' });
   }
 });
 
@@ -359,6 +417,7 @@ app.put('/api/update-profile', authenticateToken, async (req, res) => {
            num_skill_bloqueio = $18,
            num_skill_controle = $19,
            num_skill_movimentacao = $20,
+           flg_perfil_concluido = TRUE,
            dt_atualizacao = CURRENT_TIMESTAMP
        WHERE id_usuario = $21`,
       [
@@ -371,17 +430,17 @@ app.put('/api/update-profile', authenticateToken, async (req, res) => {
         goals || oldData.dsc_metas, 
         mentor_message || oldData.dsc_mensagem_mentor, 
         birth || oldData.dt_nascimento,
-        sk.forehand || oldData.num_skill_forehand,
-        sk.backhand || oldData.num_skill_backhand,
-        sk.cozinhada || oldData.num_skill_cozinhada,
-        sk.topspin || oldData.num_skill_topspin,
-        sk.saque || oldData.num_skill_saque,
-        sk.rally || oldData.num_skill_rally,
-        sk.ataque || oldData.num_skill_ataque,
-        sk.defesa || oldData.num_skill_defesa,
-        sk.bloqueio || oldData.num_skill_bloqueio,
-        sk.controle || oldData.num_skill_controle,
-        sk.movimentacao || oldData.num_skill_movimentacao,
+        sk.forehand ?? oldData.num_skill_forehand,
+        sk.backhand ?? oldData.num_skill_backhand,
+        sk.cozinhada ?? oldData.num_skill_cozinhada,
+        sk.topspin ?? oldData.num_skill_topspin,
+        sk.saque ?? oldData.num_skill_saque,
+        sk.rally ?? oldData.num_skill_rally,
+        sk.ataque ?? oldData.num_skill_ataque,
+        sk.defesa ?? oldData.num_skill_defesa,
+        sk.bloqueio ?? oldData.num_skill_bloqueio,
+        sk.controle ?? oldData.num_skill_controle,
+        sk.movimentacao ?? oldData.num_skill_movimentacao,
         userId
       ]
     );
@@ -465,11 +524,11 @@ app.post('/api/register', async (req, res) => {
 
     const userId = userRes.rows[0].id_usuario;
 
-    // 3. Criar Perfil na TRUSTED (Estado Atual)
+    // 3. Criar Perfil na TRUSTED (Estado Atual) com a flag true
     await client.query(`
         INSERT INTO trusted.tb_membros_perfil 
-          (id_usuario, dsc_nome_completo, dt_nascimento, num_altura_cm, num_peso_kg, num_telefone, vlr_lateralidade, dsc_empunhadura, dsc_nivel_tecnico, dsc_objetivo, dsc_metas)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+          (id_usuario, dsc_nome_completo, dt_nascimento, num_altura_cm, num_peso_kg, num_telefone, vlr_lateralidade, dsc_empunhadura, dsc_nivel_tecnico, dsc_objetivo, dsc_metas, flg_perfil_concluido)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, TRUE)
       `, [
         userId, 
         profileData.name, 
@@ -479,9 +538,9 @@ app.post('/api/register', async (req, res) => {
         profileData.phone || '',
         profileData.lateralidade || 'Destro',
         profileData.grip || 'Clássica',
-        profileData.level, 
-        profileData.objective, 
-        profileData.goals
+        profileData.level || 'Iniciante', 
+        profileData.objective || 'Diversão', 
+        profileData.goals || ''
       ]);
 
     // 4. Iniciar Histórico de Evolução (Ponto de Partida)
@@ -518,24 +577,62 @@ app.post('/api/login', async (req, res) => {
       return res.status(401).json({ success: false, message: 'E-mail ou senha inválidos' });
     }
 
+    const { rows: profileRows } = await pool.query('SELECT flg_perfil_concluido FROM trusted.tb_membros_perfil WHERE id_usuario = $1', [user.id_usuario]);
+    const flg_perfil_concluido = profileRows.length > 0 ? profileRows[0].flg_perfil_concluido : false;
+
     // Gerar Token JWT
     const token = jwt.sign({ id: user.id_usuario, admin: user.flg_admin }, process.env.JWT_SECRET, { expiresIn: '8h' });
 
-    // GARANTIR QUE PERFIL EXISTA: Se for um admin via bootstrap, pode não ter perfil.
-    // Criamos um perfil básico se não existir para evitar erros no dashboard.
-    await pool.query(`
-      INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, dsc_nivel_tecnico)
-      VALUES ($1, $2, $3)
-      ON CONFLICT (id_usuario) DO NOTHING
-    `, [user.id_usuario, email.split('@')[0], 'Iniciante']);
-
-    // Atualizar último login e incrementar contador de interação
-    await pool.query('UPDATE trusted.tb_usuarios SET dt_ultimo_login = CURRENT_TIMESTAMP, num_logins = num_logins + 1 WHERE id_usuario = $1', [user.id_usuario]);
-
-    res.json({ success: true, token });
+    res.json({ success: true, token, flg_perfil_concluido });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, error: 'Erro no servidor.' });
+  }
+});
+
+// Login com Google (Simulado/Mock para Onboarding)
+app.post('/api/google-login', async (req, res) => {
+  const { email, name, googleId } = req.body;
+  try {
+    // Verificar se usuário existe
+    const result = await pool.query('SELECT id_usuario, flg_admin FROM trusted.tb_usuarios WHERE dsc_email = $1', [email]);
+    let user;
+    let isNew = false;
+
+    if (result.rows.length === 0) {
+      // Registrar novo usuário automatizado via Google
+      isNew = true;
+      const passDummy = await bcrypt.hash(googleId || 'google-auth-pwd', 10);
+      const newUser = await pool.query(
+        'INSERT INTO trusted.tb_usuarios (dsc_email, dsc_senha_hash) VALUES ($1, $2) RETURNING id_usuario, flg_admin',
+        [email, passDummy]
+      );
+      user = newUser.rows[0];
+      
+      // Criar perfil vazio com flag pendente
+      await pool.query(
+        'INSERT INTO trusted.tb_membros_perfil (id_usuario, dsc_nome_completo, flg_perfil_concluido) VALUES ($1, $2, FALSE) ON CONFLICT (id_usuario) DO NOTHING',
+        [user.id_usuario, name]
+      );
+    } else {
+      user = result.rows[0];
+    }
+
+    const { rows: profileRows } = await pool.query('SELECT flg_perfil_concluido FROM trusted.tb_membros_perfil WHERE id_usuario = $1', [user.id_usuario]);
+    const flg_perfil_concluido = profileRows.length > 0 ? profileRows[0].flg_perfil_concluido : false;
+
+    const token = jwt.sign({ id: user.id_usuario, admin: user.flg_admin }, process.env.JWT_SECRET, { expiresIn: '8h' });
+    
+    res.json({ 
+      success: true, 
+      token, 
+      flg_perfil_concluido,
+      isNew,
+      user: { email, name }
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: 'Erro no Google Login' });
   }
 });
 
@@ -628,34 +725,58 @@ app.delete('/api/checkin', authenticateToken, isAdmin, async (req, res) => {
   }
 });
 
-// Buscar Minha Frequência (Dashboard)
+// Buscar Minha Frequência (Dashboard - Suporta mês e ano)
 app.get('/api/my-attendance', authenticateToken, async (req, res) => {
   const userId = req.user.id;
+  const { month, year } = req.query; // Novas queries opcionais
+  
+  // Se não passar, usa hoje
+  const targetDate = (month && year) ? new Date(year, month - 1, 15) : new Date();
+  
   try {
     const query = `
-      WITH training_days AS (
+      WITH expected_days AS (
           SELECT count(*)::float as expected
-          FROM generate_series(CURRENT_DATE - INTERVAL '30 days', CURRENT_DATE, '1 day') AS d
+          FROM generate_series(date_trunc('month', $2::date), LEAST(CURRENT_DATE, date_trunc('month', $2::date) + INTERVAL '1 month - 1 day'), '1 day') AS d
           WHERE extract(DOW from d) IN (1, 3, 5) -- Seg, Qua, Sex
       ),
+      total_month_days AS (
+          SELECT count(*)::float as total
+          FROM generate_series(date_trunc('month', $2::date), date_trunc('month', $2::date) + INTERVAL '1 month - 1 day', '1 day') AS d
+          WHERE extract(DOW from d) IN (1, 3, 5)
+      ),
       user_presences AS (
-          SELECT count(*)::float as attended, array_agg(dt_checkin ORDER BY dt_checkin DESC) as dates
+          SELECT 
+            count(*)::float as attended, 
+            array_agg(dt_checkin ORDER BY dt_checkin DESC) as dates
           FROM trusted.tb_checkins
           WHERE id_usuario = $1
-            AND dt_checkin >= CURRENT_DATE - INTERVAL '30 days'
+            AND dt_checkin >= date_trunc('month', $2::date)
+            AND dt_checkin <= LEAST(CURRENT_DATE, date_trunc('month', $2::date) + INTERVAL '1 month - 1 day')
       )
-      SELECT attended, expected, dates, ROUND(LEAST((attended / NULLIF(expected, 0)) * 100, 100)) as pct
-      FROM training_days, user_presences
+      SELECT 
+        COALESCE(attended, 0) as attended, 
+        COALESCE(expected, 0) as expected, 
+        COALESCE(total, 0) as total_mes,
+        dates, 
+        -- Ajuste: Percentual agora é calculado sobre o TOTAL do mês planejado
+        -- Isso torna o percentual uma meta mensal (ex: 8 treinos de 12 = 66%)
+        ROUND(LEAST((COALESCE(attended, 0) / NULLIF(total, 0)) * 100, 100)) as pct
+      FROM expected_days, total_month_days, user_presences
     `;
-    const result = await pool.query(query, [userId]);
+    const result = await pool.query(query, [userId, targetDate]);
     const stats = result.rows[0];
     
+    const pct = parseInt(stats.pct || 0);
+
     res.json({ 
       success: true, 
       stats: { 
         num_presencas: parseInt(stats.attended || 0), 
-        pct_frequencia: parseInt(stats.pct || 0), 
-        dsc_status_torneio: stats.pct >= 60 ? 'QUALIFICADO ✅' : 'PENDENTE ❌' 
+        num_esperados: parseInt(stats.expected || 0),
+        num_total_mes: parseInt(stats.total_mes || 0),
+        pct_frequencia: pct, 
+        dsc_status_torneio: pct >= 60 ? 'QUALIFICADO' : 'NÃO QUALIFICADO' 
       },
       dates: stats.dates || []
     });
@@ -1238,6 +1359,173 @@ app.post('/api/user/upload-photo', authenticateToken, upload.single('photo'), as
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, error: 'Erro ao salvar caminho da foto.' });
+  }
+});
+
+// --- MÓDULO DE MAESTRIA TÉCNICA (DIAGNÓSTICO E MISSÕES) ---
+
+const MISSION_TEMPLATES = [
+  // --- NÍVEL 1: BÁSICO ---
+  { id: 'f_basic', title: 'Precisão Forehand', desc: 'Acerte 10 forehands seguidos na diagonal focando no controle.', cat: 'Técnica', skill: 'forehand', difficulty: 1 },
+  { id: 'b_basic', title: 'Backhand Seguro', desc: 'Mantenha 8 bolas de backhand sem errar na rede.', cat: 'Técnica', skill: 'backhand', difficulty: 1 },
+  { id: 's_basic', title: 'Saque Curto', desc: 'Faça 15 saques que pinguem duas vezes na mesa adversária.', cat: 'Efeito', skill: 'saque', difficulty: 1 },
+  { id: 'm_basic', title: 'Sombra Lateral', desc: '2 séries de 1 min de sombra focando na base (pernas afastadas).', cat: 'Física', skill: 'movimentacao', difficulty: 1 },
+  { id: 'c_basic', title: 'Rally de Controle', desc: 'Mantenha um rally de 10 bolas em velocidade lenta.', cat: 'Consistência', skill: 'consistency', difficulty: 1 },
+  
+  // --- NÍVEL 2: INTERMEDIÁRIO ---
+  { id: 'f_inter', title: 'Topspin de Forehand', desc: 'Ataque 10 bolas cortadas focando em "cavar" a bola.', cat: 'Técnica', skill: 'forehand', difficulty: 2 },
+  { id: 'b_inter', title: 'Bloqueio Ativo', desc: 'Bloqueie 15 ataques fortes direcionando para os cantos da mesa.', cat: 'Técnica', skill: 'backhand', difficulty: 2 },
+  { id: 's_inter', title: 'Saque Lateral/Baixo', desc: 'Varie o efeito lateral e baixo em 20 saques diferentes.', cat: 'Efeito', skill: 'saque', difficulty: 2 },
+  { id: 'm_inter', title: 'Deslocamento Cruzado', desc: 'Treine o passo cruzado para buscar bolas distantes (5 min).', cat: 'Física', skill: 'movimentacao', difficulty: 2 },
+  { id: 'c_inter', title: 'Transição BH/FH', desc: 'Alterne um backhand e um forehand por 3 minutos sem errar.', cat: 'Tática', skill: 'consistency', difficulty: 2 },
+
+  // --- NÍVEL 3: AVANÇADO (ELITE) ---
+  { id: 'f_elite', title: 'Contra-Topspin Elite', desc: 'Ataque por cima do topspin do adversário (3 séries de 5 acertos).', cat: 'Técnica', skill: 'forehand', difficulty: 3 },
+  { id: 'b_elite', title: 'Chiquita Tecnológica', desc: 'Ataque 15 saques curtos usando a técnica de Chiquita (pulso).', cat: 'Técnica', skill: 'backhand', difficulty: 3 },
+  { id: 's_elite', title: 'Saque de Terceira Bola', desc: 'Saque e prepare o ataque decisivo na devolução do oponente.', cat: 'Tática', skill: 'saque', difficulty: 3 },
+  { id: 'm_elite', title: 'Padrão Falkenberg', desc: 'Execute o padrão BH -> FH Meio -> FH Canto por 5 min intensos.', cat: 'Performance', skill: 'movimentacao', difficulty: 3 },
+  { id: 'c_elite', title: 'Pressão Constante', desc: 'Tente manter um rally de alta velocidade por mais de 15 bolas.', cat: 'Técnica', skill: 'consistency', difficulty: 3 },
+  { id: 'a_elite', title: 'Finalização Letal', desc: 'Escolha bolas altas e finalize com 100% de potência e precisão.', cat: 'Ataque', skill: 'ataque', difficulty: 3 }
+];
+
+// Submeter Diagnóstico Técnico
+app.post('/api/diagnostic/submit', authenticateToken, async (req, res) => {
+  const { mapping, answers } = req.body; 
+  const userId = req.user.id;
+  console.log('[DEBUG] Recebendo diagnóstico para o usuário:', userId);
+
+  try {
+    // 1. Calcular Skills Individuais (Escala 40-100)
+    const skills = {};
+    for (const k in mapping) {
+      skills[k] = 40 + (mapping[k] - 1) * 15;
+    }
+
+    // 2. Extrair Dados de Experiência (Novos campos do Step 10)
+    // answers[10] = Tempo de Prática (1=<1a, 2=1-3a, 3=3-5a, 4=5a+)
+    // answers[11] = Nível Competitivo (1=Lazer, 2=Torneios, 3=Federado, 4=Elite)
+    const tempoPratica = answers[10] || 1;
+    const nivelCompetitivo = answers[11] || 1;
+
+    // 3. Cálculo de Nível Ponderado (Weighted Level)
+    const avgTechnical = Object.values(skills).reduce((a, b) => a + (Number(b) || 0), 0) / (Object.values(skills).length || 1);
+    const experienceScore = (tempoPratica * 10) + (nivelCompetitivo * 15); 
+    const finalScore = (avgTechnical * 0.7) + (experienceScore * 0.3);
+
+    console.log('[DIAGNOSTIC] Scores calculados - Avg Tech:', avgTechnical, 'Experience:', experienceScore, 'Final:', finalScore);
+
+    // 4. Atribuir Tier de Dificuldade (1: <55, 2: 55-80, 3: >80)
+    let userTier = 1;
+    if (finalScore > 80) userTier = 3;
+    else if (finalScore > 55) userTier = 2;
+
+    const tierNames = ["Iniciante", "Intermediário", "Avançado", "Elite"];
+    const displayLevel = finalScore > 90 ? tierNames[3] : (finalScore > 75 ? tierNames[2] : (finalScore > 45 ? tierNames[1] : tierNames[0]));
+
+    // 5. Determinar Estilo de Jogo (pergunta q14)
+    const styleIdx = (answers[13] - 1) || 1; 
+    const estilos = ["Defensivo", "Equilibrado", "Ofensivo"];
+    const estiloUser = estilos[styleIdx];
+
+    // 6. Salvar no Histórico
+    await pool.query(`
+      INSERT INTO trusted.tb_diagnostico_historico 
+      (id_usuario, jsn_respostas, num_score_geral, dsc_perfil_estilo, num_skill_forehand, num_skill_backhand, num_skill_saque, num_skill_consistency, num_skill_ataque, num_skill_defesa, num_skill_controle, num_skill_movimentacao)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+    `, [
+      userId, JSON.stringify(answers), Math.round(finalScore), estiloUser, 
+      skills.forehand||70, skills.backhand||70, skills.saque||70, skills.consistency||70, 
+      skills.ataque||70, skills.defesa||70, skills.controle||70, skills.movimentacao||70
+    ]);
+
+    // 7. Atualizar Perfil Principal
+    await pool.query(`
+      UPDATE trusted.tb_membros_perfil SET
+        num_skill_forehand = $1, num_skill_backhand = $2, num_skill_saque = $3,
+        num_skill_rally = $4, num_skill_ataque = $5, num_skill_defesa = $6,
+        num_skill_controle = $7, num_skill_movimentacao = $8,
+        dsc_objetivo = $9, dsc_nivel_tecnico = $10,
+        flg_diagnostico_concluido = TRUE
+      WHERE id_usuario = $11
+    `, [
+      skills.forehand, skills.backhand, skills.saque, skills.consistency,
+      skills.ataque, skills.defesa, skills.controle, skills.movimentacao,
+      `Perfil: ${estiloUser}`, displayLevel.toUpperCase(), userId
+    ]);
+
+    // 8. Seleção de Missões Baseada no Nível (Tier) e Pior Skill
+    const sortedSkills = Object.keys(skills).sort((a,b) => skills[a] - skills[b]);
+    const worstSkill = sortedSkills[0];
+    
+    // Filtrar missões do Tier do usuário ou 1 abaixo (para garantir variedade)
+    const availableMissions = MISSION_TEMPLATES.filter(m => m.difficulty <= userTier && m.difficulty >= userTier - 1);
+    
+    // 1 Missão obrigatória da pior skill no tier correto
+    let selectedMissions = availableMissions.filter(m => m.skill === worstSkill && m.difficulty === userTier).slice(0, 1);
+    
+    // Se não houver, pega de qualquer tier disponível para aquela skill
+    if (selectedMissions.length === 0) {
+        selectedMissions = MISSION_TEMPLATES.filter(m => m.skill === worstSkill).sort((a,b) => Math.abs(a.difficulty - userTier) - Math.abs(b.difficulty - userTier)).slice(0, 1);
+    }
+
+    // + 2 Missões aleatórias do tier do usuário (ou próximas)
+    const others = availableMissions
+        .filter(m => !selectedMissions.find(sm => sm.id === m.id))
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 2);
+
+    selectedMissions = [...selectedMissions, ...others];
+
+    // 9. Salvar no Banco
+    await pool.query('DELETE FROM trusted.tb_missoes_usuario WHERE id_usuario = $1 AND flg_concluida = FALSE', [userId]);
+    
+    for (const m of selectedMissions) {
+      await pool.query(`
+        INSERT INTO trusted.tb_missoes_usuario (id_usuario, dsc_titulo, dsc_descricao, dsc_categoria, dt_limite, num_xp_recompensa)
+        VALUES ($1, $2, $3, $4, CURRENT_DATE + INTERVAL '7 days', $5)
+      `, [userId, m.title, m.desc, m.cat, (m.difficulty * 100) + 50]); // XP aumenta com dificuldade
+    }
+
+    console.log('[DEBUG] Diagnóstico processado com sucesso para:', userId);
+    res.json({ success: true, level: displayLevel, score: Math.round(finalScore), tier: userTier });
+  } catch (err) {
+    console.error('[CRITICAL-DIAG] Erro ao processar:', err);
+    if (!res.headersSent) {
+      res.status(500).json({ success: false, message: 'Erro ao processar diagnóstico.' });
+    }
+  }
+});
+
+// Buscar Missões Atuais
+app.get('/api/missions/current', authenticateToken, async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT * FROM trusted.tb_missoes_usuario 
+      WHERE id_usuario = $1 AND (flg_concluida = FALSE OR dt_conclusao >= CURRENT_DATE)
+      ORDER BY id_missao DESC
+    `, [req.user.id]);
+    res.json({ success: true, data: result.rows });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Erro ao buscar missões.' });
+  }
+});
+
+// Completar Missão
+app.post('/api/missions/complete', authenticateToken, async (req, res) => {
+  const { id_missao } = req.body;
+  try {
+    const result = await pool.query(`
+      UPDATE trusted.tb_missoes_usuario 
+      SET flg_concluida = TRUE, dt_conclusao = NOW()
+      WHERE id_missao = $1 AND id_usuario = $2
+      RETURNING num_xp_recompensa
+    `, [id_missao, req.user.id]);
+
+    if (result.rowCount === 0) return res.status(404).json({ success: false, message: 'Missão não encontrada.' });
+    
+    res.json({ success: true, xp_ganho: result.rows[0].num_xp_recompensa });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Erro ao completar missão.' });
   }
 });
 

@@ -26,29 +26,60 @@ export default async function init() {
         return;
     }
 
-    // 2. Renderiza a interface
-    profileView.renderProfile(user);
+    // 2. Buscar Histórico de Evolução
+    let evolution = [];
+    try {
+        const evResponse = await userService.getEvolution();
+        if (evResponse.success) {
+            evolution = evResponse.history || [];
+        }
+    } catch (e) {
+        console.warn('[Profile] Não foi possível carregar histórico de evolução.');
+    }
 
-    // 3. Listeners para os Sliders (Feedback em tempo real no gráfico)
+    // 3. Renderiza a interface
+    profileView.renderProfile(user, evolution);
+
+    // 4. Listeners para os Sliders (Feedback em tempo real no gráfico e labels)
     const inputs = document.querySelectorAll('input[type="range"]');
     inputs.forEach(slider => {
         if (slider.id.startsWith('skill-')) {
             slider.addEventListener('input', (e) => {
                 const key = e.target.id.replace('skill-', '');
-                const label = document.getElementById(`label-${key}`);
-                if (label) label.textContent = e.target.value;
+                const val = parseInt(e.target.value);
                 
-                // Monta dados para atualização temporária do Gráfico
+                // Update Numeric Label
+                const label = document.getElementById(`label-${key}`);
+                if (label) label.textContent = val;
+                
+                // Update Textual Level Label
+                profileView.updateSkillLabel(key, val);
+                
+                // Monta dados para atualização temporária do Gráfico (Dataset Atual)
                 const tempSkills = {};
                 document.querySelectorAll('input[id^="skill-"]').forEach(s => {
                     tempSkills[s.id.replace('skill-', '')] = parseInt(s.value);
                 });
-                profileView.renderRadarChart(tempSkills);
+                
+                // Re-renderiza o gráfico mantendo o histórico se existir
+                profileView.renderRadarChart(tempSkills, evolution.length > 0 ? {
+                    forehand: evolution[0].num_skill_forehand,
+                    backhand: evolution[0].num_skill_backhand,
+                    cozinhada: evolution[0].num_skill_cozinhada || 50,
+                    topspin: evolution[0].num_skill_topspin || 50,
+                    saque: evolution[0].num_skill_saque,
+                    rally: evolution[0].num_skill_consistency || 50,
+                    ataque: evolution[0].num_skill_ataque,
+                    defesa: evolution[0].num_skill_defesa,
+                    bloqueio: evolution[0].num_skill_bloqueio || 50,
+                    controle: evolution[0].num_skill_controle,
+                    movimentacao: evolution[0].num_skill_movimentacao
+                } : null);
             });
         }
     });
 
-    // 4. Salvar Habilidades Técnicas
+    // 5. Salvar Habilidades Técnicas
     const saveBtn = document.getElementById('btn-save-skills');
     if (saveBtn) {
         saveBtn.onclick = async () => {
@@ -70,9 +101,19 @@ export default async function init() {
                 const response = await userService.saveSkills(skillsPayload);
                 
                 if (response.success) {
-                    // Sincroniza store global
                     updateStore('user', { ...store.user, ...localStoreUpdate });
-                    alert('Habilidades salvas com sucesso!');
+                    if (window.Swal) {
+                        Swal.fire({
+                            title: 'Sucesso!',
+                            text: 'Habilidades salvas com sucesso!',
+                            icon: 'success',
+                            background: '#060e1a',
+                            color: '#fff',
+                            confirmButtonColor: '#38bdf8'
+                        });
+                    } else {
+                        alert('Habilidades salvas com sucesso!');
+                    }
                 } else {
                     throw new Error(response.message || 'Erro do servidor');
                 }
@@ -82,7 +123,7 @@ export default async function init() {
                 alert('Erro ao salvar: ' + err.message);
             } finally {
                 saveBtn.disabled = false;
-                saveBtn.innerHTML = '<i class="fas fa-save" style="margin-right: 8px;"></i> SALVAR STATUS TÉCNICO';
+                saveBtn.innerHTML = '<i class="fas fa-save" style="margin-right: 8px;"></i> SALVAR STATUS';
             }
         };
     }

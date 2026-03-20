@@ -11,8 +11,19 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="dashboard.css">
     
+    <!-- UI Libraries (Alerts & Notifications) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    
+    <script>
+        window.onerror = function(msg, url, line) {
+            alert(`[FATAL JS ERROR] ${msg}\nLine: ${line}\nURL: ${url}`);
+        };
+    </script>
     <!-- App Bootstrap -->
     <script type="module" src="app.js"></script>
+    <script src="js/diagnostic.js"></script>
     <style>
         #app-loader {
             position: fixed;
@@ -43,8 +54,8 @@
     <!-- SIDEBAR (SHELL) -->
     <aside class="sidebar">
         <div class="sidebar-logo">
-            <img src="/assets/images/logo.png" alt="Spin4All">
-            <span style="font-weight: 800; font-size: 1.2rem;">SPIN<span style="color:#38bdf8">4</span>ALL</span>
+            <div class="sidebar-logo-icon" style="width: 32px; height: 32px; border-radius: 6px; background: #1a3a55; display: flex; align-items: center; justify-content: center; font-size: 16px;">🎾</div>
+            <span style="font-weight: 600; font-size: 14px; color: #fff;">SPIN<em style="color: #00e5ff; font-style: normal;">4ALL</em></span>
         </div>
 
         <nav class="nav-menu">
@@ -79,6 +90,12 @@
                         <span>Configurações</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="javascript:void(0)" onclick="openDiagnosticModal()" class="nav-link" style="color: #00e5ff; font-weight: 700;">
+                        <i class="fas fa-brain"></i>
+                        <span>Maestria Técnica</span>
+                    </a>
+                </li>
                 <li class="nav-item" id="admin-nav-item" style="display: none;">
                     <a href="admin.html" class="nav-link">
                         <i class="fas fa-shield"></i>
@@ -88,8 +105,8 @@
             </ul>
         </nav>
 
-        <div class="nav-item">
-            <a href="javascript:void(0)" onclick="logout()" class="nav-link" style="color: #ef4444;">
+        <div class="sidebar-footer" style="margin-top: auto; padding: 12px 18px;">
+            <a href="javascript:void(0)" onclick="logout()" class="nav-link" style="color: #e05555; padding: 8px 0; margin: 0;">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Sair</span>
             </a>
@@ -97,40 +114,54 @@
     </aside>
 
     <main class="main-content">
-        <!-- HEADER (SHELL) -->
-        <div class="header-split-container" style="display: flex; gap: 14px; margin-bottom: 40px; height: 110px;">
-            <!-- CARD ESQUERDO: SAUDAÇÃO -->
-            <div class="glass-card header-card-left"
-                style="flex: 0 0 calc(20% - 7px); display: flex; align-items: center; padding: 0 20px; background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; position: relative; overflow: hidden; margin: 0;">
-                <div style="display: flex; align-items: center; gap: 15px; width: 100%;">
-                    <div id="user-profile-img-container" 
-                        style="width: 55px; height: 55px; border-radius: 50%; border: 2px solid #38bdf8; overflow: hidden; background: #1e293b; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative;">
-                        <i class="fas fa-user" style="color: #94a3b8; font-size: 1.5rem;"></i>
-                        <img id="user-photo-img" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+        <!-- SHELL: CONTAINER PRINCIPAL CENTRALIZADO -->
+        <div class="layout-container">
+            <!-- HEADER: SAUDAÇÃO + PATROCÍNIO (UNIFICADO) -->
+            <div class="header-split-container">
+                <!-- CARD ESQUERDO: SAUDAÇÃO PREMIUM -->
+                <div class="header-user glass-card">
+                    <div class="header-user-avatar">
+                        <img id="user-photo-img" src="" style="display: none;">
+                        <i class="fas fa-user" id="user-photo-placeholder" style="color: #94a3b8; font-size: 1.5rem;"></i>
                     </div>
-                    <div class="user-greeting">
-                        <h1 id="user-welcome" style="font-size: 1.1rem; color: #fff; margin: 0; font-weight: 700;">Carregando...</h1>
-                        <span id="user-email" style="font-size: 0.75rem; color: #38bdf8; opacity: 0.9;">Aguarde...</span>
-                        <div id="user-level-badge" style="font-weight: 800; color: #fbbf24; text-transform: uppercase; font-size: 0.6rem; letter-spacing: 0.5px;">--</div>
+                    <div class="header-user-info">
+                        <div class="user-info-top">
+                            <div>
+                                <h3 id="user-welcome">Carregando...</h3>
+                                <p id="user-email">Aguarde...</p>
+                            </div>
+                            <div class="user-badge-stack" style="display: flex; flex-direction: column; gap: 4px; align-items: flex-end;">
+                                <div id="user-admin-badge" class="widget-badge badge-admin" style="display: none;">ADMIN</div>
+                                <div id="user-level-badge" class="widget-badge">--</div>
+                            </div>
+                        </div>
+                        
+                        <div class="header-xp-mini-wrap">
+                            <div class="xp-bar-container">
+                                <div id="user-xp-bar"></div>
+                            </div>
+                            <div class="header-badges-slot">
+                                <span id="user-xp-text">XP 0/0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD DIREITO: BANNER DE PATROCINADORES -->
+                <div class="header-card-right glass-card">
+                    <div id="sponsor-carousel">
+                        <!-- Slides injetados via JS -->
                     </div>
                 </div>
             </div>
 
-            <!-- CARD DIREITO: BANNER DE PATROCINADORES -->
-            <div class="glass-card header-card-right"
-                style="flex: 1; margin: 0; padding: 0; background: rgba(10, 26, 46, 0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; overflow: hidden; position: relative;">
-                <div id="sponsor-carousel" style="width: 100%; height: 100%; position: relative;">
-                    <!-- Slides injetados via JS -->
+            <!-- APP CONTAINER (MODULAR PAGES) -->
+            <div id="app">
+                <!-- Página carregada dinamicamente aqui -->
+                <div style="display: flex; justify-content: center; align-items: center; height: 200px;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: #38bdf8;"></i>
                 </div>
             </div>
-        </div>
-
-        <!-- APP CONTAINER (MODULAR PAGES) -->
-        <div id="app">
-            <!-- Página carregada dinamicamente aqui -->
-             <div style="display: flex; justify-content: center; align-items: center; height: 200px;">
-                <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: #38bdf8;"></i>
-             </div>
         </div>
     </main>
 
@@ -150,6 +181,188 @@
                 </div>
             </div>
             <button onclick="handleUnderstood()" class="btn-understood">Entendido!</button>
+        </div>
+    </div>
+
+    <!-- MODAL DE DIAGNÓSTICO TÉCNICO (ONBOARDING) -->
+    <div id="diagnostic-modal" class="modal" style="display: none;">
+        <div class="modal-content modal-diag-content">
+            <span class="close-modal" onclick="closeDiagnosticModal()">&times;</span>
+            <div class="diag-header">
+                <div class="diag-title-wrap">
+                    <span class="diag-badge">BEM-VINDO AO SPIN4ALL</span>
+                    <h2>Diagnóstico de Maestria</h2>
+                    <p>Mapeie suas habilidades para gerarmos suas metas semanais.</p>
+                </div>
+                <div class="diag-progress-container">
+                    <div id="diag-progress-bar" class="diag-progress-fill"></div>
+                </div>
+            </div>
+
+            <div class="diag-body">
+                <!-- STEP 1: FOREHAND -->
+                <div class="diag-step active" data-step="1">
+                    <h3>1. Como está seu Forehand (Direita)?</h3>
+                    <p>Capacidade de bater na bola com a palma da mão voltada para frente.</p>
+                    <div class="diag-options-grid">
+                        <input type="hidden" id="q1" value="3">
+                        <div class="diag-option" data-val="1" onclick="selectDiagOption(this)"><span>1</span><p>Iniciante</p></div>
+                        <div class="diag-option" data-val="2" onclick="selectDiagOption(this)"><span>2</span><p>Básico</p></div>
+                        <div class="diag-option selected" data-val="3" onclick="selectDiagOption(this)"><span>3</span><p>Médio</p></div>
+                        <div class="diag-option" data-val="4" onclick="selectDiagOption(this)"><span>4</span><p>Bom</p></div>
+                        <div class="diag-option" data-val="5" onclick="selectDiagOption(this)"><span>5</span><p>Elite</p></div>
+                    </div>
+                </div>
+
+                <!-- STEP 2: BACKHAND -->
+                <div class="diag-step" data-step="2">
+                    <h3>2. Como está seu Backhand (Esquerda)?</h3>
+                    <p>Golpe executado com as costas da mão voltada para o adversário.</p>
+                    <div class="diag-options-grid">
+                        <input type="hidden" id="q2" value="3">
+                        <div class="diag-option" data-val="1" onclick="selectDiagOption(this)"><span>1</span><p>Ruim</p></div>
+                        <div class="diag-option" data-val="2" onclick="selectDiagOption(this)"><span>2</span><p>Regular</p></div>
+                        <div class="diag-option selected" data-val="3" onclick="selectDiagOption(this)"><span>3</span><p>Consistente</p></div>
+                        <div class="diag-option" data-val="4" onclick="selectDiagOption(this)"><span>4</span><p>Agressivo</p></div>
+                        <div class="diag-option" data-val="5" onclick="selectDiagOption(this)"><span>5</span><p>Imatável</p></div>
+                    </div>
+                </div>
+
+                <!-- STEP 3: SAQUE -->
+                <div class="diag-step" data-step="3">
+                    <h3>3. Qual a qualidade do seu Saque?</h3>
+                    <p>Efeitos, profundidade e variação no início do ponto.</p>
+                    <div class="diag-options-grid">
+                        <input type="hidden" id="q3" value="3">
+                        <div class="diag-option" data-val="1" onclick="selectDiagOption(this)"><span>1</span><p>Básico</p></div>
+                        <div class="diag-option" data-val="2" onclick="selectDiagOption(this)"><span>2</span><p>Regular</p></div>
+                        <div class="diag-option selected" data-val="3" onclick="selectDiagOption(this)"><span>3</span><p>Com Efeito</p></div>
+                        <div class="diag-option" data-val="4" onclick="selectDiagOption(this)"><span>4</span><p>Avançado</p></div>
+                        <div class="diag-option" data-val="5" onclick="selectDiagOption(this)"><span>5</span><p>Vencedor</p></div>
+                    </div>
+                </div>
+
+                <!-- STEP 4: CONSISTÊNCIA -->
+                <div class="diag-step" data-step="4">
+                    <h3>4. Consistência na Mesa</h3>
+                    <p>Consegue manter a bola em jogo por longos períodos?</p>
+                    <div class="diag-options-grid">
+                        <input type="hidden" id="q4" value="3">
+                        <div class="diag-option" data-val="1" onclick="selectDiagOption(this)"><span>1</span><p>Erro muito</p></div>
+                        <div class="diag-option" data-val="2" onclick="selectDiagOption(this)"><span>2</span><p>Instável</p></div>
+                        <div class="diag-option selected" data-val="3" onclick="selectDiagOption(this)"><span>3</span><p>Seguro</p></div>
+                        <div class="diag-option" data-val="4" onclick="selectDiagOption(this)"><span>4</span><p>Sólido</p></div>
+                        <div class="diag-option" data-val="5" onclick="selectDiagOption(this)"><span>5</span><p>Paredão</p></div>
+                    </div>
+                </div>
+
+                <!-- STEP 5: ATAQUE -->
+                <div class="diag-step" data-step="5">
+                    <h3>5. Ataque (Finalização)</h3>
+                    <p>Potência e precisão para ganhar o ponto.</p>
+                    <div class="diag-options-grid">
+                        <input type="hidden" id="q5" value="3">
+                        <div class="diag-option" data-val="1" onclick="selectDiagOption(this)"><span>1</span><p>Passivo</p></div>
+                        <div class="diag-option" data-val="2" onclick="selectDiagOption(this)"><span>2</span><p>Oportunista</p></div>
+                        <div class="diag-option" data-val="3" onclick="selectDiagOption(this)"><span>3</span><p>Atacante</p></div>
+                        <div class="diag-option" data-val="4" onclick="selectDiagOption(this)"><span>4</span><p>Potente</p></div>
+                        <div class="diag-option" data-val="5" onclick="selectDiagOption(this)"><span>5</span><p>Smash!</p></div>
+                    </div>
+                </div>
+
+                <!-- STEP 6: DEFESA -->
+                <div class="diag-step" data-step="6">
+                    <h3>6. Como responde à pressão (Defesa)?</h3>
+                    <p>Capacidade de devolver ataques fortes.</p>
+                    <div class="diag-options-grid">
+                        <input type="hidden" id="q6" value="3">
+                        <div class="diag-option" data-val="1" onclick="selectDiagOption(this)"><span>1</span><p>Facilito</p></div>
+                        <div class="diag-option" data-val="2" onclick="selectDiagOption(this)"><span>2</span><p>Reativo</p></div>
+                        <div class="diag-option" data-val="3" onclick="selectDiagOption(this)"><span>3</span><p>Bloqueio</p></div>
+                        <div class="diag-option" data-val="4" onclick="selectDiagOption(this)"><span>4</span><p>Resiliente</p></div>
+                        <div class="diag-option" data-val="5" onclick="selectDiagOption(this)"><span>5</span><p>Intransponível</p></div>
+                    </div>
+                </div>
+
+                <!-- STEP 7: CONTROLE -->
+                <div class="diag-step" data-step="7">
+                    <h3>7. Controle de Bola</h3>
+                    <p>Direcionamento e precisão nos golpes.</p>
+                    <div class="diag-options-grid">
+                        <input type="hidden" id="q7" value="3">
+                        <div class="diag-option" data-val="1" onclick="selectDiagOption(this)"><span>1</span><p>Aleatório</p></div>
+                        <div class="diag-option" data-val="2" onclick="selectDiagOption(this)"><span>2</span><p>Básico</p></div>
+                        <div class="diag-option" data-val="3" onclick="selectDiagOption(this)"><span>3</span><p>Direcionado</p></div>
+                        <div class="diag-option" data-val="4" onclick="selectDiagOption(this)"><span>4</span><p>Preciso</p></div>
+                        <div class="diag-option" data-val="5" onclick="selectDiagOption(this)"><span>5</span><p>Cirúrgico</p></div>
+                    </div>
+                </div>
+
+                <!-- STEP 8: MOVIMENTAÇÃO -->
+                <div class="diag-step" data-step="8">
+                    <h3>8. Movimentação de Pernas</h3>
+                    <p>Como você chega na bola?</p>
+                    <div class="diag-options-grid">
+                        <input type="hidden" id="q8" value="3">
+                        <div class="diag-option" data-val="1" onclick="selectDiagOption(this)"><span>1</span><p>Estático</p></div>
+                        <div class="diag-option" data-val="2" onclick="selectDiagOption(this)"><span>2</span><p>Lento</p></div>
+                        <div class="diag-option" data-val="3" onclick="selectDiagOption(this)"><span>3</span><p>Ágil</p></div>
+                        <div class="diag-option" data-val="4" onclick="selectDiagOption(this)"><span>4</span><p>Rápido</p></div>
+                        <div class="diag-option" data-val="5" onclick="selectDiagOption(this)"><span>5</span><p>Inesgotável</p></div>
+                    </div>
+                </div>
+
+                <!-- STEP 9: ESTILO -->
+                <div class="diag-step" data-step="9">
+                    <h3>9. Qual seu estilo de jogo?</h3>
+                    <div class="diag-options-grid diag-style-grid">
+                        <input type="hidden" id="q14" value="2">
+                        <div class="diag-option" data-val="1" onclick="selectDiagOption(this)">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Defensivo</span>
+                        </div>
+                        <div class="diag-option selected" data-val="2" onclick="selectDiagOption(this)">
+                            <i class="fas fa-balance-scale"></i>
+                            <span>Equilibrado</span>
+                        </div>
+                        <div class="diag-option" data-val="3" onclick="selectDiagOption(this)">
+                            <i class="fas fa-bolt"></i>
+                            <span>Ofensivo</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 10: EXPERIÊNCIA -->
+                <div class="diag-step" data-step="10">
+                    <h3>10. Sua Jornada no Tênis de Mesa</h3>
+                    <p>Isso ajuda a calibrar a dificuldade dos seus desafios.</p>
+                    <div class="diag-options-grid" style="grid-template-columns: 1fr;">
+                        <span class="diag-label">Tempo de Prática</span>
+                        <input type="hidden" id="q11" value="2">
+                        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                            <div class="diag-option" data-val="1" onclick="selectDiagOption(this)" style="flex: 1; padding: 12px;"><span><1</span><p>Ano</p></div>
+                            <div class="diag-option selected" data-val="2" onclick="selectDiagOption(this)" style="flex: 1; padding: 12px;"><span>1-3</span><p>Anos</p></div>
+                            <div class="diag-option" data-val="3" onclick="selectDiagOption(this)" style="flex: 1; padding: 12px;"><span>3-5</span><p>Anos</p></div>
+                            <div class="diag-option" data-val="4" onclick="selectDiagOption(this)" style="flex: 1; padding: 12px;"><span>5+</span><p>Anos</p></div>
+                        </div>
+
+                        <span class="diag-label">Nível Competitivo</span>
+                        <input type="hidden" id="q12" value="1">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div class="diag-option selected" data-val="1" onclick="selectDiagOption(this)"><span>Lazer</span><p>Bate-bola</p></div>
+                            <div class="diag-option" data-val="2" onclick="selectDiagOption(this)"><span>Torneios</span><p>Locais/Clubes</p></div>
+                            <div class="diag-option" data-val="3" onclick="selectDiagOption(this)"><span>Federado</span><p>Competições Pro</p></div>
+                            <div class="diag-option" data-val="4" onclick="selectDiagOption(this)"><span>Elite</span><p>Ranking Top</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="diag-footer">
+                <button class="btn-diag-nav btn-prev" id="diag-prev-btn" onclick="prevDiagStep()">Anterior</button>
+                <button class="btn-diag-nav btn-next" id="diag-next-btn" onclick="nextDiagStep()">Próximo</button>
+                <button class="btn-diag-nav btn-finish" id="diag-finish-btn" onclick="finishDiag()" style="display: none;">Gerar Minhas Metas!</button>
+            </div>
         </div>
     </div>
 </body>

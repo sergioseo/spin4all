@@ -10,7 +10,13 @@ export async function apiFetch(path, options = {}) {
     };
 
     try {
-        const response = await fetch(`${CONFIG.API_URL}${path}`, {
+        // Garantir que a URL não tenha barras duplas ou falte a barra entre base e path
+        const baseUrl = CONFIG.API_URL.endsWith('/') ? CONFIG.API_URL.slice(0, -1) : CONFIG.API_URL;
+        const cleanPath = path.startsWith('/') ? path : `/${path}`;
+        const querySep = cleanPath.includes('?') ? '&' : '?';
+        const fullUrl = `${baseUrl}${cleanPath}${querySep}t=${Date.now()}`;
+
+        const response = await fetch(fullUrl, {
             ...options,
             headers
         });
@@ -18,8 +24,9 @@ export async function apiFetch(path, options = {}) {
         const data = await response.json();
 
         if (!response.ok) {
-            // Handle specific errors like 401
-            if (response.status === 401) {
+            // Handle specific errors like 401/403 (Auth/Token issues)
+            if (response.status === 401 || response.status === 403) {
+                console.warn('[API] Auth failed. Cleaning store and redirecting to login...');
                 localStorage.removeItem('spin4all_token');
                 window.location.href = 'login.html';
             }
@@ -32,3 +39,6 @@ export async function apiFetch(path, options = {}) {
         throw error;
     }
 }
+
+// Tornar global para scripts não-modulares (como diagnostic.js)
+window.apiFetch = apiFetch;
