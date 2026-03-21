@@ -295,7 +295,7 @@ export const homeView = {
 
         // SE NÃO COMPLETOU O DIAGNÓSTICO -> MOSTRAR BANNER DE ONBOARDING
         if (user && !user.flg_diagnostico_concluido) {
-            titleEl.textContent = 'COMPLETE SEU DIAGNÓSTICO INICIAL';
+            titleEl.textContent = 'COMPLETE SEU FORMULÁRIO INICIAL';
             titleEl.style.color = '#fff';
             
             subEl.innerHTML = `
