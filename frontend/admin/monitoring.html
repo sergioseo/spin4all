@@ -56,23 +56,26 @@
         }
 
         .btn-back {
-            background: var(--glass);
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--glass-border);
-            color: #fff;
-            padding: 8px 16px;
-            border-radius: 10px;
+            color: rgba(255, 255, 255, 0.7);
+            padding: 12px 24px;
+            border-radius: 12px;
             text-decoration: none;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             font-weight: 600;
-            transition: 0.3s;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 10px;
         }
 
         .btn-back:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateX(-3px);
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
 
         .stats-grid {
@@ -215,13 +218,6 @@
                 <h1>Orquestração AI & Data</h1>
                 <p>Monitoramento técnico de fluxos operacionais</p>
             </div>
-            <div style="display: flex; align-items: center; gap: 20px;">
-                <div id="last-update" style="font-size: 0.7rem; opacity: 0.4">Última atualização: --:--:--</div>
-                <a href="/dashboard.html" class="btn-back">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                    Voltar para o Painel
-                </a>
-            </div>
         </header>
 
         <div class="actions-bar">
@@ -229,7 +225,7 @@
                 <span>🚀 Rodar ETL de Partidas</span>
             </button>
             <button id="btn-run-analysis" class="btn-trigger" style="background: var(--glass); border: 1px solid var(--glass-border)">
-                <span>🤖 Análise AI (Em breve)</span>
+                <span>🤖 Análise AI</span>
             </button>
         </div>
 
@@ -257,6 +253,13 @@
             <div class="process-item" style="opacity: 0.3">
                 <span>Iniciando monitoramento...</span>
             </div>
+        </div>
+
+        <div style="margin-top: 25px; display: flex; justify-content: flex-start;">
+            <a href="/dashboard.html" class="btn-back">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                <span>Sair do Monitoramento</span>
+            </a>
         </div>
     </div>
 
