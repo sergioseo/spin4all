@@ -4,7 +4,6 @@ const adminController = require('../controllers/admin.controller');
 const MonitoringController = require('../controllers/admin/monitoring.controller');
 const { authenticateToken, isAdmin } = require('../middlewares/auth.middleware');
 
-console.log('[DEBUG] Registering Admin Routes...');
 router.get('/reports', authenticateToken, isAdmin, adminController.getReports);
 router.get('/members', authenticateToken, isAdmin, adminController.getMembers);
 router.get('/test', authenticateToken, isAdmin, (req, res) => res.json({ success: true, message: 'Admin API is reachable' }));

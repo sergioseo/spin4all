@@ -64,15 +64,6 @@ app.use('/api', attendanceRoutes);
 app.use('/api', analysisRoutes);
 app.use('/api', communityRoutes);
 
-// JSON 404 handler for API
-app.use('/api/*', (req, res) => {
-    console.log(`⚠️ [404] API Route Not Found: ${req.method} ${req.originalUrl}`);
-    res.status(404).json({ 
-        success: false, 
-        error: `API Route Not Found: ${req.method} ${req.originalUrl}` 
-    });
-});
-
 // Rotas de Navegação (HTML)
 app.get('/', (req, res) => res.status(200).send('API Online v9.0')); 
 app.get('/login.html', (req, res) => res.sendFile(path.join(__dirname, '../frontend/login.html')));
