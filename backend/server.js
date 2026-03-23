@@ -7,6 +7,31 @@ require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 const { runMigrations } = require('./src/config/setup');
 
+// --- OBSERVABILIDADE INDUSTRIAL ---
+process.on('SIGTERM', () => {
+    console.log('⚠️ [SIGNAL] SIGTERM recebido. Encerrando graciosamente...');
+    process.exit(0);
+});
+
+process.on('SIGINT', () => {
+    console.log('⚠️ [SIGNAL] SIGINT recebido. Encerrando...');
+    process.exit(0);
+});
+
+process.on('uncaughtException', (err) => {
+    console.error('❌ [FATAL] Exceção não tratada:', err);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('❌ [FATAL] Rejeição não tratada em:', promise, 'razão:', reason);
+});
+
+// Heartbeat para manter o loop ativo e debug
+setInterval(() => {
+    console.log(`[HEARTBEAT] ${new Date().toISOString()} - PID: ${process.pid} - Memory: ${Math.round(process.memoryUsage().rss / 1024 / 1024)}MB`);
+}, 60000);
+// ---------------------------------
+
 // Importar Rotas
 const authRoutes = require('./src/routes/auth.routes');
 const userRoutes = require('./src/routes/user.routes');
