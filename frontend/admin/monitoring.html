@@ -99,27 +99,79 @@
         }
 
         .stat-card {
-            background: var(--glass);
+            background: rgba(15, 23, 42, 0.4);
             backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            padding: 18px;
-            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 12px;
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 85px;
             transition: 0.3s;
         }
 
-        .stat-card:hover {
-            border-color: rgba(255, 255, 255, 0.2);
+        .dashboard-top-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr) 1.5fr 1.5fr 1.5fr;
+            gap: 12px;
+            margin-bottom: 20px;
+            width: 100%;
         }
 
-        .stat-value { font-size: 1.6rem; font-weight: 700; display: block; }
+        .stat-card, .info-mini-card {
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 12px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 85px;
+            transition: 0.3s;
+        }
 
-        .stat-label { font-size: 0.75rem; opacity: 0.5; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+        .stat-card:hover, .info-mini-card:hover {
+            border-color: rgba(255, 255, 255, 0.1);
+            background: rgba(15, 23, 42, 0.6);
+        }
+
+        .stat-value { font-size: 1.3rem; font-weight: 700; display: block; }
+        .stat-label { font-size: 0.6rem; opacity: 0.5; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+
+        /* MINI INFO CARDS */
+        .info-mini-card {
+            text-align: left;
+            padding: 10px 12px;
+            border-color: rgba(0, 210, 255, 0.1);
+        }
+
+        .info-mini-card h3 {
+            font-size: 0.7rem;
+            margin: 0 0 3px 0;
+            color: var(--accent-blue);
+            font-weight: 800;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .info-mini-card p {
+            font-size: 0.52rem;
+            line-height: 1.25;
+            color: rgba(255, 255, 255, 0.5);
+            margin: 0;
+        }
 
         .actions-bar {
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             display: flex;
-            gap: 10px;
+            gap: 12px;
+            align-items: center;
         }
 
         .btn-trigger {
@@ -280,7 +332,8 @@
                 <i class="fas fa-sign-out-alt"></i> <span>Sair</span>
             </a>
         </div>
-    </as    <main class="main-content">
+    </aside>
+    <main class="main-content">
         <div class="monitoring-container">
             <header>
                 <div class="header-left">
@@ -344,9 +397,6 @@
                     <span>Iniciando monitoramento...</span>
                 </div>
             </div>
-        </div>
-    </main>
-v>
         </div>
     </main>
 
