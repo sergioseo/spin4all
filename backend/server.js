@@ -57,12 +57,21 @@ app.use((req, res, next) => {
 });
 
 // Registro de Rotas da API
-app.use('/api/admin', adminRoutes); // /api/admin/reports, etc. (More specific first)
-app.use('/api', authRoutes); // /api/login, /api/register
-app.use('/api', userRoutes); // /api/me, /api/update-profile
-app.use('/api', attendanceRoutes); // /api/checkin, /api/my-attendance
-app.use('/api', analysisRoutes); // /api/tournament-summary
-app.use('/api', communityRoutes); // /api/stats, /api/hall-fama
+app.use('/api/admin', adminRoutes);
+app.use('/api', authRoutes);
+app.use('/api', userRoutes);
+app.use('/api', attendanceRoutes);
+app.use('/api', analysisRoutes);
+app.use('/api', communityRoutes);
+
+// JSON 404 handler for API
+app.use('/api/*', (req, res) => {
+    console.log(`⚠️ [404] API Route Not Found: ${req.method} ${req.originalUrl}`);
+    res.status(404).json({ 
+        success: false, 
+        error: `API Route Not Found: ${req.method} ${req.originalUrl}` 
+    });
+});
 
 // Rotas de Navegação (HTML)
 app.get('/', (req, res) => res.status(200).send('API Online v9.0')); 
