@@ -1,4 +1,4 @@
-console.log('--- SPIN4ALL SERVER VERSION 8000 (MODULAR) ---');
+console.log('--- SPIN4ALL SERVER VERSION 9.0 (ULTRA-RESILIENT) ---');
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -61,7 +61,7 @@ app.use('/api', analysisRoutes); // /api/tournament-summary
 app.use('/api', communityRoutes); // /api/stats, /api/hall-fama
 
 // Rotas de Navegação (HTML)
-app.get('/', (req, res) => res.redirect('/login.html'));
+app.get('/', (req, res) => res.status(200).send('API Online v9.0')); 
 app.get('/login.html', (req, res) => res.sendFile(path.join(__dirname, '../frontend/login.html')));
 app.get('/dashboard.html', (req, res) => res.sendFile(path.join(__dirname, '../frontend/dashboard.html')));
 app.get('/admin.html', (req, res) => res.sendFile(path.join(__dirname, '../frontend/admin.html')));
