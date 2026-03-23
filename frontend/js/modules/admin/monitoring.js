@@ -116,6 +116,13 @@ class MonitoringModule {
                     const hasError = p.status === 'FAIL';
                     const metadataStr = p.metadata ? (typeof p.metadata === 'object' ? JSON.stringify(p.metadata) : p.metadata) : '';
                     
+                    // Human-friendly descriptions
+                    const descriptions = {
+                        'ETL_MATCHES': 'Sincronização de partidas e atualização automática dos rakings e estatísticas.',
+                        'AI_ANALYSIS': 'Análise de IA sobre o desempenho técnico e evolução da comunidade.'
+                    };
+                    const friendlyDesc = descriptions[p.process_name] || 'Processamento de rotina do sistema.';
+
                     // Safe Date formatting
                     let timeStr = '--:--';
                     try {
@@ -130,6 +137,7 @@ class MonitoringModule {
                         <div class="process-item" style="${hasError ? 'border-left: 4px solid var(--accent-red);' : ''}">
                             <div>
                                 <div class="process-name">${p.process_name || 'Sem nome'}</div>
+                                <div style="font-size: 0.75rem; opacity: 0.6; margin-bottom: 4px;">${friendlyDesc}</div>
                                 <div class="process-step">${p.step_name || '...'}</div>
                                 ${hasError ? `<div style="color: var(--accent-red); font-size: 0.7rem; margin-top: 5px;">❌ ${metadataStr || 'Erro inesperado'}</div>` : ''}
                             </div>
