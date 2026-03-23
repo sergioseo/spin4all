@@ -91,19 +91,11 @@
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
 
-        .stats-grid {
+        /* DASHBOARD GRID & STATS */
+        .dashboard-top-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .stat-card {
-            background: rgba(15, 23, 42, 0.4);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 10px;
-            border-radius: 12px;
             margin-bottom: 20px;
             width: 100%;
         }
@@ -120,11 +112,13 @@
             justify-content: center;
             height: 90px;
             transition: 0.3s;
+            position: relative;
         }
 
         .stat-card:hover {
             border-color: rgba(255, 255, 255, 0.1);
             background: rgba(15, 23, 42, 0.6);
+            transform: translateY(-2px);
         }
 
         .stat-value { font-size: 1.4rem; font-weight: 700; display: block; }
@@ -134,7 +128,7 @@
             margin-bottom: 20px;
             display: flex;
             gap: 12px;
-            align-items: flex-end; /* Align to bottom so subtext doesn't push them up */
+            align-items: flex-end;
         }
 
         .btn-trigger {
