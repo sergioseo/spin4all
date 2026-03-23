@@ -44,8 +44,8 @@ const { startWorkers } = require('./src/infrastructure/queue/QueueWorker');
 const app = express();
 
 // --- HEALTH CHECK IMEDIATO (Para o Easypanel não matar o processo) ---
-app.get('/api/health', (req, res) => res.status(200).json({ status: 'UP', version: '9.2' }));
-app.get('/', (req, res) => res.status(200).send('Spin4All Version 9.2 Online'));
+app.get('/api/health', (req, res) => res.status(200).json({ status: 'UP', version: '9.3' }));
+app.get('/', (req, res) => res.redirect('/login.html')); 
 
 // Middlewares Globais
 app.use(cors());
