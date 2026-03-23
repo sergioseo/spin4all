@@ -4,16 +4,23 @@ require('dotenv').config({ path: path.join(__dirname, '../../.env') });
 
 /**
  * Singleton de conexão com o Redis
- * Garante que não criemos múltiplas conexões desnecessárias
  */
-const redisConfig = {
-    host: process.env.REDIS_HOST || 'localhost',
-    port: parseInt(process.env.REDIS_PORT) || 6379,
-    password: process.env.REDIS_PASSWORD || undefined,
-    maxRetriesPerRequest: null, // Obrigatório para o BullMQ
-};
+let connection;
 
-const connection = new IORedis(redisConfig);
+if (process.env.REDIS_URL) {
+    console.log('[DEBUG] Usando REDIS_URL para conexão...');
+    connection = new IORedis(process.env.REDIS_URL, {
+        maxRetriesPerRequest: null
+    });
+} else {
+    console.log('[DEBUG] Usando Host/Port/Pass para conexão...');
+    connection = new IORedis({
+        host: process.env.REDIS_HOST || 'localhost',
+        port: parseInt(process.env.REDIS_PORT) || 6379,
+        password: process.env.REDIS_PASSWORD || undefined,
+        maxRetriesPerRequest: null,
+    });
+}
 
 connection.on('connect', () => console.log('✅ [REDIS] Tentando conexão...'));
 connection.on('ready', () => console.log('🚀 [REDIS] Conexão ESTABELECIDA e pronta para uso.'));
