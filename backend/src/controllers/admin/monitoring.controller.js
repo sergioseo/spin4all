@@ -20,7 +20,10 @@ class MonitoringController {
             res.json({ success: true, message: 'Processo ETL enfileirado com sucesso.' });
         } catch (err) {
             console.error('[MONITORING] Trigger failure:', err);
-            res.status(500).json({ success: false, error: err.message || 'Falha ao disparar orquestração.' });
+            res.status(500).json({ 
+                success: false, 
+                error: `[V9.1] Falha ao disparar orquestração: ${err.message || 'Erro desconhecido'}` 
+            });
         }
     }
 
