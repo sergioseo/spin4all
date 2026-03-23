@@ -61,20 +61,19 @@ class QueueManager {
     async addJob(queueName, jobName, data) {
         console.log(`[DEBUG] Tentando enfileirar job '${jobName}' na fila '${queueName}'...`);
         
-        // Aguarda estabilização (evita erro durante reinícios do servidor)
-        const isReady = await this.waitForConnection();
+        // Vamos apenas logar o status, mas confiar no BullMQ para gerenciar a fila.
+        // O BullMQ internamente aguarda a conexão se ela estiver em 'reconnecting'.
+        console.log(`[DEBUG] Status atual do Redis: ${connection.status}`);
 
-        if (!isReady) {
-            console.error(`❌ [QUEUE] Falha ao enfileirar: Redis status continua '${connection.status}'`);
-            throw new Error(`Redis não está pronto após espera (Status: ${connection.status}).`);
+        try {
+            const queue = this.getQueue(queueName);
+            const job = await queue.add(jobName, data);
+            console.log(`✅ [DEBUG] Job '${jobName}' enfileirado com ID: ${job.id}`);
+            return job;
+        } catch (err) {
+            console.error(`❌ [QUEUE ERROR] Falha ao adicionar job:`, err);
+            throw err;
         }
-
-        console.log('[DEBUG] Redis pronto. Criando fila...');
-        const queue = this.getQueue(queueName);
-        console.log('[DEBUG] Fila obtida. Adicionando job...');
-        const job = await queue.add(jobName, data);
-        console.log(`[DEBUG] Job '${jobName}' enfileirado com ID: ${job.id}`);
-        return job;
     }
 }
 
