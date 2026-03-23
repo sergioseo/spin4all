@@ -143,7 +143,7 @@ class MonitoringModule {
                             </div>
                             <div>
                                 <div class="progress-bar-container">
-                                    <div class="progress-fill ${p.status === 'WORKING' ? 'pulse' : ''}" style="width: ${p.progress || 0}%"></div>
+                                    <div class="progress-fill ${p.status === 'WORKING' ? 'pulse' : ''} status-${p.status}" style="width: ${p.progress || 0}%"></div>
                                 </div>
                             </div>
                             <div style="display: flex; justify-content: center;">
