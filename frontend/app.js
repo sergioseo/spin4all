@@ -62,10 +62,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         await loadPage('home');
         console.log('[DEBUG] Dashboard Initialized!');
-        // Confirmação na tela para depuração (opcional, remover depois)
-        if (window.Toastify) {
-            Toastify({ text: "Dashboard Conectado!", duration: 2000, gravity: "top", position: "right", backgroundColor: "#00d4ff" }).showToast();
-        }
     } catch (e) {
         console.error('Fatal loadPage:', e);
     }
@@ -75,49 +71,38 @@ document.addEventListener('DOMContentLoaded', async () => {
  * Renders user info in the Global Header (Shell)
  */
 function renderShellUser(user) {
-    const welcomeEl = getElement('user-welcome');
-    const emailEl = getElement('user-email');
-    const levelEl = getElement('user-level-badge');
-    const adminEl = getElement('user-admin-badge');
-    const xpBar = getElement('user-xp-bar');
-    const xpText = getElement('user-xp-text');
-    const photoImg = getElement('user-photo-img');
-    const photoPlaceholder = getElement('user-photo-placeholder');
+    const welcomeEl = document.getElementById('user-welcome');
+    const xpEl = document.getElementById('user-xp-val');
+    const progressEl = document.getElementById('user-xp-progress-bar');
+    const photoImg = document.getElementById('user-photo-img');
+    const photoPlaceholder = document.getElementById('user-photo-placeholder');
 
-    if (welcomeEl) {
-        const fullName = user.dsc_nome_completo || 'Membro';
-        const firstName = fullName.split(' ')[0];
-        welcomeEl.textContent = `Olá, ${firstName}!`;
-    }
-    if (emailEl) emailEl.textContent = user.dsc_email;
+    if (welcomeEl) welcomeEl.textContent = `Olá, ${user.dsc_nome_completo.split(' ')[0]}!`;
+    if (xpEl) xpEl.textContent = user.num_xp || 0;
     
-    // Selo de Administrador (Destaque Dourado)
-    if (adminEl) {
-        adminEl.style.display = user.flg_admin ? 'block' : 'none';
+    if (progressEl) {
+        const xp = user.num_xp || 0;
+        const pct = Math.min(100, (xp % 1000) / 10);
+        progressEl.style.width = `${pct}%`;
     }
 
-    if (levelEl) {
-        levelEl.textContent = user.dsc_nivel_tecnico || 'INICIANTE';
-        levelEl.style.display = 'block';
+    if (photoImg && photoPlaceholder) {
+        if (user.dsc_foto_perfil) {
+            photoImg.src = user.dsc_foto_perfil;
+            photoImg.style.display = 'block';
+            photoPlaceholder.style.display = 'none';
+        } else {
+            photoImg.style.display = 'none';
+            photoPlaceholder.style.display = 'block';
+        }
     }
 
-    // Progressão de XP - Visual de RPG Premium
-    if (xpBar && xpText) {
-        const currentXP = 0; 
-        const nextLevelXP = 1000;
-        const pct = (currentXP / nextLevelXP) * 100;
-        xpBar.style.width = `${pct}%`;
-        xpText.textContent = `XP ${currentXP}/${nextLevelXP}`;
-    }
-
-    // Gerenciamento de Foto com Glow Halo
-    if (user.dsc_foto_perfil && photoImg) {
-        photoImg.src = user.dsc_foto_perfil;
-        photoImg.style.display = 'block';
-        if (photoPlaceholder) photoPlaceholder.style.display = 'none';
-    } else if (photoPlaceholder) {
-        photoPlaceholder.style.display = 'flex';
-        if (photoImg) photoImg.style.display = 'none';
+    // Toggle Admin Tabs
+    const adminNav = document.getElementById('admin-nav-item');
+    const monitoringNav = document.getElementById('admin-monitoring-nav');
+    if (user.flg_admin) {
+        if (adminNav) adminNav.style.display = 'block';
+        if (monitoringNav) monitoringNav.style.display = 'block';
     }
 }
 
@@ -177,3 +162,5 @@ window.closeTournamentModal = () => {
 window.handleUnderstood = () => {
     window.closeTournamentModal();
 };
+
+window.renderShellUser = renderShellUser;

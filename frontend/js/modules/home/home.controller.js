@@ -11,14 +11,23 @@ export async function init() {
     try {
         console.log('[HOME CONTROLLER] Initializing...');
 
-        // 1. Load Community Stats
-        console.log('[DEBUG-HOME] Fetching community stats...');
+        // 1. Load User Profile (Header Unificado)
+        try {
+            const userRes = await userService.getUser();
+            if (userRes.success) {
+                updateStore('user', userRes.user);
+                homeView.updateUserProfile(userRes.user);
+            }
+        } catch (err) {
+            console.error('[CRITICAL] User profile load failed:', err);
+        }
+
+        // 1b. Load Community Stats
         try {
             const stats = await communityService.getStats();
             if (stats.success) {
                 updateStore('communityStats', stats.data);
                 homeView.renderCommunityStats(stats.data);
-                renderWeeklyChart(stats.data.weekly_engagement);
             }
         } catch (err) {
             console.error('[CRITICAL] Stats load failed:', err);
@@ -32,39 +41,33 @@ export async function init() {
                 communityService.getEvolutionRanking(),
                 communityService.getAttendanceRanking()
             ]);
-            if (hallResources[0].success) homeView.renderTournamentsRanking(hallResources[0].ranking || []);
+            // if (hallResources[0].success) homeView.renderTournamentsRanking(hallResources[0].ranking || []); // Removido se não houver container
             if (hallResources[1].success) homeView.renderEvolutionRanking(hallResources[1].ranking || []);
             if (hallResources[2].success) homeView.renderAttendanceRanking(hallResources[2].ranking || []);
         } catch (err) {
             console.error('[CRITICAL] Rankings load failed:', err);
         }
 
-        // 3. Load Technical Skills & Evolution (ATO 2)
-        console.log('[DEBUG-HOME] Loading ATO 2 (Skills & Chart)...');
+        // 3. Load Technical Skills (Para o Analista/Evolução)
         try {
             const skillsData = await userService.getSkills();
-            if (skillsData && skillsData.success && skillsData.skills && skillsData.skills.length > 0) {
+            if (skillsData && skillsData.success) {
                 homeView.renderSkills(skillsData.skills);
-                renderEvolution(skillsData.skills);
-            } else {
-                console.warn('[HOME] No skills found or error loading.');
-                const list = document.getElementById('skills-list');
-                if (list) list.innerHTML = '<div style="color: var(--text-label); font-size: 0.7rem; text-align: center; padding: 10px;">Sem dados técnicos.</div>';
             }
         } catch (err) {
             console.error('[CRITICAL] Skills load failed:', err);
         }
 
-        // 4. Load Calendar and Frequency
-        console.log('[DEBUG-HOME] Loading calendar component...');
+        // 4. Load Frequency (ATO 1)
         try {
             await loadCalendar(currentViewMonth, currentViewYear);
         } catch (err) {
-            console.error('[CRITICAL] Calendar load failed:', err);
+            console.error('[CRITICAL] Frequency load failed:', err);
         }
 
-        // 5. Load Weekly Missions
+        // 5. Load 12:10 Components (Analyst & Missions)
         fetchMissions();
+        fetchAnalystData();
 
         setupEventListeners();
 
@@ -81,6 +84,20 @@ async function fetchMissions() {
         }
     } catch (err) {
         console.error('Erro ao buscar missões:', err);
+    }
+}
+
+async function fetchAnalystData() {
+    try {
+        const response = await apiFetch('/analysis/tournament-summary');
+        if (response.success) {
+            homeView.renderAnalyst(response);
+        } else {
+            homeView.renderAnalyst(null);
+        }
+    } catch (err) {
+        console.error('[CRITICAL] Analyst data load failed:', err);
+        homeView.renderAnalyst(null);
     }
 }
 
@@ -104,7 +121,27 @@ window.handleToggleMission = async (id, currentStatus) => {
                 background: '#060e1a',
                 color: '#fff'
             });
+            
+            // Recarrega missões e medalhas
             fetchMissions();
+            fetchBadges();
+
+            // Atualiza XP no Shell (Header) - Busca dados frescos do usuário
+            try {
+                const userRes = await userService.getUser(); 
+                if (userRes.success) {
+                    updateStore('user', userRes.user);
+                    // Dispara evento para o Shell ou atualiza DOM se disponível
+                    if (typeof window.renderShellUser === 'function') {
+                        window.renderShellUser(userRes.user);
+                    } else {
+                        // Fallback: reload leve se não conseguir injetar o Shell
+                        // location.reload(); 
+                    }
+                }
+            } catch (e) {
+                console.error('Erro ao atualizar header:', e);
+            }
         }
     } catch (err) {
         console.error('Erro ao completar missão:', err);
@@ -203,7 +240,40 @@ function renderEvolution(skills) {
     if (skills.length > 0) window.selectHomeSkill(skills[0].dsc_habilidade);
 }
 
+async function fetchBadges() {
+    try {
+        const response = await apiFetch('/badges/my');
+        if (response.success) {
+            homeView.renderBadges(response.data);
+        }
+    } catch (err) {
+        console.error('Erro ao buscar badges:', err);
+    }
+}
+
 function setupEventListeners() {
+    const btnInscricao = document.getElementById('btn-inscricao');
+    if (btnInscricao) {
+        btnInscricao.addEventListener('click', () => {
+            if (window.openTournamentModal) window.openTournamentModal();
+        });
+    }
+
+    const btnFocoTreino = document.getElementById('btn-foco-treino');
+    if (btnFocoTreino) {
+        btnFocoTreino.addEventListener('click', () => {
+             Swal.fire({
+                title: 'Treino de Foco 🎯',
+                text: 'Deseja agendar um treino focado na recomendação do Analista?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Sim, agendar!',
+                cancelButtonText: 'Agora não',
+                background: '#060e1a',
+                color: '#fff'
+            });
+        });
+    }
     const btnPrev = document.getElementById('btn-prev-month');
     const btnNext = document.getElementById('btn-next-month');
 

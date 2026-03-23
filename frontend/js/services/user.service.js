@@ -34,6 +34,10 @@ export const userService = {
         return await apiFetch('/my-evolution');
     },
 
+    async getEffortStats() {
+        return await apiFetch('/user/effort-stats');
+    },
+
     async getSkills() {
         try {
             const res = await this.getUser();

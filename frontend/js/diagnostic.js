@@ -4,7 +4,7 @@
  */
 
 let currentDiagStep = 1;
-const totalDiagSteps = 10;
+const totalDiagSteps = 13;
 
 function updateDiagProgress() {
     const pct = (currentDiagStep / totalDiagSteps) * 100;
@@ -47,52 +47,73 @@ function prevDiagStep() {
 }
 
 function selectDiagOption(el) {
-    const parent = el.parentElement;
-    const input = parent.querySelector('input[type="hidden"]');
+    // Busca o container pai que engloba opções e o input hidden (ex: .diag-step ou .diag-options-grid)
+    const container = el.closest('.diag-step') || el.parentElement;
+    const input = container.querySelector(`input[type="hidden"]`) || el.parentElement.querySelector('input[type="hidden"]');
     
-    // Remover seleção anterior
-    parent.querySelectorAll('.diag-option').forEach(opt => opt.classList.remove('selected'));
+    // Remover seleção anterior apenas dentro do contexto do container (importante para o passo 13 que tem 2 inputs)
+    // Se o elemento estiver em um grupo específico (ex: tempo vs nível), limpa apenas aquele grupo
+    const group = el.parentElement;
+    group.querySelectorAll('.diag-option').forEach(opt => opt.classList.remove('selected'));
     
     // Adicionar nova seleção
     el.classList.add('selected');
-    if (input) input.value = el.getAttribute('data-val');
+    
+    // Tenta achar o input hidden MAIS PRÓXIMO do elemento clicado
+    const hiddenInput = group.querySelector('input[type="hidden"]');
+    if (hiddenInput) {
+        hiddenInput.value = el.getAttribute('data-val');
+        console.log(`[DIAG] Input ${hiddenInput.id} atualizado para: ${hiddenInput.value}`);
+    }
 }
 
 async function finishDiag() {
-    const mapping = {
-        forehand: parseInt(document.getElementById('q1').value),
-        backhand: parseInt(document.getElementById('q2').value),
-        saque: parseInt(document.getElementById('q3').value),
-        consistency: parseInt(document.getElementById('q4').value),
-        ataque: parseInt(document.getElementById('q5').value),
-        defesa: parseInt(document.getElementById('q6').value),
-        controle: parseInt(document.getElementById('q7').value),
-        movimentacao: parseInt(document.getElementById('q8').value)
-    };
-
-    const answers = [
-        mapping.forehand, mapping.backhand, mapping.saque, mapping.consistency,
-        mapping.ataque, mapping.defesa, mapping.controle, mapping.movimentacao,
-        parseInt(document.getElementById('q9')?.value || 0),
-        parseInt(document.getElementById('q10')?.value || 0),
-        parseInt(document.getElementById('q11').value),
-        parseInt(document.getElementById('q12').value),
-        0, // placeholder para q13
-        parseInt(document.getElementById('q14').value),
-        0, 0, // placeholders para q15-q16
-        parseInt(document.getElementById('q17')?.value || 0)
-    ];
-
     const btn = document.getElementById('diag-finish-btn');
     const originalText = btn.innerHTML;
     
     try {
-        // Feedback visual de carregamento
+        // Feedback visual imediato
         btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparando...';
         btn.style.opacity = '0.7';
 
-        console.log('[DIAGNOSTIC] Preparando envio de dados:', { mapping, answers });
+        // 1. CAPTURA DE DADOS (Dentro do try para capturar erros de DOM)
+        console.log('[DIAGNOSTIC] Iniciando extração de dados...');
+        
+        const getVal = (id) => {
+            const el = document.getElementById(id);
+            if (!el) {
+                console.warn(`[DIAG] Elemento #${id} não encontrado! Usando padrão.`);
+                return 0;
+            }
+            return parseInt(el.value) || 0;
+        };
+
+        const mapping = {
+            forehand: getVal('q1'),
+            backhand: getVal('q2'),
+            saque: getVal('q3'),
+            consistency: getVal('q4'),
+            ataque: getVal('q5'),
+            defesa: getVal('q6'),
+            controle: getVal('q7'),
+            movimentacao: getVal('q8'),
+            cozinhada: getVal('q18'),
+            topspin: getVal('q19'),
+            bloqueio: getVal('q20')
+        };
+
+        const answers = [
+            mapping.forehand, mapping.backhand, mapping.saque, mapping.consistency,
+            mapping.ataque, mapping.defesa, mapping.controle, mapping.movimentacao,
+            mapping.cozinhada, mapping.topspin, mapping.bloqueio,
+            getVal('q14'), // estilo
+            getVal('q11'), // tempo pratica
+            getVal('q12')  // nivel competitivo
+        ];
+
+        console.log('[DIAGNOSTIC] Dados extraídos com sucesso:', { mapping, answers });
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
 
         const response = await apiFetch('/diagnostic/submit', {
             method: 'POST',
@@ -100,28 +121,35 @@ async function finishDiag() {
         });
 
         if (response.success) {
+            // FECHAR MODAL IMEDIATAMENTE (Evita ficar por cima do alerta)
+            document.getElementById('diagnostic-modal').style.display = 'none';
+            
             Swal.fire({
                 icon: 'success',
-                title: 'Diagnóstico Concluído!',
-                text: 'Sua maestria técnica foi mapeada e suas missões foram geradas!',
+                title: 'Formulário Concluído!',
+                text: 'Seu mapeamento tecnico foi feito e suas missões foram geradas!',
                 background: '#060e1a',
                 color: '#fff',
                 confirmButtonColor: '#38bdf8'
             }).then(() => {
-                document.getElementById('diagnostic-modal').style.display = 'none';
-                window.location.reload(); // Recarregar para atualizar radar e missões
+                window.location.reload(); 
             });
         } else {
             throw new Error(response.message || 'Erro ao processar diagnóstico.');
         }
     } catch (err) {
-        console.error('Erro ao finalizar diagnóstico:', err);
+        console.error('[DIAG ERROR] Falha no fluxo:', err);
+        
+        let errorMsg = 'Não conseguimos salvar seu diagnóstico. ';
+        if (err.message) errorMsg += `\nDetalhe: ${err.message}`;
+
         Swal.fire({
             icon: 'error',
-            title: 'Ops! Algo deu errado',
-            text: 'Não conseguimos salvar seu diagnóstico. Tente novamente em instantes.',
+            title: 'Erro ao Salvar',
+            text: errorMsg,
             background: '#060e1a',
-            color: '#fff'
+            color: '#fff',
+            confirmButtonColor: '#f43f5e'
         });
         
         // Reset do botão em caso de erro

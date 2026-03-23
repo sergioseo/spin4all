@@ -1,283 +1,197 @@
-<!-- MÓDULO HOME: DASHBOARD V6 (RESPONSIVO) -->
-<div>
+<div id="home-view-container">
 
-    <!-- BANNER TOPO -->
-    <div id="tournament-banner-container" class="banner-torneio">
-        <div id="banner-icon-container" class="banner-icon">📢</div>
-        <div class="banner-text">
-            <strong id="banner-title">PRÓXIMO TORNEIO INTERNO: MARÇO 2026</strong>
-            <p id="banner-subtitle">Mantenha sua frequência acima de 60% para garantir sua vaga na elite.</p>
+    <!-- ATO 0: BANNER DE VAGA (RESTAURADO 12:10) -->
+    <div class="banner-vaga-card glass-card">
+        <div class="banner-content">
+            <h2>VAGA GARANTIDA! PARABÉNS!</h2>
+            <p>Sua frequência atual habilita você para o Torneio de Março!</p>
         </div>
-        <div id="banner-actions" style="display: flex; gap: 10px;">
-            <button class="banner-btn secondary" onclick="openTournamentModal()">Saber Mais</button>
-            <button class="banner-btn" id="btn-inscricao-confirmada">Inscreva-se</button>
+        <div style="display: flex; gap: 10px;">
+            <button style="background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: #fff; padding: 10px 20px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer;">Saber Mais</button>
+            <button style="background: var(--accent-cyan); border: none; color: #000; padding: 10px 20px; border-radius: 8px; font-size: 11px; font-weight: 900; cursor: pointer;">Inscreva-se</button>
         </div>
     </div>
 
-    <!-- SEÇÕES HORIZONTAIS (ATOS) -->
-    
-    <!-- ATO 1: MEU MOMENTO -->
-    <section class="act-section" id="section-momento">
+    <!-- ATO 1: MEU MOMENTO (3 CARDS LADO A LADO) -->
+    <section class="act-section" id="section-meu-momento">
         <div class="section-hdr">
-            <div class="act-label">Meu Momento</div>
+            <div class="act-label">MEU MOMENTO</div>
             <div class="act-desc">Como estou hoje? Minha presença e frequência.</div>
         </div>
 
-        <div class="act-grid grid-3">
-            <!-- CARD: Frequência -->
-            <div class="card glass-card">
-                <div class="card-title">📅 Frequência — Check-ins</div>
-                <div style="display: flex; align-items: center; gap: 15px; margin: 15px 0;">
-                    <div style="position: relative; width: 58px; height: 58px;">
-                        <svg viewBox="0 0 58 58" style="width: 58px; height: 58px;">
-                            <circle cx="29" cy="29" r="24" fill="none" stroke="#1a3a52" stroke-width="5"/>
-                            <circle cx="29" cy="29" r="24" fill="none" stroke="var(--accent-cyan)" stroke-width="5" id="frequency-progress" stroke-dasharray="150.8 0" stroke-linecap="round" transform="rotate(-90 29 29)"/>
-                        </svg>
-                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 12px; font-weight: 700; color: var(--accent-cyan);"><span id="frequency-pct">0</span>%</div>
-                    </div>
-                    <div>
-                        <span id="qualification-badge" class="badge">PROCESSO...</span>
-                        <div id="frequency-count-text" style="font-size: 11px; font-weight: 700; color: #fff; margin-top: 6px;">0 de 0 treinos</div>
-                        <p style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">Mínimo <strong>60%</strong> para torneios</p>
-                    </div>
+        <div class="user-status-hub">
+            <!-- Card 1: Frequência -->
+            <div class="stat-card glass-card">
+                <span class="stat-label">FREQUENCIA - CHECK-INS</span>
+                <div class="gauge-small" style="margin: 0 auto 10px;">
+                    <svg viewBox="0 0 100 100">
+                        <circle class="bg" cx="50" cy="50" r="45"></circle>
+                        <circle id="gauge-freq-circle" class="progress" cx="50" cy="50" r="45" style="stroke-dasharray: 283; stroke-dashoffset: 283;"></circle>
+                    </svg>
+                    <div class="gauge-val"><span id="gauge-freq-val">--</span>%</div>
                 </div>
-                
-                <div id="calendar-mini-container">
-                    <div id="calendar-month-year" style="font-size: 10px; color: var(--text-label); text-transform: uppercase; font-weight: 800; letter-spacing: 1px; margin-bottom: 12px; text-align: center;">Março 2026</div>
-                    
-                    <div style="display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%;">
-                        <button class="cal-nav-btn" id="btn-prev-month">‹</button>
-                        
-                        <div id="attendance-calendar-grid" class="attendance-calendar">
-                            <!-- Injetado via JS -->
-                        </div>
-
-                        <button class="cal-nav-btn" id="btn-next-month">›</button>
-                    </div>
-                </div>
+                <span id="gauge-freq-status" style="font-size: 8px; font-weight: 900; background: var(--accent-lime); color: #000; padding: 2px 8px; border-radius: 4px;">QUALIFICADO</span>
             </div>
 
-            <!-- CARD: Streaks -->
-            <div class="card glass-card">
-                <div class="card-title">🔥 Sequência de Treinos</div>
-                <div id="streak-container" style="margin-top: 15px;">
-                    <div style="display: flex; align-items: baseline; gap: 5px;">
-                        <span id="streak-count" style="font-size: 28px; font-weight: 800; color: #fff;">0</span>
-                        <span style="font-size: 12px; color: var(--text-muted);">dias seguidos</span>
-                    </div>
-                    <div style="font-size: 10px; color: var(--text-muted); margin-top: 5px;">Recorde: <strong id="streak-record" style="color: var(--accent-gold)">0 dias</strong></div>
-                    <div id="streak-dots-container" style="display: flex; gap: 4px; margin-top: 15px;">
-                        <!-- Dots injetados -->
-                    </div>
-                </div>
+            <!-- Card 2: Sequência -->
+            <div class="stat-card glass-card">
+                <i class="fas fa-fire stat-icon" style="color: #f59e0b;"></i>
+                <span class="stat-label">SEQUÊNCIA DE TREINOS</span>
+                <div style="font-size: 2.2rem; font-weight: 900; color: #fff; margin-bottom: 5px;">17</div>
+                <p style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">Dias seguidos</p>
             </div>
 
-            <!-- CARD: Missões (Gera Engajamento) -->
-            <div class="card glass-card">
-                <div class="card-title">🎯 Mural de Missões</div>
-                <div id="missions-list" style="margin-top: 15px;">
-                    <div style="color: var(--text-muted); font-size: 11px; text-align: center; padding: 20px;">
-                        Carregando suas missões personalizadas...
-                    </div>
-                </div>
-                <div style="border-top: 1px solid var(--border-ui); margin-top: 10px; padding-top: 10px;">
-                    <p style="font-size: 9px; color: var(--text-muted); line-height: 1.4;">
-                        Conclua missões para ganhar <strong>XP</strong> e evoluir seu nível técnico no radar.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <div class="act-divider"></div>
-
-    <!-- ATO 2: MINHA EVOLUÇÃO -->
-    <section class="act-section" id="section-evolucao">
-        <div class="section-hdr">
-            <div class="act-label">Minha Evolução</div>
-            <div class="act-desc">Minha progressão técnica vs. comunidade.</div>
-        </div>
-
-        <div class="act-grid grid-ev">
-            <!-- Coluna Skill List -->
-            <div class="card glass-card">
-                <div class="card-title">📊 Habilidades Atuais</div>
-                <div id="skills-list" style="margin: 15px 0;">
+            <!-- Card 3: Missões -->
+            <div class="stat-card glass-card" style="align-items: flex-start;">
+                <span class="stat-label">MURAL DE MISSÕES</span>
+                <div id="mural-missoes" class="mission-list-mini">
                     <!-- Injetado via JS -->
                 </div>
-                <p style="font-size: 9px; color: var(--text-muted); border-top: 1px solid var(--border-ui); padding-top: 10px; margin-top: 10px;">
-                    Delta vs. 3 meses atrás. <strong style="color: var(--accent-purple)">BackHand</strong> precisa de atenção.
-                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ATO 2: ANALISTA PESSOAL (RESTAURADO 12:10) -->
+    <section class="act-section" id="section-analista">
+        <div class="analyst-card glass-card">
+            <div class="analyst-header">
+                <div class="analyst-title">
+                    <i class="fas fa-brain"></i>
+                    <span>ANALISTA PESSOAL</span>
+                </div>
+                <div class="analyst-badge">CONF. ALTA</div>
             </div>
 
-            <!-- Coluna Gráfico Expandido -->
-            <div class="card glass-card" style="padding: 0; overflow: hidden;">
-                <div class="card-title" style="padding: 14px 14px 10px;">📈 Evolução por Habilidade — Eu vs Comunidade</div>
-                <div id="skill-filters" style="display: flex; gap: 8px; padding: 0 20px 15px; overflow-x: auto;">
-                    <!-- Botões injetados -->
+            <div class="analyst-content-box">
+                <h4 id="analyst-headline">Carregando análise técnica...</h4>
+                <p id="analyst-summary">Aguarde enquanto o Diretor Técnico processa seus últimos torneios e treinos.</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                <div>
+                    <span style="font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 10px;">Foco Técnico</span>
+                    <strong id="analyst-foco" style="font-size: 1.1rem; color: #fff;">Sincronizando...</strong>
                 </div>
-                <div style="width: 100%; height: 280px; background: rgba(6, 14, 26, 0.4); display: flex; align-items: center; justify-content: center;">
-                    <svg id="line-chart" viewBox="0 0 760 280" preserveAspectRatio="xMidYMid meet" style="width: 100%; height: 100%;"></svg>
+                <div>
+                    <span style="font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 10px;">Ação Recomendada</span>
+                    <p id="analyst-acao" style="font-size: 13px; color: var(--text-muted);">Aguardando veredito.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <div class="act-divider"></div>
-
-    <!-- ATO 3: MINHA POSIÇÃO -->
-    <section class="act-section" id="section-posicao">
+    <!-- ATO 3: RANKING & PERFORMANCE (PREMIUM REFACTOR) -->
+    <section class="act-section" id="section-posicao-evolucao">
         <div class="section-hdr">
-            <div class="act-label">Minha Posição</div>
-            <div class="act-desc">Rankings e desafios futuros.</div>
+            <div class="act-label">RANKING & PERFORMANCE</div>
+            <div class="act-desc">Sua caminhada técnica dentro da comunidade Spin4All.</div>
         </div>
 
-        <div class="act-grid grid-3">
-            <!-- Rankings Ranking PRO -->
-            <div class="card glass-card">
-                <div class="card-title">🏆 Ranking PRO</div>
-                <div id="ranking-list"></div>
-                <div style="border-top: 1px solid var(--border-ui); margin-top: 12px; padding-top: 12px; display: flex; align-items: center; gap: 10px;">
-                    <div style="width: 24px; height: 24px; border-radius: 50%; background: #1a3a52; display: flex; align-items: center; justify-content: center; font-size: 10px;">42</div>
-                    <div style="font-size: 11px; flex: 1; color: var(--text-muted);">Sua posição agora</div>
-                    <div style="font-size: 11px; font-weight: 800; color: var(--accent-cyan);">980 pts</div>
-                </div>
-            </div>
-
-            <!-- Vanguarda do Mês -->
-            <div class="card glass-card">
-                <div class="card-title">⛓️ Vanguarda do Mês</div>
-                <div id="evolution-list"></div>
-            </div>
-
-            <!-- Fogo de Treino & Próximo Jogo -->
-            <div style="display: flex; flex-direction: column; gap: 15px;">
-                <!-- Próximo Jogo -->
-                <div class="card glass-card" style="border-left: 4px solid var(--accent-purple); display: flex; align-items: center; gap: 12px; padding: 12px;">
-                    <div style="font-size: 20px;">🏓</div>
-                    <div style="flex: 1;">
-                        <div style="font-size: 8px; color: var(--accent-purple); font-weight: 700; text-transform: uppercase;">PRÓXIMO JOGO</div>
-                        <strong style="font-size: 11px; color: #fff; display: block;">vs. Linkin Park</strong>
-                        <span style="font-size: 10px; color: var(--text-muted)">Hoje, 19:30</span>
+        <div class="act-grid" style="display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 20px;">
+            
+            <!-- CARD DESTAQUE: SUA POSIÇÃO -->
+            <div class="card glass-card ripple-card" style="position: relative; overflow: hidden; border-left: 4px solid var(--accent-blue); padding: 25px;">
+                <div class="card-title">🏆 Sua Posição Geral</div>
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 20px;">
+                    <div style="display: flex; align-items: center; gap: 25px;">
+                        <div class="pos-badge-container">
+                            <div class="pos-number">42º</div>
+                            <svg class="glow-ring" viewBox="0 0 80 80">
+                                <circle cx="40" cy="40" r="36"></circle>
+                            </svg>
+                        </div>
+                        <div>
+                            <div id="user-display-name" style="font-size: 1.4rem; font-weight: 900; color: #fff; letter-spacing: -0.5px;">Sérgio Silva</div>
+                            <div style="font-size: 10px; color: var(--accent-blue); font-weight: 800; letter-spacing: 1px; text-transform: uppercase;">Top 15% do Ranking</div>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 20px; font-weight: 950; color: #fff; line-height: 1;">980</div>
+                        <div style="font-size: 9px; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Points</div>
                     </div>
                 </div>
+            </div>
 
-                <div class="card glass-card">
-                    <div class="card-title">🔥 Fogo de Treino</div>
-                    <div id="attendance-ranking-list"></div>
+            <!-- CARD EVOLUÇÃO: VANGUARDA -->
+            <div class="card glass-card" style="padding: 20px;">
+                <div class="card-title"><i class="fas fa-chart-line" style="margin-right: 8px; color: var(--accent-cyan);"></i> Vanguarda</div>
+                <div id="evolution-list" class="evolution-compact-list">
+                    <!-- Injetado via JS -->
                 </div>
             </div>
+
+            <!-- CARD FREQUÊNCIA: FOGO -->
+            <div class="card glass-card" style="padding: 20px;">
+                <div class="card-title"><i class="fas fa-fire" style="margin-right: 8px; color: #f59e0b;"></i> Frequência</div>
+                <div id="attendance-ranking-list" class="attendance-compact-list">
+                    <!-- Injetado via JS -->
+                </div>
+            </div>
+
         </div>
     </section>
 
-    <div class="act-divider"></div>
-
-    <!-- ATO 4: CONTRIBUIÇÃO -->
-    <section class="act-section" id="section-contribuicao" style="margin-top: 50px;">
+    <!-- ATO 4: CONTRIBUIÇÃO (GITHUB STABLE) -->
+    <section class="act-section" id="section-contribuicao">
         <div class="section-hdr">
             <div class="act-label">Contribua com a Comunidade</div>
-            <div class="act-desc">Sua doação vira prêmios reais para os campeões dos torneios Spin4All.</div>
+            <div class="act-desc">Sua doação vira prêmios reais para os campeões dos torneios.</div>
         </div>
 
         <div class="act-grid grid-3">
-            <!-- Card 1: Prêmios para os Campeões -->
-            <div class="card glass-card" style="padding: 25px;">
-                <div class="card-title" style="margin-bottom: 15px; background: transparent; border: none;">🏅 Prêmios para os Campeões</div>
-                <p style="font-size: 11px; color: var(--text-muted); line-height: 1.6; margin: 15px 0;">
-                    Doe equipamentos, contribua com valores ou ofereça <strong>horas de mentoria</strong>. Tudo convertido em prêmios para os vencedores.
-                </p>
-                <div style="text-align: center; margin-top: 30px;">
-                    <div style="font-size: 10px; color: var(--text-label); text-transform: uppercase; letter-spacing: 1px;">Total Arrecadado</div>
-                    <div style="font-size: 24px; font-weight: 900; color: #fff; margin: 8px 0;">R$ 1.240</div>
-                    <div style="font-size: 10px; color: var(--text-muted);">de R$ 3.000 meta geral</div>
-                    
-                    <div class="custom-progress-bar" style="margin-top: 15px; height: 6px; background: rgba(255,165,0,0.1);">
-                        <div class="progress-fill" style="width: 41%; background: linear-gradient(90deg, #f59e0b, #fbbf24);"></div>
+            <div class="card glass-card">
+                <div class="card-title">🏅 Meta dos Campeões</div>
+                <div style="text-align: center; padding: 10px 0;">
+                    <div style="font-size: 24px; font-weight: 900; color: #fff;">R$ 1.240</div>
+                    <div class="custom-progress-bar">
+                        <div class="progress-fill" style="width: 41%; background: #f59e0b;"></div>
                     </div>
-                    
-                    <div style="margin-top: 25px; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                        <span style="font-size: 18px;">🧡</span>
-                        <span style="font-size: 10px; color: #4a6a88; font-weight: 600;">Integração Vakinha — em breve</span>
-                    </div>
+                    <span style="font-size: 9px; color: var(--text-muted);">Arrecadado de R$ 3.000</span>
                 </div>
             </div>
 
-            <!-- Card 2: EQUIPAMENTOS -->
-            <div class="card glass-card" style="display: flex; flex-direction: column;">
+            <div class="card glass-card">
                 <div class="card-title">🏓 Equipamentos</div>
-                
-                <div style="flex: 1; margin-top: 20px;">
-                    <!-- Raquete -->
-                    <div class="progress-group">
-                        <div class="progress-label-row">
-                            <span class="progress-name">🏓 Raquete Butterfly</span>
-                            <span class="progress-pct">87%</span>
-                        </div>
-                        <div class="custom-progress-bar">
-                            <div class="progress-fill" style="width: 87%; background: var(--accent-cyan);"></div>
-                        </div>
-                        <div class="progress-label-row" style="margin-top: 6px;">
-                            <span class="meta-text-muted">R$ 690 arrecadados</span>
-                            <span class="meta-text-muted">R$ 104 restantes</span>
-                        </div>
-                    </div>
-
-                    <!-- Borrachas -->
-                    <div class="progress-group">
-                        <div class="progress-label-row">
-                            <span class="progress-name">🔴 Borrachas DHS</span>
-                            <span class="progress-pct">51%</span>
-                        </div>
-                        <div class="custom-progress-bar">
-                            <div class="progress-fill" style="width: 51%; background: #fb923c;"></div>
-                        </div>
-                        <div class="progress-label-row" style="margin-top: 6px;">
-                            <span class="meta-text-muted">R$ 153 arrecadados</span>
-                            <span class="meta-text-muted">R$ 147 restantes</span>
-                        </div>
-                    </div>
+                <div class="progress-group">
+                   <div class="progress-label-row"><span>Raquete Butterfly</span><span>87%</span></div>
+                   <div class="custom-progress-bar"><div class="progress-fill" style="width: 87%; background: var(--accent-cyan);"></div></div>
                 </div>
-
-                <a href="#" class="progress-footer-link">Contribuir com Equipamento →</a>
+                <div class="progress-group">
+                   <div class="progress-label-row"><span>Borrachas DHS</span><span>51%</span></div>
+                   <div class="custom-progress-bar"><div class="progress-fill" style="width: 51%; background: #fb923c;"></div></div>
+                </div>
             </div>
 
-            <!-- Card 3: HORAS DE MENTORIA -->
-            <div class="card glass-card" style="display: flex; flex-direction: column;">
+            <div class="card glass-card">
                 <div class="card-title">🎓 Horas de Mentoria</div>
-                
-                <div style="flex: 1; margin-top: 20px;">
-                    <!-- Treino Forehand -->
-                    <div class="progress-group">
-                        <div class="progress-label-row">
-                            <span class="progress-name">🎯 Treino de Forehand</span>
-                            <span class="progress-pct">60%</span>
-                        </div>
-                        <div class="custom-progress-bar">
-                            <div class="progress-fill" style="width: 60%; background: #f59e0b;"></div>
-                        </div>
-                        <div class="progress-label-row" style="margin-top: 6px;">
-                            <span class="meta-text-muted">3h ofertadas</span>
-                            <span class="meta-text-muted">2h restantes</span>
-                        </div>
-                    </div>
-
-                    <!-- Treino Tático -->
-                    <div class="progress-group">
-                        <div class="progress-label-row">
-                            <span class="progress-name">🧠 Treino Tático</span>
-                            <span class="progress-pct">25%</span>
-                        </div>
-                        <div class="custom-progress-bar">
-                            <div class="progress-fill" style="width: 25%; background: var(--accent-purple);"></div>
-                        </div>
-                        <div class="progress-label-row" style="margin-top: 6px;">
-                            <span class="meta-text-muted">1h ofertada</span>
-                            <span class="meta-text-muted">3h restantes</span>
-                        </div>
-                    </div>
+                <div class="progress-group">
+                   <div class="progress-label-row"><span>Treino de Forehand</span><span>60%</span></div>
+                   <div class="custom-progress-bar"><div class="progress-fill" style="width: 60%; background: #f59e0b;"></div></div>
                 </div>
-
-                <a href="#" class="progress-footer-link">Ofertar Horas de Mentoria →</a>
+                <a href="#" class="progress-footer-link">Ofertar Horas →</a>
             </div>
         </div>
     </section>
+
+    <!-- ATO 5: COMUNIDADE (FEED) -->
+    <div class="social-section" style="margin-top: 50px;">
+        <h3 style="font-size: 0.9rem; font-weight: 800; color: #fff; margin-bottom: 20px;">COMUNIDADE EM MOVIMENTO 🔥</h3>
+        <div class="act-grid grid-2">
+            <div class="glass-card" style="padding: 15px; display: flex; align-items: center; gap: 12px;">
+                <div style="background: rgba(56, 189, 248, 0.1); width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--accent-blue);"><i class="fas fa-trophy"></i></div>
+                <div>
+                    <span style="font-size: 9px; color: var(--accent-blue); font-weight: 800;">TORNEIO</span>
+                    <h4 style="font-size: 13px; color: #fff;">Internal Cup Abril</h4>
+                </div>
+            </div>
+            <div class="glass-card" style="padding: 15px; display: flex; align-items: center; gap: 12px;">
+                <div style="background: rgba(190, 242, 100, 0.1); width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--accent-lime);"><i class="fas fa-shopping-bag"></i></div>
+                <div>
+                    <span style="font-size: 9px; color: var(--accent-lime); font-weight: 800;">SHOP</span>
+                    <h4 style="font-size: 13px; color: #fff;">Roupas Oficiais Spin</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

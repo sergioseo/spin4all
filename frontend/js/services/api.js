@@ -9,6 +9,10 @@ export async function apiFetch(path, options = {}) {
         ...options.headers
     };
 
+    // Configurar Timeout de 15 segundos
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+    
     try {
         // Garantir que a URL não tenha barras duplas ou falte a barra entre base e path
         const baseUrl = CONFIG.API_URL.endsWith('/') ? CONFIG.API_URL.slice(0, -1) : CONFIG.API_URL;
@@ -18,8 +22,11 @@ export async function apiFetch(path, options = {}) {
 
         const response = await fetch(fullUrl, {
             ...options,
-            headers
+            headers,
+            signal: controller.signal // Conectar o sinal de aborto
         });
+
+        clearTimeout(timeoutId); // Limpar timeout se responder a tempo
 
         const data = await response.json();
 
@@ -35,6 +42,11 @@ export async function apiFetch(path, options = {}) {
 
         return data;
     } catch (error) {
+        clearTimeout(timeoutId);
+        if (error.name === 'AbortError') {
+            console.error(`[API TIMEOUT] ${path}: A requisição excedeu 15 segundos.`);
+            throw new Error('Servidor demorou muito para responder. Tente novamente.');
+        }
         console.error(`[API ERROR] ${path}:`, error);
         throw error;
     }
