@@ -9,25 +9,36 @@ class MonitoringModule {
             fail: document.getElementById('stat-fail'),
             working: document.getElementById('stat-working')
         };
-        this.btnRunEtl = document.getElementById('btn-run-etl');
         this.lastUpdate = document.getElementById('last-update');
+        this.lastActionTime = 0; // Track when a manual run was triggered
+
         this.init();
     }
 
-    async init() {
+    init() {
         console.log('[MONITORING] Initializing dashboard...');
-        await this.refresh();
-        setInterval(() => this.refresh(), 5000); // Polling every 5s
+        this.loadData();
+        setInterval(() => this.loadData(), 5000); // Polling every 5s
+        this.setupEventListeners();
+    }
 
-        if (this.btnRunEtl) {
-            this.btnRunEtl.addEventListener('click', () => this.triggerJob('ETL_MATCHES', this.btnRunEtl, '/api/admin/monitoring/trigger-etl'));
-        }
-        
+    setupEventListeners() {
+        const btnRunEtl = document.getElementById('btn-run-etl');
         const btnRunAnalysis = document.getElementById('btn-run-analysis');
         const btnClearLogs = document.getElementById('btn-clear-logs'); // Renamed from btnClear to btnClearLogs for clarity
 
+        if (btnRunEtl) {
+            btnRunEtl.addEventListener('click', () => {
+                this.lastActionTime = Date.now() - 5000; // Small buffer for server time
+                this.triggerJob('ETL_MATCHES', btnRunEtl, '/api/admin/monitoring/trigger-etl');
+            });
+        }
+        
         if (btnRunAnalysis) {
-            btnRunAnalysis.addEventListener('click', () => this.triggerJob('AI_ANALYSIS', btnRunAnalysis, '/api/admin/monitoring/trigger-analysis'));
+            btnRunAnalysis.addEventListener('click', () => {
+                this.lastActionTime = Date.now() - 5000;
+                this.triggerJob('AI_ANALYSIS', btnRunAnalysis, '/api/admin/monitoring/trigger-analysis');
+            });
         }
         if (btnClearLogs) { // Use btnClearLogs
             btnClearLogs.addEventListener('click', () => this.clearLogs(btnClearLogs));
@@ -148,14 +159,17 @@ class MonitoringModule {
                 return;
             }
 
-            // Yellow timestamps
-            const timeColor = '#ffcc00';
-
             this.processList.innerHTML = processes.map(p => {
                 try {
                     const hasError = p.status === 'FAIL';
                     const metadataStr = p.metadata ? (typeof p.metadata === 'object' ? JSON.stringify(p.metadata) : p.metadata) : '';
                     
+                    // Logic for "New Batch" highlighting
+                    const processTime = new Date(p.dt_updated || p.dt_started).getTime();
+                    const isNewBatch = this.lastActionTime > 0 && processTime >= this.lastActionTime;
+                    const timeColor = isNewBatch ? '#ffcc00' : 'rgba(255, 255, 255, 0.4)';
+                    const timeGlow = isNewBatch ? '0 0 12px rgba(255, 204, 0, 0.4)' : 'none';
+
                     // Human-friendly descriptions
                     const descriptions = {
                         'ETL_MATCHES': 'Sincronização de partidas e atualização automática dos rakings e estatísticas.',
@@ -166,15 +180,12 @@ class MonitoringModule {
                     // Safe Date formatting
                     let timeStr = '--:--';
                     try {
-                        if (p.dt_updated) {
-                            timeStr = new Date(p.dt_updated).toLocaleTimeString();
-                        } else if (p.dt_started) {
-                            timeStr = new Date(p.dt_started).toLocaleTimeString();
-                        }
+                        const d = new Date(p.dt_updated || p.dt_started);
+                        timeStr = d.toLocaleTimeString();
                     } catch (dErr) { console.warn('Invalid date:', p.dt_updated); }
 
                     return `
-                        <div class="process-item" style="${hasError ? 'border-left: 4px solid var(--accent-red);' : ''}">
+                        <div class="process-item" style="${hasError ? 'border-left: 4px solid var(--accent-red);' : ''}; ${!isNewBatch ? 'opacity: 0.7;' : ''}">
                             <div>
                                 <div class="process-name">${p.process_name || 'Sem nome'}</div>
                                 <div style="font-size: 0.75rem; opacity: 0.6; margin-bottom: 4px;">${friendlyDesc}</div>
@@ -187,9 +198,9 @@ class MonitoringModule {
                                 </div>
                             </div>
                             <div style="display: flex; justify-content: center;">
-                                <span class="status-badge status-${p.status || 'UNKNOWN'}">${p.status === 'WORKING' ? 'EM EXECUÇÃO' : (p.status || 'OK')}</span>
+                                <span class="status-badge status-${p.status || 'UNKNOWN'}" style="${!isNewBatch ? 'filter: grayscale(0.5);' : ''}">${p.status === 'WORKING' ? 'EM EXECUÇÃO' : (p.status || 'OK')}</span>
                             </div>
-                            <div style="font-size: 0.75rem; color: ${timeColor}; font-weight: 700; text-align: right; text-shadow: 0 0 10px rgba(255, 204, 0, 0.2);">
+                            <div style="font-size: 0.75rem; color: ${timeColor}; font-weight: 700; text-align: right; text-shadow: ${timeGlow}; transition: all 0.5s;">
                                 ${timeStr}
                             </div>
                         </div>
