@@ -12,17 +12,35 @@ class MonitoringController {
     static async triggerETL(req, res) {
         console.log(`[DEBUG] triggerETL chamado por: ${req.user.email}`);
         try {
-            console.log('[DEBUG] Chamando QueueManager.addJob...');
             await QueueManager.addJob('main_orchestrator', 'ETL_MATCHES', { 
                 triggered_by: req.user.email 
             });
-            console.log('[DEBUG] addJob concluído com sucesso.');
             res.json({ success: true, message: 'Processo ETL enfileirado com sucesso.' });
         } catch (err) {
             console.error('[MONITORING] Trigger failure:', err);
             res.status(500).json({ 
                 success: false, 
-                error: `[V9.1] Falha ao disparar orquestração: ${err.message || 'Erro desconhecido'}` 
+                error: `[V9.1] Falha ao disparar orquestração: ${err.message}` 
+            });
+        }
+    }
+
+    /**
+     * Trigger a new AI Analysis process via BullMQ
+     */
+    static async triggerAnalysis(req, res) {
+        console.log(`[DEBUG] triggerAnalysis chamado por: ${req.user.email}`);
+        try {
+            await QueueManager.addJob('main_orchestrator', 'AI_ANALYSIS', { 
+                triggered_by: req.user.email,
+                scope: 'global_community'
+            });
+            res.json({ success: true, message: 'Análise AI enfileirada com sucesso.' });
+        } catch (err) {
+            console.error('[MONITORING] Analysis trigger failure:', err);
+            res.status(500).json({ 
+                success: false, 
+                error: `Falha ao disparar análise: ${err.message}` 
             });
         }
     }

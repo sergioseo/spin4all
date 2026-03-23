@@ -1,4 +1,4 @@
-console.log('--- SPIN4ALL SERVER VERSION 9.0 (ULTRA-RESILIENT) ---');
+console.log('--- SPIN4ALL SERVER VERSION 9.5 (ORCHESTRATION ELITE) ---');
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -44,7 +44,7 @@ const { startWorkers } = require('./src/infrastructure/queue/QueueWorker');
 const app = express();
 
 // --- HEALTH CHECK IMEDIATO (Para o Easypanel não matar o processo) ---
-app.get('/api/health', (req, res) => res.status(200).json({ status: 'UP', version: '9.4' }));
+app.get('/api/health', (req, res) => res.status(200).json({ status: 'UP', version: '9.5' }));
 app.get('/', (req, res) => res.redirect('/index.html')); 
 
 // Middlewares Globais

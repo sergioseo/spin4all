@@ -20,17 +20,23 @@ class MonitoringModule {
         setInterval(() => this.refresh(), 5000); // Polling every 5s
 
         if (this.btnRunEtl) {
-            this.btnRunEtl.addEventListener('click', () => this.triggerJob('ETL_MATCHES'));
+            this.btnRunEtl.addEventListener('click', () => this.triggerJob('ETL_MATCHES', this.btnRunEtl, '/api/admin/monitoring/trigger-etl'));
+        }
+        
+        const btnRunAnalysis = document.getElementById('btn-run-analysis');
+        if (btnRunAnalysis) {
+            btnRunAnalysis.addEventListener('click', () => this.triggerJob('AI_ANALYSIS', btnRunAnalysis, '/api/admin/monitoring/trigger-analysis'));
         }
     }
 
-    async triggerJob(jobName) {
+    async triggerJob(jobName, btn, endpoint) {
         try {
             const token = localStorage.getItem('spin4all_token');
-            this.btnRunEtl.disabled = true;
-            this.btnRunEtl.textContent = '⌛ Enfileirando...';
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.textContent = '⌛ Enfileirando...';
 
-            const res = await fetch('/api/admin/monitoring/trigger-etl', {
+            const res = await fetch(endpoint, {
                 method: 'POST',
                 headers: { 
                     'Authorization': `Bearer ${token}`,
@@ -40,16 +46,21 @@ class MonitoringModule {
 
             const data = await res.json();
             if (data.success) {
-                // Refresh immediately to show the "WORKING" status
                 this.refresh();
             } else {
                 alert('Erro ao disparar: ' + data.error);
             }
+            
+            // Restore button text after success/fail
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }, 2000);
+
         } catch (err) {
-            console.error('[MONITORING] Trigger failed:', err);
-        } finally {
-            this.btnRunEtl.disabled = false;
-            this.btnRunEtl.textContent = '🚀 Rodar ETL de Partidas';
+            console.error(`[MONITORING] Trigger ${jobName} failed:`, err);
+            btn.disabled = false;
+            btn.textContent = '❌ Falhou';
         }
     }
 
@@ -93,25 +104,31 @@ class MonitoringModule {
             return;
         }
 
-        this.processList.innerHTML = processes.map(p => `
-            <div class="process-item">
-                <div>
-                    <div class="process-name">${p.process_name}</div>
-                    <div class="process-step">${p.step_name}</div>
-                </div>
-                <div>
-                    <div class="progress-bar-container">
-                        <div class="progress-fill ${p.status === 'WORKING' ? 'pulse' : ''}" style="width: ${p.progress}%"></div>
+        this.processList.innerHTML = processes.map(p => {
+            const hasError = p.status === 'FAIL';
+            const metadataStr = p.metadata ? (typeof p.metadata === 'object' ? JSON.stringify(p.metadata) : p.metadata) : '';
+            
+            return `
+                <div class="process-item" style="${hasError ? 'border-left: 4px solid var(--accent-red);' : ''}">
+                    <div>
+                        <div class="process-name">${p.process_name}</div>
+                        <div class="process-step">${p.step_name}</div>
+                        ${hasError ? `<div style="color: var(--accent-red); font-size: 0.7rem; margin-top: 5px;">❌ ${metadataStr || 'Erro inesperado'}</div>` : ''}
+                    </div>
+                    <div>
+                        <div class="progress-bar-container">
+                            <div class="progress-fill ${p.status === 'WORKING' ? 'pulse' : ''}" style="width: ${p.progress}%"></div>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: center;">
+                        <span class="status-badge status-${p.status}">${p.status === 'WORKING' ? 'EM EXECUÇÃO' : p.status}</span>
+                    </div>
+                    <div style="font-size: 0.75rem; opacity: 0.5; text-align: right;">
+                        ${new Date(p.dt_updated).toLocaleTimeString()}
                     </div>
                 </div>
-                <div style="display: flex; justify-content: center;">
-                    <span class="status-badge status-${p.status}">${p.status === 'WORKING' ? 'EM EXECUÇÃO' : p.status}</span>
-                </div>
-                <div style="font-size: 0.75rem; opacity: 0.5; text-align: right;">
-                    ${new Date(p.dt_updated).toLocaleTimeString()}
-                </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
     }
 }
 
