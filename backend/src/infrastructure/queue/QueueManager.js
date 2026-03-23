@@ -33,14 +33,40 @@ class QueueManager {
     }
 
     /**
+     * Espera a conexão do Redis estabilizar antes de prosseguir
+     */
+    async waitForConnection(timeout = 5000) {
+        if (connection.status === 'ready') return true;
+
+        console.log(`[DEBUG] Redis em estado '${connection.status}'. Aguardando até ${timeout}ms...`);
+        
+        return new Promise((resolve) => {
+            const timer = setTimeout(() => {
+                connection.removeListener('ready', onReady);
+                resolve(false);
+            }, timeout);
+
+            const onReady = () => {
+                clearTimeout(timer);
+                resolve(true);
+            };
+
+            connection.once('ready', onReady);
+        });
+    }
+
+    /**
      * Adiciona um job a uma fila específica
      */
     async addJob(queueName, jobName, data) {
         console.log(`[DEBUG] Tentando enfileirar job '${jobName}' na fila '${queueName}'...`);
-        // Se o redis não estiver pronto, não adianta tentar enfileirar (evita o hang)
-        if (connection.status !== 'ready') {
-            console.error(`❌ [QUEUE] Falha ao enfileirar: Redis status é '${connection.status}'`);
-            throw new Error(`Redis não está pronto (Status: ${connection.status}). Verifique a conexão.`);
+        
+        // Aguarda estabilização (evita erro durante reinícios do servidor)
+        const isReady = await this.waitForConnection();
+
+        if (!isReady) {
+            console.error(`❌ [QUEUE] Falha ao enfileirar: Redis status continua '${connection.status}'`);
+            throw new Error(`Redis não está pronto após espera (Status: ${connection.status}).`);
         }
 
         console.log('[DEBUG] Redis pronto. Criando fila...');
