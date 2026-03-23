@@ -60,7 +60,7 @@ class MonitoringModule {
             });
             
             if (res.ok) {
-                this.refresh(); // Changed from loadData() to refresh() to match existing methods
+                this.loadData();
             } else {
                 const data = await res.json();
                 alert('Erro ao limpar logs: ' + (data.error || res.statusText));
@@ -69,10 +69,9 @@ class MonitoringModule {
             console.error('Error clearing logs:', error);
             alert('Erro ao limpar logs: ' + error.message);
         } finally {
-            // Restore button text after success/fail
             setTimeout(() => {
                 btn.disabled = false;
-                btn.textContent = 'Limpar Logs'; // Assuming original text was 'Limpar Logs'
+                btn.innerHTML = '<i class="fas fa-trash-alt"></i> Limpar Registros';
             }, 2000);
         }
     }
@@ -94,12 +93,11 @@ class MonitoringModule {
 
             const data = await res.json();
             if (data.success) {
-                this.refresh();
+                this.loadData();
             } else {
                 alert('Erro ao disparar: ' + data.error);
             }
             
-            // Restore button text after success/fail
             setTimeout(() => {
                 btn.disabled = false;
                 btn.innerHTML = originalText;
@@ -112,7 +110,7 @@ class MonitoringModule {
         }
     }
 
-    async refresh() {
+    async loadData() {
         try {
             const token = localStorage.getItem('spin4all_token');
             const url = `/api/admin/monitoring/status`;
@@ -121,7 +119,6 @@ class MonitoringModule {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
-            // Security: If not admin (403), boot out
             if (res.status === 403 || res.status === 401) {
                 window.location.href = '../dashboard.html';
                 return;
@@ -132,10 +129,12 @@ class MonitoringModule {
             if (data.success) {
                 this.updateStats(data.today_stats);
                 this.renderProcesses(data.processes);
-                this.lastUpdate.textContent = `Última atualização: ${new Date().toLocaleTimeString()}`;
+                if (this.lastUpdate) {
+                    this.lastUpdate.textContent = `Última atualização: ${new Date().toLocaleTimeString()}`;
+                }
             }
         } catch (err) {
-            console.error('[MONITORING] Refresh failed:', err);
+            console.error('[MONITORING] LoadData failed:', err);
         }
     }
 
