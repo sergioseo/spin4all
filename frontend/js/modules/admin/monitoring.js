@@ -6,9 +6,10 @@ class MonitoringModule {
         this.stats = {
             total: document.getElementById('stat-total'),
             success: document.getElementById('stat-success'),
-            fail: document.getElementById('stat-fail'),
-            working: document.getElementById('stat-working')
         };
+        this.statFail = document.getElementById('stat-fail');
+        this.statWorking = document.getElementById('stat-working');
+        this.btnRunEtl = document.getElementById('btn-run-etl');
         this.lastUpdate = document.getElementById('last-update');
         this.init();
     }
@@ -17,6 +18,39 @@ class MonitoringModule {
         console.log('[MONITORING] Initializing dashboard...');
         await this.refresh();
         setInterval(() => this.refresh(), 5000); // Polling every 5s
+
+        if (this.btnRunEtl) {
+            this.btnRunEtl.addEventListener('click', () => this.triggerJob('ETL_MATCHES'));
+        }
+    }
+
+    async triggerJob(jobName) {
+        try {
+            const token = localStorage.getItem('spin4all_token');
+            this.btnRunEtl.disabled = true;
+            this.btnRunEtl.textContent = '⌛ Enfileirando...';
+
+            const res = await fetch('/api/admin/monitoring/trigger-etl', {
+                method: 'POST',
+                headers: { 
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data = await res.json();
+            if (data.success) {
+                // Refresh immediately to show the "WORKING" status
+                this.refresh();
+            } else {
+                alert('Erro ao disparar: ' + data.error);
+            }
+        } catch (err) {
+            console.error('[MONITORING] Trigger failed:', err);
+        } finally {
+            this.btnRunEtl.disabled = false;
+            this.btnRunEtl.textContent = '🚀 Rodar ETL de Partidas';
+        }
     }
 
     async refresh() {

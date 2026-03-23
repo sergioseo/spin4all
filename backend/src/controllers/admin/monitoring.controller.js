@@ -1,10 +1,29 @@
 const pool = require('../../config/db');
+const QueueManager = require('../../infrastructure/queue/QueueManager');
 
 /**
  * MonitoringController
  * Exposes system telemetry and process orchestration status.
  */
 class MonitoringController {
+    /**
+     * Trigger a new ETL process via BullMQ
+     */
+    static async triggerETL(req, res) {
+        console.log(`[DEBUG] triggerETL chamado por: ${req.user.email}`);
+        try {
+            console.log('[DEBUG] Chamando QueueManager.addJob...');
+            await QueueManager.addJob('main_orchestrator', 'ETL_MATCHES', { 
+                triggered_by: req.user.email 
+            });
+            console.log('[DEBUG] addJob concluído com sucesso.');
+            res.json({ success: true, message: 'Processo ETL enfileirado com sucesso.' });
+        } catch (err) {
+            console.error('[MONITORING] Trigger failure:', err);
+            res.status(500).json({ success: false, error: err.message || 'Falha ao disparar orquestração.' });
+        }
+    }
+
     /**
      * Get the status of all recent background processes
      */

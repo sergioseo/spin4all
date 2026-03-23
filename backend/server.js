@@ -14,6 +14,7 @@ const attendanceRoutes = require('./src/routes/attendance.routes');
 const analysisRoutes = require('./src/routes/analysis.routes');
 const communityRoutes = require('./src/routes/community.routes');
 const adminRoutes = require('./src/routes/admin.routes');
+const { startWorkers } = require('./src/infrastructure/queue/QueueWorker');
 
 const app = express();
 
@@ -64,7 +65,12 @@ const startServer = async () => {
     // 2. Rodar Migrações
     await runMigrations();
 
-    // 3. Subir Servidor
+    // 3. Iniciar Orquestrador de Filas (BullMQ)
+    console.log('[DEBUG] Chamando startWorkers()...');
+    startWorkers();
+    console.log('[DEBUG] startWorkers() chamado com sucesso.');
+
+    // 4. Subir Servidor
     app.listen(PORT, () => {
         console.log(`[SERVER] Rodando na porta ${PORT}`);
         console.log(`[SERVER] Ambiente: ${process.env.NODE_ENV || 'development'}`);

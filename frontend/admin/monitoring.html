@@ -144,6 +144,36 @@
             50% { opacity: 0.4; }
             100% { opacity: 1; }
         }
+
+        .actions-bar {
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn-trigger {
+            background: linear-gradient(135deg, var(--accent-blue), #0080ff);
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-trigger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 210, 255, 0.2);
+        }
+
+        .btn-trigger:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -155,6 +185,15 @@
             </div>
             <div id="last-update" style="font-size: 0.8rem; opacity: 0.5">Última atualização: --:--:--</div>
         </header>
+
+        <div class="actions-bar">
+            <button id="btn-run-etl" class="btn-trigger">
+                <span>🚀 Rodar ETL de Partidas</span>
+            </button>
+            <button id="btn-run-analysis" class="btn-trigger" style="background: var(--glass); border: 1px solid var(--glass-border)">
+                <span>🤖 Análise AI (Em breve)</span>
+            </button>
+        </div>
 
         <div class="stats-grid">
             <div class="stat-card">
