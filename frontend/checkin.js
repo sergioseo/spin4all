@@ -1,6 +1,4 @@
-const API_URL = (window.location.hostname.includes('spin4all.com.br'))
-    ? 'https://spin4all-motor.h5rvsp.easypanel.host/api'
-    : window.location.origin + '/api';
+const API_URL = '/api';
 
 // --- RELOGIO DE PAREDE ---
 function updateMainClock() {

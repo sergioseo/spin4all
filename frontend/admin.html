@@ -405,9 +405,7 @@
     </main>
 
     <script>
-        const API_URL = (window.location.hostname.includes('spin4all.com.br'))
-            ? 'https://spin4all-motor.h5rvsp.easypanel.host/api'
-            : window.location.origin + '/api';
+        const API_URL = '/api';
 
         // Função para normalizar níveis e evitar erros de encoding (Avançado vs AvanÃ§ado)
         function normalizeLevel(level) {
