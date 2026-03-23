@@ -50,6 +50,12 @@ class MonitoringModule {
         
         try {
             const token = localStorage.getItem('spin4all_token');
+            if (!token) {
+                alert('Sessão expirada. Faça login novamente.');
+                window.location.href = '/login.html';
+                return;
+            }
+
             const originalText = btn.innerHTML;
             btn.disabled = true;
             btn.textContent = '⌛ Limpando...';
@@ -59,15 +65,23 @@ class MonitoringModule {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             
-            if (res.ok) {
+            const text = await res.text();
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch (jsonErr) {
+                console.error(`[MONITORING] Clear logs non-JSON response:`, text.substring(0, 100));
+                throw new Error(`Servidor retornou HTML (Possível 404). Verifique as configurações.`);
+            }
+
+            if (data.success) {
                 this.loadData();
             } else {
-                const data = await res.json();
-                alert('Erro ao limpar logs: ' + (data.error || res.statusText));
+                alert('Erro ao limpar logs: ' + (data.error || 'Erro desconhecido'));
             }
         } catch (error) {
             console.error('Error clearing logs:', error);
-            alert('Erro ao limpar logs: ' + error.message);
+            alert('Falha na limpeza: ' + error.message);
         } finally {
             setTimeout(() => {
                 btn.disabled = false;
@@ -79,6 +93,12 @@ class MonitoringModule {
     async triggerJob(jobName, btn, endpoint) {
         try {
             const token = localStorage.getItem('spin4all_token');
+            if (!token) {
+                alert('Sessão expirada. Faça login novamente.');
+                window.location.href = '/login.html';
+                return;
+            }
+
             const originalText = btn.innerHTML;
             btn.disabled = true;
             btn.textContent = '⌛ Enfileirando...';
@@ -91,11 +111,19 @@ class MonitoringModule {
                 }
             });
 
-            const data = await res.json();
+            const text = await res.text();
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch (jsonErr) {
+                console.error(`[MONITORING] Resposta não-JSON:`, text.substring(0, 100));
+                throw new Error(`Servidor retornou HTML (Possível 404). Verifique as configurações.`);
+            }
+
             if (data.success) {
                 this.loadData();
             } else {
-                alert('Erro ao disparar: ' + data.error);
+                alert('Erro ao disparar: ' + (data.error || 'Erro desconhecido'));
             }
             
             setTimeout(() => {
@@ -107,6 +135,7 @@ class MonitoringModule {
             console.error(`[MONITORING] Trigger ${jobName} failed:`, err);
             btn.disabled = false;
             btn.textContent = '❌ Falhou';
+            alert(`Falha no gatilho ${jobName}: ` + err.message);
         }
     }
 
