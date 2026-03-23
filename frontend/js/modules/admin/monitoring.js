@@ -91,44 +91,70 @@ class MonitoringModule {
         }
     }
 
-    updateStats(stats) {
-        this.stats.total.textContent = stats.total || 0;
-        this.stats.success.textContent = stats.success || 0;
-        this.stats.fail.textContent = stats.fail || 0;
-        this.stats.working.textContent = stats.working || 0;
+    updateStats(stats = {}) {
+        try {
+            if (this.stats.total) this.stats.total.textContent = stats.total || 0;
+            if (this.stats.success) this.stats.success.textContent = stats.success || 0;
+            if (this.stats.fail) this.stats.fail.textContent = stats.fail || 0;
+            if (this.stats.working) this.stats.working.textContent = stats.working || 0;
+        } catch (err) {
+            console.error('[MONITORING] Error updating stats card:', err);
+        }
     }
 
-    renderProcesses(processes) {
-        if (!processes || processes.length === 0) {
-            this.processList.innerHTML = '<div class="process-item" style="opacity: 0.5">Nenhum processo registrado hoje.</div>';
-            return;
-        }
+    renderProcesses(processes = []) {
+        try {
+            if (!this.processList) return;
 
-        this.processList.innerHTML = processes.map(p => {
-            const hasError = p.status === 'FAIL';
-            const metadataStr = p.metadata ? (typeof p.metadata === 'object' ? JSON.stringify(p.metadata) : p.metadata) : '';
-            
-            return `
-                <div class="process-item" style="${hasError ? 'border-left: 4px solid var(--accent-red);' : ''}">
-                    <div>
-                        <div class="process-name">${p.process_name}</div>
-                        <div class="process-step">${p.step_name}</div>
-                        ${hasError ? `<div style="color: var(--accent-red); font-size: 0.7rem; margin-top: 5px;">❌ ${metadataStr || 'Erro inesperado'}</div>` : ''}
-                    </div>
-                    <div>
-                        <div class="progress-bar-container">
-                            <div class="progress-fill ${p.status === 'WORKING' ? 'pulse' : ''}" style="width: ${p.progress}%"></div>
+            if (!processes || processes.length === 0) {
+                this.processList.innerHTML = '<div class="process-item" style="opacity: 0.5">Nenhum processo registrado hoje.</div>';
+                return;
+            }
+
+            this.processList.innerHTML = processes.map(p => {
+                try {
+                    const hasError = p.status === 'FAIL';
+                    const metadataStr = p.metadata ? (typeof p.metadata === 'object' ? JSON.stringify(p.metadata) : p.metadata) : '';
+                    
+                    // Safe Date formatting
+                    let timeStr = '--:--';
+                    try {
+                        if (p.dt_updated) {
+                            timeStr = new Date(p.dt_updated).toLocaleTimeString();
+                        } else if (p.dt_started) {
+                            timeStr = new Date(p.dt_started).toLocaleTimeString();
+                        }
+                    } catch (dErr) { console.warn('Invalid date:', p.dt_updated); }
+
+                    return `
+                        <div class="process-item" style="${hasError ? 'border-left: 4px solid var(--accent-red);' : ''}">
+                            <div>
+                                <div class="process-name">${p.process_name || 'Sem nome'}</div>
+                                <div class="process-step">${p.step_name || '...'}</div>
+                                ${hasError ? `<div style="color: var(--accent-red); font-size: 0.7rem; margin-top: 5px;">❌ ${metadataStr || 'Erro inesperado'}</div>` : ''}
+                            </div>
+                            <div>
+                                <div class="progress-bar-container">
+                                    <div class="progress-fill ${p.status === 'WORKING' ? 'pulse' : ''}" style="width: ${p.progress || 0}%"></div>
+                                </div>
+                            </div>
+                            <div style="display: flex; justify-content: center;">
+                                <span class="status-badge status-${p.status || 'UNKNOWN'}">${p.status === 'WORKING' ? 'EM EXECUÇÃO' : (p.status || 'OK')}</span>
+                            </div>
+                            <div style="font-size: 0.75rem; opacity: 0.5; text-align: right;">
+                                ${timeStr}
+                            </div>
                         </div>
-                    </div>
-                    <div style="display: flex; justify-content: center;">
-                        <span class="status-badge status-${p.status}">${p.status === 'WORKING' ? 'EM EXECUÇÃO' : p.status}</span>
-                    </div>
-                    <div style="font-size: 0.75rem; opacity: 0.5; text-align: right;">
-                        ${new Date(p.dt_updated).toLocaleTimeString()}
-                    </div>
-                </div>
-            `;
-        }).join('');
+                    `;
+                } catch (itemErr) {
+                    console.error('[MONITORING] Failed to render item:', p, itemErr);
+                    return '';
+                }
+            }).join('');
+        } catch (err) {
+            console.error('[MONITORING] Fatal render error:', err);
+            this.processList.innerHTML = '<div class="process-item" style="color: var(--accent-red)">Erro crítico ao desenhar lista. Verifique o console.</div>';
+        }
     }
 }
 
