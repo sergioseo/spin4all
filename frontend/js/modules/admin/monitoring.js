@@ -24,8 +24,45 @@ class MonitoringModule {
         }
         
         const btnRunAnalysis = document.getElementById('btn-run-analysis');
+        const btnClearLogs = document.getElementById('btn-clear-logs'); // Renamed from btnClear to btnClearLogs for clarity
+
         if (btnRunAnalysis) {
             btnRunAnalysis.addEventListener('click', () => this.triggerJob('AI_ANALYSIS', btnRunAnalysis, '/api/admin/monitoring/trigger-analysis'));
+        }
+        if (btnClearLogs) { // Use btnClearLogs
+            btnClearLogs.addEventListener('click', () => this.clearLogs(btnClearLogs));
+        }
+    }
+
+    async clearLogs(btn) {
+        if (!confirm('Deseja realmente limpar todo o histórico de registros?')) return;
+        
+        try {
+            const token = localStorage.getItem('spin4all_token');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.textContent = '⌛ Limpando...';
+
+            const res = await fetch('/api/admin/monitoring/logs', {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            
+            if (res.ok) {
+                this.refresh(); // Changed from loadData() to refresh() to match existing methods
+            } else {
+                const data = await res.json();
+                alert('Erro ao limpar logs: ' + (data.error || res.statusText));
+            }
+        } catch (error) {
+            console.error('Error clearing logs:', error);
+            alert('Erro ao limpar logs: ' + error.message);
+        } finally {
+            // Restore button text after success/fail
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.textContent = 'Limpar Logs'; // Assuming original text was 'Limpar Logs'
+            }, 2000);
         }
     }
 
@@ -111,6 +148,9 @@ class MonitoringModule {
                 return;
             }
 
+            // Yellow timestamps
+            const timeColor = '#ffcc00';
+
             this.processList.innerHTML = processes.map(p => {
                 try {
                     const hasError = p.status === 'FAIL';
@@ -149,7 +189,7 @@ class MonitoringModule {
                             <div style="display: flex; justify-content: center;">
                                 <span class="status-badge status-${p.status || 'UNKNOWN'}">${p.status === 'WORKING' ? 'EM EXECUÇÃO' : (p.status || 'OK')}</span>
                             </div>
-                            <div style="font-size: 0.75rem; opacity: 0.5; text-align: right;">
+                            <div style="font-size: 0.75rem; color: ${timeColor}; font-weight: 700; text-align: right; text-shadow: 0 0 10px rgba(255, 204, 0, 0.2);">
                                 ${timeStr}
                             </div>
                         </div>

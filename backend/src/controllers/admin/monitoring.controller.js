@@ -46,6 +46,19 @@ class MonitoringController {
     }
 
     /**
+     * Clear all entries from the process_logs table.
+     */
+    static async clearLogs(req, res) {
+        try {
+            await pool.query('DELETE FROM governance.process_logs');
+            res.json({ success: true, message: 'Logs cleared successfully' });
+        } catch (err) {
+            console.error('[MONITORING] Error clearing logs:', err);
+            res.status(500).json({ success: false, error: `Failed to clear logs: ${err.message}` });
+        }
+    }
+
+    /**
      * Get the status of all recent background processes
      */
     static async getGlobalStatus(req, res) {

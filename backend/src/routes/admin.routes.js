@@ -9,6 +9,7 @@ router.get('/members', authenticateToken, isAdmin, adminController.getMembers);
 router.get('/monitoring/status', authenticateToken, isAdmin, MonitoringController.getGlobalStatus);
 router.post('/monitoring/trigger-etl', authenticateToken, isAdmin, MonitoringController.triggerETL);
 router.post('/monitoring/trigger-analysis', authenticateToken, isAdmin, MonitoringController.triggerAnalysis);
+router.delete('/monitoring/logs', authenticateToken, isAdmin, MonitoringController.clearLogs);
 router.put('/toggle-admin', authenticateToken, isAdmin, adminController.toggleAdmin);
 router.get('/advanced-metrics', authenticateToken, isAdmin, adminController.getAdvancedMetrics);
 router.get('/objectives-summary', authenticateToken, isAdmin, adminController.getObjectivesSummary);

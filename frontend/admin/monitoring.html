@@ -27,11 +27,16 @@
             min-height: 100vh;
             -webkit-font-smoothing: antialiased;
         }
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.05); /* Matching dashboard.css hover */
+            color: #fff;
+        }
 
         .main-content {
             flex: 1;
             padding: 40px;
             overflow-y: auto;
+            background-color: #0f172a; /* Matching dashboard.css bg-base */
         }
 
         .monitoring-container {
@@ -41,7 +46,7 @@
 
         .monitoring-layout {
             display: grid;
-            grid-template-columns: 1fr 300px;
+            grid-template-columns: 1fr 340px;
             gap: 25px;
             margin-top: 20px;
         }
@@ -51,7 +56,7 @@
             justify-content: space-between;
             align-items: flex-end;
             margin-bottom: 30px;
-            border-bottom: 1px solid var(--glass-border);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             padding-bottom: 20px;
         }
 
@@ -301,8 +306,11 @@
                         <button id="btn-run-etl" class="btn-trigger">
                             <span>🚀 Rodar ETL de Partidas</span>
                         </button>
-                        <button id="btn-run-analysis" class="btn-trigger" style="background: var(--glass); border: 1px solid var(--glass-border)">
+                        <button id="btn-run-analysis" class="btn-trigger" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1)">
                             <span>🤖 Análise AI</span>
+                        </button>
+                        <button id="btn-clear-logs" class="btn-clear">
+                            <i class="fas fa-trash-alt"></i> Limpar Registros
                         </button>
                     </div>
 
