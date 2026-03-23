@@ -104,99 +104,103 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
             padding: 10px;
             border-radius: 12px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            height: 85px;
-            transition: 0.3s;
-        }
-
-        .dashboard-top-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr) 1.5fr 1.5fr 1.5fr;
-            gap: 12px;
             margin-bottom: 20px;
             width: 100%;
         }
 
-        .stat-card, .info-mini-card {
+        .stat-card {
             background: rgba(15, 23, 42, 0.4);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 10px;
+            padding: 12px;
             border-radius: 12px;
             text-align: center;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            height: 85px;
+            height: 90px;
             transition: 0.3s;
         }
 
-        .stat-card:hover, .info-mini-card:hover {
+        .stat-card:hover {
             border-color: rgba(255, 255, 255, 0.1);
             background: rgba(15, 23, 42, 0.6);
         }
 
-        .stat-value { font-size: 1.3rem; font-weight: 700; display: block; }
-        .stat-label { font-size: 0.6rem; opacity: 0.5; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
-
-        /* MINI INFO CARDS */
-        .info-mini-card {
-            text-align: left;
-            padding: 10px 12px;
-            border-color: rgba(0, 210, 255, 0.1);
-        }
-
-        .info-mini-card h3 {
-            font-size: 0.7rem;
-            margin: 0 0 3px 0;
-            color: var(--accent-blue);
-            font-weight: 800;
-            text-transform: uppercase;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .info-mini-card p {
-            font-size: 0.52rem;
-            line-height: 1.25;
-            color: rgba(255, 255, 255, 0.5);
-            margin: 0;
-        }
+        .stat-value { font-size: 1.4rem; font-weight: 700; display: block; }
+        .stat-label { font-size: 0.65rem; opacity: 0.5; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
 
         .actions-bar {
             margin-bottom: 20px;
             display: flex;
             gap: 12px;
-            align-items: center;
+            align-items: flex-end; /* Align to bottom so subtext doesn't push them up */
         }
 
         .btn-trigger {
             background: linear-gradient(135deg, var(--accent-blue), #0080ff);
             color: #fff;
             border: none;
-            padding: 10px 20px;
+            padding: 8px 18px;
             border-radius: 10px;
-            font-size: 0.85rem;
-            font-weight: 600;
             cursor: pointer;
             transition: 0.3s;
             display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 2px;
+            min-width: 200px;
+            text-align: left;
+        }
+        
+        .btn-trigger .btn-main-text {
+            font-size: 0.85rem;
+            font-weight: 750;
+            display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
+        }
+        
+        .btn-trigger .btn-subtext {
+            font-size: 0.6rem;
+            opacity: 0.7;
+            font-weight: 400;
+            white-space: nowrap;
         }
 
         .btn-trigger:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0, 210, 255, 0.2);
+            filter: brightness(1.1);
+        }
+
+        .btn-clear {
+            background: rgba(10, 11, 20, 0.4);
+            border: 1px solid rgba(255, 77, 77, 0.3);
+            color: rgba(255, 77, 77, 0.8);
+            padding: 0 16px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-left: auto; /* Push to the far right */
+        }
+
+        .btn-clear:hover {
+            background: rgba(255, 77, 77, 0.15);
+            color: #ff4d4d;
+            border-color: #ff4d4d;
+            box-shadow: 0 0 15px rgba(255, 77, 77, 0.2);
         }
 
         .process-list {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
             border-radius: 20px;
             padding: 15px;
@@ -345,10 +349,12 @@
 
             <div class="actions-bar">
                 <button id="btn-run-etl" class="btn-trigger">
-                    <span>🚀 Rodar ETL de Partidas</span>
+                    <span class="btn-main-text">🚀 Rodar ETL de Partidas</span>
+                    <span class="btn-subtext">Sincroniza dados e rankings recentes</span>
                 </button>
-                <button id="btn-run-analysis" class="btn-trigger" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1)">
-                    <span>🤖 Análise AI</span>
+                <button id="btn-run-analysis" class="btn-trigger" style="background: rgba(30,41,59,0.5); border: 1px solid rgba(255,255,255,0.1)">
+                    <span class="btn-main-text">🤖 Análise AI</span>
+                    <span class="btn-subtext">Gera insights técnicos biomecânicos</span>
                 </button>
                 <button id="btn-clear-logs" class="btn-clear">
                     <i class="fas fa-trash-alt"></i> Limpar Registros
@@ -372,22 +378,6 @@
                 <div class="stat-card">
                     <span class="stat-value" style="color: var(--accent-blue)" id="stat-working">0</span>
                     <span class="stat-label">Ativos</span>
-                </div>
-
-                <!-- Mini Info Cards -->
-                <div class="info-mini-card">
-                    <h3><i class="fas fa-sync-alt"></i> ETL</h3>
-                    <p>Sincroniza partidas e atualiza todos os rankings e estatísticas recentes em tempo real.</p>
-                </div>
-
-                <div class="info-mini-card">
-                    <h3><i class="fas fa-brain"></i> IA</h3>
-                    <p>Analisa padrões biomecânicos e gera insights automáticos sobre a evolução técnica.</p>
-                </div>
-
-                <div class="info-mini-card">
-                    <h3><i class="fas fa-heartbeat"></i> Status</h3>
-                    <p>Monitoramento ativo via BullMQ/Redis com orquestração resiliente 99.9%.</p>
                 </div>
             </div>
 
