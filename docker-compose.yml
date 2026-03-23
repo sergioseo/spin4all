@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:alpine
+    container_name: spin4all-redis-dev
+    ports:
+      - "6379:6379"
+    restart: always
+    # Configura a senha conforme definido no seu arquivo .env
+    command: ["redis-server", "--requirepass", "a2ac12499c5405b13ede"]
+    volumes:
+      - redis_data:/data
+
+volumes:
+  redis_data:

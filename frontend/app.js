@@ -1,6 +1,7 @@
 import { loadPage, getElement } from './js/utils/dom.js';
 import { userService } from './js/services/user.service.js';
 import { store, updateStore } from './js/state/store.js';
+import './js/modules/profile-modal.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('[SHELL] DOMContentLoaded - Starting App...');

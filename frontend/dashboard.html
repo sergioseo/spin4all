@@ -56,7 +56,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="javascript:void(0)" onclick="openDiagnosticModal()" class="nav-link" style="color: var(--accent-cyan); font-weight: 700;">
+                    <a href="javascript:void(0)" onclick="openProfileModal()" class="nav-link" style="color: var(--accent-cyan); font-weight: 700;">
                         <i class="fas fa-brain"></i> <span>Formulário Inicial</span>
                     </a>
                 </li>
@@ -131,9 +131,53 @@
         </div>
     </main>
 
-    <!-- Modal Diagnóstico -->
+    <!-- Modal Perfil Bio-Mecânico (Formulário Inicial) -->
+    <div id="initial-profile-modal" class="modal" style="display: none;">
+        <div class="modal-card" style="max-width: 500px; background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(56, 189, 248, 0.2);">
+            <div class="modal-header" style="margin-bottom: 24px; text-align: center;">
+                <h2 style="color: #fff; font-size: 1.5rem; font-weight: 800; margin-bottom: 8px;">Dados do Atleta</h2>
+                <p style="color: #94a3b8; font-size: 0.9rem;">Complete ou atualize seu perfil biomecânico</p>
+            </div>
+
+            <form id="initial-profile-form">
+                <div class="input-group" style="margin-bottom: 18px;">
+                    <label style="color: #94a3b8; font-size: 0.85rem; display: block; margin-bottom: 6px;">Nome Completo</label>
+                    <input type="text" id="profile-name" placeholder="Seu nome completo" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff;" required>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px;">
+                    <div class="input-group">
+                        <label style="color: #94a3b8; font-size: 0.85rem; display: block; margin-bottom: 6px;">Altura (cm)</label>
+                        <input type="number" id="profile-height" placeholder="Ex: 175" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff;" required>
+                    </div>
+                    <div class="input-group">
+                        <label style="color: #94a3b8; font-size: 0.85rem; display: block; margin-bottom: 6px;">Peso (kg)</label>
+                        <input type="number" id="profile-weight" placeholder="Ex: 72" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff;" required>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
+                    <div class="input-group">
+                        <label style="color: #94a3b8; font-size: 0.85rem; display: block; margin-bottom: 6px;">Nascimento</label>
+                        <input type="date" id="profile-birth" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff;" required>
+                    </div>
+                    <div class="input-group">
+                        <label style="color: #94a3b8; font-size: 0.85rem; display: block; margin-bottom: 6px;">Telefone</label>
+                        <input type="tel" id="profile-phone" placeholder="(00) 00000-0000" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff;" required>
+                    </div>
+                </div>
+
+                <div class="modal-actions" style="display: flex; gap: 12px;">
+                    <button type="button" onclick="closeProfileModal()" class="btn-cancel" style="flex: 1; padding: 12px; border-radius: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; cursor: pointer;">Cancelar</button>
+                    <button type="submit" id="btn-save-profile" class="btn-primary" style="flex: 2; padding: 12px; border-radius: 8px; background: #38bdf8; border: none; color: #fff; font-weight: 700; cursor: pointer;">Salvar Perfil</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Diagnóstico (Mantido) -->
     <div id="diagnostic-modal" class="modal" style="display: none;">
-        <!-- (Modal HTML maintained as before for stability) -->
+        <!-- ... (Diagnostic code preserved) -->
     </div>
 
 </body>

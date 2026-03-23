@@ -20,6 +20,8 @@
   },
   "homepage": "https://github.com/sergioseo/spin4all#readme",
   "dependencies": {
+    "ajv": "^8.18.0",
+    "axios": "^1.13.6",
     "bcryptjs": "^3.0.3",
     "bullmq": "^5.71.0",
     "cors": "^2.8.6",

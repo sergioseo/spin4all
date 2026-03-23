@@ -1,197 +1,29 @@
 <div id="home-view-container">
-
-    <!-- ATO 0: BANNER DE VAGA (RESTAURADO 12:10) -->
-    <div class="banner-vaga-card glass-card">
-        <div class="banner-content">
-            <h2>VAGA GARANTIDA! PARABÉNS!</h2>
-            <p>Sua frequência atual habilita você para o Torneio de Março!</p>
+    <!-- 
+      🚀 SPIN4ALL - TEMPLATE CLEAN SLATE (PROTOCOLO 10.1)
+      Esta área foi limpa para a reconstrução escalonada do dashboard.
+      Preservamos o Shell (Sidebar e Header) e agora estamos prontos 
+      para o Eixo 5: Missões e Gamificação de Elite.
+    -->
+    <div class="dashboard-empty-state" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; text-align: center; color: var(--text-muted); padding: 40px;">
+        <div style="background: rgba(56, 189, 248, 0.05); width: 140px; height: 140px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 30px; border: 1px dashed rgba(56, 189, 248, 0.2); position: relative;">
+            <i class="fas fa-layer-group" style="font-size: 3.5rem; color: var(--accent-cyan); opacity: 0.4;"></i>
+            <div style="position: absolute; bottom: 10px; right: 10px; background: var(--accent-cyan); color: #000; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900;">10.1</div>
         </div>
-        <div style="display: flex; gap: 10px;">
-            <button style="background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: #fff; padding: 10px 20px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer;">Saber Mais</button>
-            <button style="background: var(--accent-cyan); border: none; color: #000; padding: 10px 20px; border-radius: 8px; font-size: 11px; font-weight: 900; cursor: pointer;">Inscreva-se</button>
-        </div>
-    </div>
+        
+        <h2 style="color: #fff; font-weight: 900; font-size: 2.2rem; letter-spacing: -1.5px; margin-bottom: 12px; background: linear-gradient(to right, #fff, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Arquitetura Clean Slate</h2>
+        <p style="max-width: 500px; font-size: 15px; line-height: 1.6; opacity: 0.7; margin: 0 auto;">
+            O Protocolo de Governança removeu o conteúdo legado com sucesso. 
+            O palco está limpo para a implementação dos novos módulos de performance e missões.
+        </p>
 
-    <!-- ATO 1: MEU MOMENTO (3 CARDS LADO A LADO) -->
-    <section class="act-section" id="section-meu-momento">
-        <div class="section-hdr">
-            <div class="act-label">MEU MOMENTO</div>
-            <div class="act-desc">Como estou hoje? Minha presença e frequência.</div>
-        </div>
-
-        <div class="user-status-hub">
-            <!-- Card 1: Frequência -->
-            <div class="stat-card glass-card">
-                <span class="stat-label">FREQUENCIA - CHECK-INS</span>
-                <div class="gauge-small" style="margin: 0 auto 10px;">
-                    <svg viewBox="0 0 100 100">
-                        <circle class="bg" cx="50" cy="50" r="45"></circle>
-                        <circle id="gauge-freq-circle" class="progress" cx="50" cy="50" r="45" style="stroke-dasharray: 283; stroke-dashoffset: 283;"></circle>
-                    </svg>
-                    <div class="gauge-val"><span id="gauge-freq-val">--</span>%</div>
-                </div>
-                <span id="gauge-freq-status" style="font-size: 8px; font-weight: 900; background: var(--accent-lime); color: #000; padding: 2px 8px; border-radius: 4px;">QUALIFICADO</span>
+        <div style="margin-top: 50px; display: flex; gap: 20px; justify-content: center;">
+            <div style="padding: 12px 24px; background: rgba(56, 189, 248, 0.05); border: 1px solid rgba(56, 189, 248, 0.1); border-radius: 12px; font-size: 11px; font-weight: 800; letter-spacing: 1px; color: var(--accent-cyan);">
+                <i class="fas fa-shield-alt" style="margin-right: 8px;"></i> GOVERNANÇA ATIVA
             </div>
-
-            <!-- Card 2: Sequência -->
-            <div class="stat-card glass-card">
-                <i class="fas fa-fire stat-icon" style="color: #f59e0b;"></i>
-                <span class="stat-label">SEQUÊNCIA DE TREINOS</span>
-                <div style="font-size: 2.2rem; font-weight: 900; color: #fff; margin-bottom: 5px;">17</div>
-                <p style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">Dias seguidos</p>
-            </div>
-
-            <!-- Card 3: Missões -->
-            <div class="stat-card glass-card" style="align-items: flex-start;">
-                <span class="stat-label">MURAL DE MISSÕES</span>
-                <div id="mural-missoes" class="mission-list-mini">
-                    <!-- Injetado via JS -->
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ATO 2: ANALISTA PESSOAL (RESTAURADO 12:10) -->
-    <section class="act-section" id="section-analista">
-        <div class="analyst-card glass-card">
-            <div class="analyst-header">
-                <div class="analyst-title">
-                    <i class="fas fa-brain"></i>
-                    <span>ANALISTA PESSOAL</span>
-                </div>
-                <div class="analyst-badge">CONF. ALTA</div>
-            </div>
-
-            <div class="analyst-content-box">
-                <h4 id="analyst-headline">Carregando análise técnica...</h4>
-                <p id="analyst-summary">Aguarde enquanto o Diretor Técnico processa seus últimos torneios e treinos.</p>
-            </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
-                <div>
-                    <span style="font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 10px;">Foco Técnico</span>
-                    <strong id="analyst-foco" style="font-size: 1.1rem; color: #fff;">Sincronizando...</strong>
-                </div>
-                <div>
-                    <span style="font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 10px;">Ação Recomendada</span>
-                    <p id="analyst-acao" style="font-size: 13px; color: var(--text-muted);">Aguardando veredito.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ATO 3: RANKING & PERFORMANCE (PREMIUM REFACTOR) -->
-    <section class="act-section" id="section-posicao-evolucao">
-        <div class="section-hdr">
-            <div class="act-label">RANKING & PERFORMANCE</div>
-            <div class="act-desc">Sua caminhada técnica dentro da comunidade Spin4All.</div>
-        </div>
-
-        <div class="act-grid" style="display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 20px;">
-            
-            <!-- CARD DESTAQUE: SUA POSIÇÃO -->
-            <div class="card glass-card ripple-card" style="position: relative; overflow: hidden; border-left: 4px solid var(--accent-blue); padding: 25px;">
-                <div class="card-title">🏆 Sua Posição Geral</div>
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 20px;">
-                    <div style="display: flex; align-items: center; gap: 25px;">
-                        <div class="pos-badge-container">
-                            <div class="pos-number">42º</div>
-                            <svg class="glow-ring" viewBox="0 0 80 80">
-                                <circle cx="40" cy="40" r="36"></circle>
-                            </svg>
-                        </div>
-                        <div>
-                            <div id="user-display-name" style="font-size: 1.4rem; font-weight: 900; color: #fff; letter-spacing: -0.5px;">Sérgio Silva</div>
-                            <div style="font-size: 10px; color: var(--accent-blue); font-weight: 800; letter-spacing: 1px; text-transform: uppercase;">Top 15% do Ranking</div>
-                        </div>
-                    </div>
-                    <div style="text-align: right;">
-                        <div style="font-size: 20px; font-weight: 950; color: #fff; line-height: 1;">980</div>
-                        <div style="font-size: 9px; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Points</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CARD EVOLUÇÃO: VANGUARDA -->
-            <div class="card glass-card" style="padding: 20px;">
-                <div class="card-title"><i class="fas fa-chart-line" style="margin-right: 8px; color: var(--accent-cyan);"></i> Vanguarda</div>
-                <div id="evolution-list" class="evolution-compact-list">
-                    <!-- Injetado via JS -->
-                </div>
-            </div>
-
-            <!-- CARD FREQUÊNCIA: FOGO -->
-            <div class="card glass-card" style="padding: 20px;">
-                <div class="card-title"><i class="fas fa-fire" style="margin-right: 8px; color: #f59e0b;"></i> Frequência</div>
-                <div id="attendance-ranking-list" class="attendance-compact-list">
-                    <!-- Injetado via JS -->
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- ATO 4: CONTRIBUIÇÃO (GITHUB STABLE) -->
-    <section class="act-section" id="section-contribuicao">
-        <div class="section-hdr">
-            <div class="act-label">Contribua com a Comunidade</div>
-            <div class="act-desc">Sua doação vira prêmios reais para os campeões dos torneios.</div>
-        </div>
-
-        <div class="act-grid grid-3">
-            <div class="card glass-card">
-                <div class="card-title">🏅 Meta dos Campeões</div>
-                <div style="text-align: center; padding: 10px 0;">
-                    <div style="font-size: 24px; font-weight: 900; color: #fff;">R$ 1.240</div>
-                    <div class="custom-progress-bar">
-                        <div class="progress-fill" style="width: 41%; background: #f59e0b;"></div>
-                    </div>
-                    <span style="font-size: 9px; color: var(--text-muted);">Arrecadado de R$ 3.000</span>
-                </div>
-            </div>
-
-            <div class="card glass-card">
-                <div class="card-title">🏓 Equipamentos</div>
-                <div class="progress-group">
-                   <div class="progress-label-row"><span>Raquete Butterfly</span><span>87%</span></div>
-                   <div class="custom-progress-bar"><div class="progress-fill" style="width: 87%; background: var(--accent-cyan);"></div></div>
-                </div>
-                <div class="progress-group">
-                   <div class="progress-label-row"><span>Borrachas DHS</span><span>51%</span></div>
-                   <div class="custom-progress-bar"><div class="progress-fill" style="width: 51%; background: #fb923c;"></div></div>
-                </div>
-            </div>
-
-            <div class="card glass-card">
-                <div class="card-title">🎓 Horas de Mentoria</div>
-                <div class="progress-group">
-                   <div class="progress-label-row"><span>Treino de Forehand</span><span>60%</span></div>
-                   <div class="custom-progress-bar"><div class="progress-fill" style="width: 60%; background: #f59e0b;"></div></div>
-                </div>
-                <a href="#" class="progress-footer-link">Ofertar Horas →</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- ATO 5: COMUNIDADE (FEED) -->
-    <div class="social-section" style="margin-top: 50px;">
-        <h3 style="font-size: 0.9rem; font-weight: 800; color: #fff; margin-bottom: 20px;">COMUNIDADE EM MOVIMENTO 🔥</h3>
-        <div class="act-grid grid-2">
-            <div class="glass-card" style="padding: 15px; display: flex; align-items: center; gap: 12px;">
-                <div style="background: rgba(56, 189, 248, 0.1); width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--accent-blue);"><i class="fas fa-trophy"></i></div>
-                <div>
-                    <span style="font-size: 9px; color: var(--accent-blue); font-weight: 800;">TORNEIO</span>
-                    <h4 style="font-size: 13px; color: #fff;">Internal Cup Abril</h4>
-                </div>
-            </div>
-            <div class="glass-card" style="padding: 15px; display: flex; align-items: center; gap: 12px;">
-                <div style="background: rgba(190, 242, 100, 0.1); width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--accent-lime);"><i class="fas fa-shopping-bag"></i></div>
-                <div>
-                    <span style="font-size: 9px; color: var(--accent-lime); font-weight: 800;">SHOP</span>
-                    <h4 style="font-size: 13px; color: #fff;">Roupas Oficiais Spin</h4>
-                </div>
+            <div style="padding: 12px 24px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; font-size: 11px; font-weight: 800; letter-spacing: 1px; color: #fff;">
+                <i class="fas fa-check-circle" style="color: var(--accent-lime); margin-right: 8px;"></i> PRONTO PARA BUILD
             </div>
         </div>
     </div>
-
 </div>

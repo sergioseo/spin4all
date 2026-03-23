@@ -1,0 +1,12 @@
+{
+  "task_id": "dashboard_cleanup_001",
+  "scope": "FULL_ACCESS",
+  "allowed_files": ["*"],
+  "forbidden_operations": [
+    "remove_sidebar",
+    "remove_header"
+  ],
+  "required_tests": [
+    "api_health"
+  ]
+}
