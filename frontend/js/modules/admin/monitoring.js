@@ -6,9 +6,9 @@ class MonitoringModule {
         this.stats = {
             total: document.getElementById('stat-total'),
             success: document.getElementById('stat-success'),
+            fail: document.getElementById('stat-fail'),
+            working: document.getElementById('stat-working')
         };
-        this.statFail = document.getElementById('stat-fail');
-        this.statWorking = document.getElementById('stat-working');
         this.btnRunEtl = document.getElementById('btn-run-etl');
         this.lastUpdate = document.getElementById('last-update');
         this.init();
