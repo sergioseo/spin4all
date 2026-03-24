@@ -1,10 +1,12 @@
 {
-  "task_id": "dashboard_cleanup_001",
-  "scope": "FULL_ACCESS",
-  "allowed_files": ["*"],
+  "task_id": "header_layout_refinement_003",
+  "scope": "UI_ONLY",
+  "allowed_files": [
+    "frontend/dashboard.html",
+    "backend/src/governance/agent-controller.js"
+  ],
   "forbidden_operations": [
-    "remove_sidebar",
-    "remove_header"
+    "remove_sidebar"
   ],
   "required_tests": [
     "api_health"

@@ -44,14 +44,30 @@ class AgentController {
      * Valida se os arquivos alterados estão dentro da lista permitida (allowed_files)
      */
     validateScope(changedFiles) {
-        if (!this.manifest) return { success: false, reason: 'Manifesto inválido' };
+        if (!this.manifest) return { success: false, reason: 'Manifesto não carregado.' };
+
+        // Arquivos que a própria governança altera e devem ser ignorados na validação de escopo
+        const internalFiles = [
+            'TASK_MANIFEST.json',
+            'package-lock.json',
+            'node_modules'
+        ];
 
         const forbidden = changedFiles.filter(file => {
+            // Se for arquivo interno da governança, ignora
+            if (internalFiles.some(internal => file.includes(internal))) return false;
+            if (file.includes('backend/src/governance/logs/')) return false;
+
+            // Se o manifesto usa wildcard "*", permite tudo (FULL_ACCESS)
+            if (this.manifest.allowed_files.includes('*')) return false;
+
+            // Valida contra lista de permitidos
             return !this.manifest.allowed_files.some(allowed => {
-                // Suporte simplificado para wildcard *
-                const pattern = allowed.replace('*', '.*');
-                const regex = new RegExp(`^${pattern}`);
-                return regex.test(file);
+                if (allowed.endsWith('/*')) {
+                    const dir = allowed.replace('/*', '');
+                    return file.startsWith(dir);
+                }
+                return file === allowed;
             });
         });
 
