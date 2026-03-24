@@ -72,6 +72,7 @@ async function main(agentActionFn) {
         return { status: 'SUCCESS', executionId, hash: promotion.hash };
 
     } catch (err) {
+        console.log(`[GOVERNANCE] Ativando Protocolo TICO...`);
         console.error('[MAIN] Erro fatal na orquestração:', err.message);
         return { status: 'ERROR', error: err.message };
     }

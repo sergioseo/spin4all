@@ -14,30 +14,20 @@ class HomeView {
      * ATO 1: MEU MOMENTO (Frequência)
      */
     updateFrequency(stats, isPastMonth, user) {
-        const circle = document.getElementById('gauge-freq-circle');
-        const freqVal = document.getElementById('gauge-freq-val');
-        const freqStatus = document.getElementById('gauge-freq-status');
-        
+        const topFreq = document.getElementById('top-metric-freq');
+        const topStatus = document.getElementById('top-metric-status');
+        const sideFreq = document.querySelector('.frequency-circle span'); // O 69% no card lateral
+        const calendarGrid = document.getElementById('attendance-calendar-grid');
+
         if (!stats) return;
-        if (freqVal) freqVal.textContent = Math.round(stats.percentage || 0);
 
-        if (circle) {
-            const radius = 45;
-            const circumference = 2 * Math.PI * radius;
-            const pct = stats.percentage || 0;
-            const offset = circumference - (pct / 100) * circumference;
-            circle.style.strokeDasharray = `${circumference} ${circumference}`;
-            circle.style.strokeDashoffset = offset;
-        }
+        const pct = Math.round(stats.percentage || 0);
+        if (topFreq) topFreq.textContent = `${pct}%`;
+        if (sideFreq) sideFreq.textContent = `${pct}%`;
 
-        if (freqStatus) {
-            if (stats.percentage >= 60) {
-                freqStatus.textContent = 'QUALIFICADO';
-                freqStatus.style.background = 'var(--accent-lime)';
-            } else {
-                freqStatus.textContent = 'PENDENTE';
-                freqStatus.style.background = '#f59e0b';
-            }
+        if (topStatus) {
+            topStatus.textContent = stats.percentage >= 60 ? 'Qualificado' : 'Pendente';
+            topStatus.parentElement.querySelector('h5').style.color = stats.percentage >= 60 ? 'var(--accent-lime)' : '#f59e0b';
         }
     }
 
@@ -45,23 +35,21 @@ class HomeView {
      * ATO 2: ANALISTA PESSOAL (RESTAURADO 12:10)
      */
     renderAnalyst(data) {
-        const headline = document.getElementById('analyst-headline');
-        const summary = document.getElementById('analyst-summary');
-        const focoEl = document.getElementById('analyst-foco');
-        const acaoEl = document.getElementById('analyst-acao');
+        const mainInsight = document.getElementById('main-voice-insight');
+        const detailedInsight = document.getElementById('analyst-detailed-insight');
+        const masterTip = document.getElementById('analyst-master-tip');
 
-        if (!data) {
-           if (headline) headline.textContent = "Analista Aguardando...";
-           if (summary) summary.textContent = "O Spin Engine processará seus dados assim que houver atividade suficiente.";
-           return;
+        if (!data) return;
+
+        if (mainInsight) {
+            mainInsight.innerHTML = data.headline || 'Boa presença, mas com <span style="font-weight: 800; color: #fff;">inconsistência competitiva.</span>';
         }
-
-        if (headline) headline.textContent = data.headline || 'Conselho do Analista';
-        if (summary) summary.textContent = data.explicacao || data.summary || '';
-        if (focoEl) focoEl.textContent = data.foco || 'Sincronizando...';
-        if (acaoEl) acaoEl.textContent = data.acao || 'Aguardando veredito.';
-
-        if (data.missions) this.renderMissions(data.missions);
+        if (detailedInsight) {
+            detailedInsight.textContent = data.explicacao || data.summary || 'Seu desempenho indica um nível estável...';
+        }
+        if (masterTip) {
+            masterTip.textContent = data.master_tip || '"Trabalhar isso em treinos longos e de recuperação pode equilibrar seus resultados."';
+        }
     }
 
     renderMissions(missions) {
@@ -132,7 +120,25 @@ class HomeView {
     }
 
     renderSkills(skills) { console.log('[VIEW] Skills updated:', skills); }
-    renderTournamentsRanking() { }
+    renderTournamentsRanking(ranking) {
+        const list = document.getElementById('ranking-list');
+        if (!list) return;
+
+        if (!ranking || ranking.length === 0) {
+            list.innerHTML = '<div style="font-size: 11px; color: var(--text-muted);">Sincronizando pódio...</div>';
+            return;
+        }
+
+        list.innerHTML = ranking.slice(0, 3).map((p, idx) => `
+            <div style="display:flex; justify-content:space-between; align-items:center; background: rgba(0,0,0,0.1); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(251, 191, 36, 0.1);">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 10px; font-weight: 900; color: #fbbf24;">${idx + 1}º</span>
+                    <span style="color:#fff; font-size: 12px; font-weight: 500;">${p.dsc_nome_completo.split(' ')[0]}</span>
+                </div>
+                <strong style="color:#fbbf24; font-size: 11px;">${p.num_vitorias || 0} 🏆</strong>
+            </div>
+        `).join('');
+    }
     renderCommunityStats() { }
     drawEvolutionChart() { }
     renderCalendar() { }

@@ -5,7 +5,7 @@ const { execSync } = require('child_process');
 const logger = require('./utils/logger');
 
 /**
- * SPIN4ALL - Promote Engine 10.1
+ * SPIN4ALL - TICO Promote Engine
  * Responsável pela promoção segura de código do /draft para o /prod
  */
 

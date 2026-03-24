@@ -41,7 +41,7 @@ export async function init() {
                 communityService.getEvolutionRanking(),
                 communityService.getAttendanceRanking()
             ]);
-            // if (hallResources[0].success) homeView.renderTournamentsRanking(hallResources[0].ranking || []); // Removido se não houver container
+            if (hallResources[0].success) homeView.renderTournamentsRanking(hallResources[0].ranking || []);
             if (hallResources[1].success) homeView.renderEvolutionRanking(hallResources[1].ranking || []);
             if (hallResources[2].success) homeView.renderAttendanceRanking(hallResources[2].ranking || []);
         } catch (err) {

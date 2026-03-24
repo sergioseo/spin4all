@@ -1,9 +1,12 @@
 {
-  "task_id": "header_layout_refinement_003",
+  "task_id": "header_scaling_014",
   "scope": "UI_ONLY",
   "allowed_files": [
     "frontend/dashboard.html",
-    "backend/src/governance/agent-controller.js"
+    "frontend/pages/home.html",
+    "frontend/app.js",
+    "frontend/js/modules/home/*",
+    "backend/src/governance/*"
   ],
   "forbidden_operations": [
     "remove_sidebar"

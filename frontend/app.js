@@ -77,8 +77,13 @@ function renderShellUser(user) {
     const progressEl = document.getElementById('user-xp-progress-bar');
     const photoImg = document.getElementById('user-photo-img');
     const photoPlaceholder = document.getElementById('user-photo-placeholder');
+    const emailEl = document.getElementById('user-email');
+    const levelEl = document.getElementById('user-level-badge');
+    const adminBadge = document.getElementById('admin-badge');
 
     if (welcomeEl) welcomeEl.textContent = `Olá, ${user.dsc_nome_completo.split(' ')[0]}!`;
+    if (emailEl) emailEl.textContent = user.dsc_email;
+    if (levelEl) levelEl.textContent = user.dsc_nivel_tecnico || 'INICIANTE';
     if (xpEl) xpEl.textContent = user.num_xp || 0;
     
     if (progressEl) {
@@ -104,6 +109,9 @@ function renderShellUser(user) {
     if (user.flg_admin) {
         if (adminNav) adminNav.style.display = 'block';
         if (monitoringNav) monitoringNav.style.display = 'block';
+        if (adminBadge) adminBadge.style.display = 'block';
+    } else {
+        if (adminBadge) adminBadge.style.display = 'none';
     }
 }
 

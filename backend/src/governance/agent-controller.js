@@ -4,8 +4,9 @@ const { execSync } = require('child_process');
 const logger = require('./utils/logger');
 
 /**
- * SPIN4ALL - Agent Controller 10.1
- * Responsável por validar o escopo da tarefa contra o TASK_MANIFEST.json
+ * SPIN4ALL - TICO Agent Controller
+ * Responsável por garantir o determinismo das operações.
+fa contra o TASK_MANIFEST.json
  */
 
 class AgentController {

@@ -13,7 +13,7 @@ const governanceLogger = winston.createLogger({
         winston.format.json()
     ),
     defaultMeta: { 
-        service: 'governance-10.1',
+        service: 'TICO',
         environment: process.env.NODE_ENV || 'development'
     },
     transports: [
