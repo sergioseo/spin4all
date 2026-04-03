@@ -91,4 +91,42 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- CARROSSEL UNIVERSE (Reusable Logic) ---
+    const initCarousel = (carouselId, prevBtnId, nextBtnId) => {
+        const carousel = document.getElementById(carouselId);
+        const prevBtn = document.getElementById(prevBtnId);
+        const nextBtn = document.getElementById(nextBtnId);
+
+        if (carousel && prevBtn && nextBtn) {
+            const scrollAmount = 320; // Valor dinâmico baseado no card + gap
+
+            nextBtn.addEventListener('click', () => {
+                carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            });
+
+            prevBtn.addEventListener('click', () => {
+                carousel.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            });
+
+            // Lógica de Visibilidade das Setas (Feedback Visual BOLT)
+            const handleArrows = () => {
+                const isAtEnd = carousel.scrollLeft + carousel.clientWidth >= carousel.scrollWidth - 15;
+                const isAtStart = carousel.scrollLeft <= 15;
+                
+                prevBtn.style.opacity = isAtStart ? '0.3' : '1';
+                nextBtn.style.opacity = isAtEnd ? '0.3' : '1';
+                prevBtn.style.pointerEvents = isAtStart ? 'none' : 'auto';
+                nextBtn.style.pointerEvents = isAtEnd ? 'none' : 'auto';
+            };
+
+            carousel.addEventListener('scroll', handleArrows);
+            window.addEventListener('resize', handleArrows);
+            handleArrows(); // Inicializa o estado
+        }
+    };
+
+    // Inicialização BOLT (Fotos e Vídeos)
+    initCarousel('galleryCarousel', 'prevBtn', 'nextBtn');
+    initCarousel('videoCarousel', 'videoPrevBtn', 'videoNextBtn');
+
 });

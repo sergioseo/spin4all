@@ -46,6 +46,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 80px; /* Evita que o header cubra os títulos das seções */
 }
 
 body {
@@ -127,14 +128,23 @@ a {
   background-clip: text;
 }
 
-/* --- Header --- */
+/* --- Header (Crystal Pearl Luxury Edition) --- */
 .header {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  padding: 20px 0;
-  z-index: 100;
+  padding: 14px 0;
+  z-index: 1000;
+  /* Crystal Saturation: Fundo claro ultra-translúcido */
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  /* Jewel Border: Borda milimétrica com o degradê da marca */
+  border-bottom: 2px solid;
+  border-image: var(--grad-logo) 1;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .header-container {
   display: flex;
@@ -143,10 +153,10 @@ a {
 }
 .logo-text {
   font-family: var(--f-display);
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: 800;
-  letter-spacing: -0.5px;
-  color: var(--c-heading);
+  letter-spacing: 1px;
+  color: #0f172a; /* Noble Dark Contrast */
 }
 .header-cta {
   font-size: 0.9rem;
@@ -887,12 +897,17 @@ a {
     align-items: center;
   }
   .desktop-nav a {
-    font-weight: 500;
-    color: var(--c-heading);
-    transition: color 0.2s;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.12em; /* High-Fashion Spacing */
+    text-transform: uppercase;
+    color: #334155; /* Blue-Gray Noble */
+    transition: all 0.3s ease;
+    position: relative;
   }
   .desktop-nav a:hover {
     color: var(--c-blue);
+    transform: translateY(-2px);
   }
 }
 
@@ -940,81 +955,136 @@ a {
   color: white;
 }
 
-/* --- Dynamic Gallery Carousel --- */
+/* --- Premium Gallery Carousel (BOLT-Standard) --- */
 .gallery-dynamic {
-  background-color: #0f172a; /* Dark Base */
-  background-image: 
-    radial-gradient(at 0% 0%, rgba(14, 165, 233, 0.15) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(16, 185, 129, 0.15) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(250, 204, 21, 0.1) 0px, transparent 50%),
-    radial-gradient(at 0% 100%, rgba(249, 115, 22, 0.1) 0px, transparent 50%);
-  padding: 100px 0;
-  overflow: hidden;
+    background: linear-gradient(180deg, #161b22 0%, #0d1117 100%); /* Deep Obsidian Contrast */
+    position: relative;
+    padding: 80px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
 }
 
-/* --- Static Gallery Grid --- */
-.gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  gap: 24px;
-  margin-top: 40px;
+.carousel-nav-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 1400px;
+    margin: 40px auto 0;
+    padding: 0 60px; /* Espaço para as setas flutuantes */
 }
 
-@media (min-width: 640px) {
-  .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+.gallery-carousel-container {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding: 10px 0;
 }
 
-@media (min-width: 1024px) {
-  .gallery-grid { grid-template-columns: repeat(4, 1fr); }
+.gallery-carousel-container::-webkit-scrollbar {
+    display: none;
 }
 
-.gallery-item {
-  position: relative;
-  aspect-ratio: 1;
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  box-shadow: var(--shadow-lg);
-  border: 4px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-  cursor: pointer;
+.gallery-carousel-track {
+    display: flex;
+    gap: 20px;
+    padding: 10px 40px; /* Gutter lateral para as setas */
+    justify-content: center; /* Centraliza se houver poucas fotos */
+    min-width: max-content; /* Garante que o track não encolha */
 }
 
-.gallery-item:hover {
-  transform: scale(1.05) translateY(-5px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-  border-color: var(--c-blue);
+.gallery-item-carousel {
+    flex: 0 0 280px; 
+    min-width: 280px; 
+    scroll-snap-align: start; /* Começar pelo início, não pelo centro */
+    position: relative;
+    aspect-ratio: 4 / 5;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.4s ease;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .gallery-item-carousel {
+        flex: 0 0 220px;
+        min-width: 220px;
+    }
+    .carousel-nav-wrapper { padding: 0 40px; }
+}
+
+.gallery-item-carousel:hover {
+    transform: translateY(-8px);
+    border-color: var(--c-blue);
 }
 
 .gallery-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.6s ease;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
-.gallery-item:hover .gallery-img {
-  transform: scale(1.1);
+/* Floating Navigation Buttons (Premium BOLT) - Centrados Absolutamente */
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    margin-top: -25px; /* Metade da altura para centralizar v */
+    z-index: 100;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(14, 165, 233, 0.85); /* Azul Spin4All para destaque */
+    backdrop-filter: blur(8px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+.carousel-btn:hover {
+    background: #0077b6;
+    transform: scale(1.1);
+    box-shadow: 0 12px 30px rgba(14, 165, 233, 0.6);
+}
+
+.carousel-btn.prev { left: 0px; }
+.carousel-btn.next { right: 0px; }
+
+@media (max-width: 992px) {
+    .carousel-btn { width: 40px; height: 40px; font-size: 20px; margin-top: -20px; }
+    .carousel-btn.prev { left: 5px; }
+    .carousel-btn.next { right: 5px; }
 }
 
 .gallery-caption {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 15px;
-  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
-  color: white;
-  font-size: 0.9rem;
-  font-weight: 500;
-  opacity: 0.9;
-  transform: translateY(10px);
-  transition: all 0.3s ease;
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    z-index: 2;
 }
 
-.gallery-item:hover .gallery-caption {
-  transform: translateY(0);
-  opacity: 1;
+.caption-glass {
+    display: inline-block;
+    padding: 8px 16px;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-pill);
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 600;
 }
+
+
 
 /* --- Lightbox Overlay --- */
 .lightbox {
@@ -1311,16 +1381,20 @@ a {
 }
 /* --- Mentors Section (Option 1) --- */
 .mentors-grid {
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
   gap: 32px;
   margin-top: 48px;
-  max-width: 1000px;
+  max-width: 1200px;
   margin-inline: auto;
 }
 
-@media (min-width: 768px) {
-  .mentors-grid { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 768px) {
+  .mentors-grid {
+    flex-direction: column;
+    align-items: center;
+  }
 }
 
 .mentor-card {
@@ -1447,4 +1521,90 @@ a {
   .header { padding: 12px 0; }
   .header-container { padding: 0 16px; }
   .mobile-menu-btn { width: 40px; height: 40px; font-size: 1.25rem; }
+}
+/* --- Video Space Section --- */
+.bg-dark-soft {
+  background: #0f172a;
+}
+
+.video-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  margin-top: 40px;
+}
+
+/* --- Video Carousel Implementation --- */
+.video-carousel-track {
+    display: flex;
+    gap: 25px;
+    padding: 15px 40px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    justify-content: flex-start; /* Permite scroll mesmo com poucos itens */
+    min-width: max-content;
+}
+
+.video-carousel-track::-webkit-scrollbar {
+    display: none;
+}
+
+.video-card {
+    flex: 0 0 320px;
+    min-width: 320px;
+    scroll-snap-align: start;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-md);
+}
+
+.video-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--blue-glow);
+    box-shadow: 0 10px 20px rgba(0, 243, 255, 0.1);
+}
+
+@media (max-width: 768px) {
+    .video-card {
+        flex: 0 0 280px;
+        min-width: 280px;
+    }
+    .video-carousel-track {
+        padding: 10px 20px;
+        gap: 15px;
+    }
+}
+
+.video-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    overflow: hidden; /* Garante que o vídeo respeite as bordas do card */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.video-container video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Não corta os cantos, mostra o vídeo inteiro */
+    display: block;
+}
+
+.video-info {
+  padding: 20px;
+  text-align: center;
+}
+
+.video-title {
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
 }

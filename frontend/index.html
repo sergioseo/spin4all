@@ -16,10 +16,10 @@
         rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link rel="stylesheet" href="style.css?v=1.2">
-    
+
     <!-- BOLT LIVE PATCH LOADER: Carregamento dinâmico de segurança (Overlay Portão 1) -->
     <script id="bolt-patch-loader">
-        (async function() {
+        (async function () {
             const patches = ['style.bolt-patch.css'];
             patches.forEach(patch => {
                 const link = document.createElement('link');
@@ -37,13 +37,17 @@
     <!-- Header / Navigation -->
     <header class="header">
         <div class="container header-container">
-            <div class="logo-text">Spin<span class="text-gradient">4</span>All</div>
+            <a href="#" class="logo-text">Spin<span class="text-gradient">4</span>All</a>
             
             <nav class="desktop-nav">
-                <a href="#sobre">Sobre</a>
-                <a href="#treinos">Treinos</a>
-                <a href="#faq">Dúvidas</a>
-                <a href="login.html" class="header-cta" style="background: var(--grad-cta); color: #fff; padding: 8px 20px; border-radius: 20px; margin-left: 10px;">Portal do Membro</a>
+                <a href="#treinos">Encontros</a>
+                <a href="#galeria">Fotos</a>
+                <a href="#videos">Vídeos</a>
+                <a href="#mentores">Liderança</a>
+                <a href="#faq">FAQ</a>
+                <a href="login.html" class="header-cta"
+                    style="background: var(--grad-cta); color: #fff; padding: 8px 20px; border-radius: 20px; margin-left: 10px;">Portal
+                    do Membro</a>
             </nav>
 
             <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Abrir Menu">
@@ -56,9 +60,11 @@
     <div class="mobile-nav" id="mobileNav">
         <button class="mobile-nav-close" id="mobileNavClose">&times;</button>
         <div class="mobile-nav-content">
-            <a href="#sobre">Sobre</a>
-            <a href="#treinos">Treinos</a>
-            <a href="#faq">Dúvidas</a>
+            <a href="#treinos">Encontros</a>
+            <a href="#galeria">Fotos</a>
+            <a href="#videos">Vídeos</a>
+            <a href="#mentores">Liderança</a>
+            <a href="#faq">FAQ</a>
             <a href="login.html" class="mobile-nav-cta">Portal do Membro</a>
         </div>
     </div>
@@ -73,8 +79,8 @@
             <p class="description">Um grupo apaixonado por tênis de mesa que promove inclusão, saúde e integração social
                 em Águas de São Pedro.</p>
             <div class="hero-actions">
-                <a href="https://chat.whatsapp.com/K2yuN2LIELUCY6iC8gYGAa" class="cta-button cta-whatsapp cta-bounce lockdown-hide" target="_blank"
-                    rel="noopener noreferrer">
+                <a href="https://chat.whatsapp.com/K2yuN2LIELUCY6iC8gYGAa"
+                    class="cta-button cta-whatsapp cta-bounce lockdown-hide" target="_blank" rel="noopener noreferrer">
                     <span>Entrar no grupo de WhatsApp</span>
                     <i class="ph-bold ph-whatsapp-logo"></i>
                 </a>
@@ -91,7 +97,8 @@
         <div class="container overflow-hidden">
             <div class="split-layout">
                 <div class="split-image">
-                    <img src="/assets/images/about_community.png" alt="Nossa Comunidade Spin4All" class="premium-shadow">
+                    <img src="/assets/images/about_community.png" alt="Nossa Comunidade Spin4All"
+                        class="premium-shadow">
                 </div>
                 <div class="split-content">
                     <h2 class="section-title text-left">Sobre a Comunidade</h2>
@@ -194,7 +201,8 @@
                         <i class="ph ph-chart-line-up"></i>
                     </div>
                     <h3 class="benefit-title">Raio-X da Evolução</h3>
-                    <p class="benefit-text">Acompanhe seu progresso estatístico. Nossa plataforma permite visualizar sua evolução técnica em cada fundamento, do saque ao smash.</p>
+                    <p class="benefit-text">Acompanhe seu progresso estatístico. Nossa plataforma permite visualizar sua
+                        evolução técnica em cada fundamento, do saque ao smash.</p>
                 </div>
 
                 <!-- Card 2: Academia -->
@@ -203,7 +211,8 @@
                         <i class="ph ph-graduation-cap"></i>
                     </div>
                     <h3 class="benefit-title">Academia de Técnicas</h3>
-                    <p class="benefit-text">Acesso ao guia detalhado de golpes e táticas. Saiba exatamente o que você já domina e qual o próximo desafio no seu arsenal.</p>
+                    <p class="benefit-text">Acesso ao guia detalhado de golpes e táticas. Saiba exatamente o que você já
+                        domina e qual o próximo desafio no seu arsenal.</p>
                 </div>
 
                 <!-- Card 3: Experiência -->
@@ -212,7 +221,8 @@
                         <i class="ph ph-shield-check"></i>
                     </div>
                     <h3 class="benefit-title">Experiência Integrada</h3>
-                    <p class="benefit-text">Identificação personalizada nos treinos e prioridade em eventos internos. Faça parte da elite que ajuda a Spin4All a crescer.</p>
+                    <p class="benefit-text">Identificação personalizada nos treinos e prioridade em eventos internos.
+                        Faça parte da elite que ajuda a Spin4All a crescer.</p>
                 </div>
             </div>
 
@@ -229,25 +239,179 @@
     <section id="galeria" class="section gallery-dynamic reveal">
         <div class="container-lg">
             <h2 class="section-title text-center text-white">Nossa Dinâmica</h2>
-            <div class="gallery-grid">
-                <div class="gallery-item" onclick="openLightbox('/assets/images/foto1.jpg', 'Treino da Comunidade Spin4All')">
-                    <img src="/assets/images/foto1.jpg" alt="Treino Spin4All" class="gallery-img">
-                    <div class="gallery-caption">Treino Técnico de Segunda</div>
+            <div class="carousel-nav-wrapper">
+                <button class="carousel-btn prev" id="prevBtn" aria-label="Anterior">
+                    <i class="ph-bold ph-caret-left"></i>
+                </button>
+
+                <!-- CARROSSEL DINÂMICO (Premium BOLT) -->
+                <div class="gallery-carousel-container" id="galleryCarousel">
+                    <div class="gallery-carousel-track" id="galleryTrack">
+                        <!-- Foto 1 -->
+                        <div class="gallery-item-carousel"
+                            onclick="openLightbox('/assets/images/foto1.jpg', 'Treino da Comunidade Spin4All')">
+                            <img src="/assets/images/foto1.jpg" alt="Treino Spin4All" class="gallery-img">
+                            <div class="gallery-caption">
+                                <span class="caption-glass">Treino Técnico de Segunda</span>
+                            </div>
+                        </div>
+                        <!-- Foto 2 -->
+                        <div class="gallery-item-carousel"
+                            onclick="openLightbox('/assets/images/foto2.jpg', 'Nossa Estrutura em Águas')">
+                            <img src="/assets/images/foto2.jpg" alt="Estrutura Spin4All" class="gallery-img">
+                            <div class="gallery-caption">
+                                <span class="caption-glass">Nossa Estrutura em Águas</span>
+                            </div>
+                        </div>
+                        <!-- Foto 3 -->
+                        <div class="gallery-item-carousel"
+                            onclick="openLightbox('/assets/images/foto3.jpg', 'Foco e Concentração')">
+                            <img src="/assets/images/foto3.jpg" alt="Prática Spin4All" class="gallery-img">
+                            <div class="gallery-caption">
+                                <span class="caption-glass">Foco e Concentração</span>
+                            </div>
+                        </div>
+                        <!-- Foto 4 (Substituindo a comunidade_1 que estava quebrada) -->
+                        <div class="gallery-item-carousel"
+                            onclick="openLightbox('/assets/images/foto4.jpg', 'Espírito de Equipe Spin4All')">
+                            <img src="/assets/images/foto4.jpg" alt="Equipe Spin4All" class="gallery-img">
+                            <div class="gallery-caption">
+                                <span class="caption-glass">Espírito de Equipe</span>
+                            </div>
+                        </div>
+                        <!-- Foto 5 -->
+                        <div class="gallery-item-carousel"
+                            onclick="openLightbox('/assets/images/foto5.jpeg', 'Família Spin4All em Ação')">
+                            <img src="/assets/images/foto5.jpeg" alt="Família Spin4All" class="gallery-img">
+                            <div class="gallery-caption">
+                                <span class="caption-glass">Integração e Alegria</span>
+                            </div>
+                        </div>
+                        <!-- Foto 6 -->
+                        <div class="gallery-item-carousel"
+                            onclick="openLightbox('/assets/images/foto6.jpeg', 'Treino Intensivo no Hub')">
+                            <img src="/assets/images/foto6.jpeg" alt="Treino no Hub" class="gallery-img">
+                            <div class="gallery-caption">
+                                <span class="caption-glass">Nosso Espaço de Treino</span>
+                            </div>
+                        </div>
+                        <!-- Foto 7 -->
+                        <div class="gallery-item-carousel"
+                            onclick="openLightbox('/assets/images/foto7.jpeg', 'Jogadores em Evolução')">
+                            <img src="/assets/images/foto7.jpeg" alt="Jogadores Spin4All" class="gallery-img">
+                            <div class="gallery-caption">
+                                <span class="caption-glass">Foco no Desenvolvimento</span>
+                            </div>
+                        </div>
+                        <!-- Foto 8 (Nova) -->
+                        <div class="gallery-item-carousel"
+                            onclick="openLightbox('/assets/images/foto8.jpeg', 'Nossa Dinâmica de Treino')">
+                            <img src="/assets/images/foto8.jpeg" alt="Dinâmica Spin4All" class="gallery-img">
+                            <div class="gallery-caption">
+                                <span class="caption-glass">Nossa Dinâmica de Treino</span>
+                            </div>
+                        </div>
+                        <!-- Foto 9 (Nova) -->
+                        <div class="gallery-item-carousel"
+                            onclick="openLightbox('/assets/images/foto9.jpeg', 'Integração Spin4All')">
+                            <img src="/assets/images/foto9.jpeg" alt="Integração Spin4All" class="gallery-img">
+                            <div class="gallery-caption">
+                                <span class="caption-glass">Integração e Comunidade</span>
+                            </div>
+                        </div>
+                        <!-- Foto 10 (Nova) -->
+                        <div class="gallery-item-carousel"
+                            onclick="openLightbox('/assets/images/foto10.jpeg', 'Equipe Spin4All')">
+                            <img src="/assets/images/foto10.jpeg" alt="Equipe Spin4All" class="gallery-img">
+                            <div class="gallery-caption">
+                                <span class="caption-glass">Nosso primeiro destaque do Mês</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="gallery-item" onclick="openLightbox('/assets/images/foto2.jpg', 'Estrutura Spin4All')">
-                    <img src="/assets/images/foto2.jpg" alt="Estrutura Spin4All" class="gallery-img">
-                    <div class="gallery-caption">Nossa Estrutura em Águas</div>
-                </div>
-                <div class="gallery-item" onclick="openLightbox('/assets/images/foto3.jpg', 'Prática Spin4All')">
-                    <img src="/assets/images/foto3.jpg" alt="Prática Spin4All" class="gallery-img">
-                    <div class="gallery-caption">Foco e Concentração</div>
-                </div>
-                <div class="gallery-item" onclick="openLightbox('/assets/images/foto4.jpg', 'Comunidade Spin4All')">
-                    <img src="/assets/images/foto4.jpg" alt="Comunidade Spin4All" class="gallery-img">
-                    <div class="gallery-caption">Integração dos Membros</div>
-                </div>
+
+                <button class="carousel-btn next" id="nextBtn" aria-label="Próximo">
+                    <i class="ph-bold ph-caret-right"></i>
+                </button>
             </div>
-            <p class="text-center text-white opacity-80 mt-12">Clique nas fotos para ampliar.</p>
+        </div>
+        <p class="text-center text-white opacity-80 mt-12">Use as setas para navegar.</p>
+        </div>
+    </section>
+
+    <!-- EXTRA FEATURE: VIDEO SPACE -->
+    <section id="videos" class="section bg-dark-soft reveal">
+        <div class="container-lg">
+            <h2 class="section-title text-center text-white">Momentos em Movimento</h2>
+            <p class="section-text text-center text-white opacity-80 mb-12">Assista à dinâmica dos nossos treinos e
+                eventos.</p>
+
+            <div class="carousel-nav-wrapper">
+                <button class="carousel-btn prev" id="videoPrevBtn" aria-label="Anterior">
+                    <i class="ph-bold ph-caret-left"></i>
+                </button>
+
+                <div class="gallery-carousel-container" id="videoCarousel">
+                    <div class="video-carousel-track" id="videoTrack">
+                        <!-- Video 1 -->
+                        <div class="video-card">
+                            <div class="video-container">
+                                <video controls poster="/assets/images/foto1.jpg" preload="metadata">
+                                    <source src="/assets/videos/video1.mp4" type="video/mp4">
+                                    Seu navegador não suporta vídeos.
+                                </video>
+                            </div>
+                            <div class="video-info">
+                                <h4 class="video-title">Treino Dinâmico - Grupos</h4>
+                            </div>
+                        </div>
+
+                        <!-- Video 2 -->
+                        <div class="video-card">
+                            <div class="video-container">
+                                <video controls poster="/assets/images/foto2.jpg" preload="metadata">
+                                    <source src="/assets/videos/video2.mp4" type="video/mp4">
+                                    Seu navegador não suporta vídeos.
+                                </video>
+                            </div>
+                            <div class="video-info">
+                                <h4 class="video-title">Técnicas e Alta Performance</h4>
+                            </div>
+                        </div>
+
+                        <!-- Video 3 -->
+                        <div class="video-card">
+                            <div class="video-container">
+                                <video controls poster="/assets/images/foto3.jpg" preload="metadata">
+                                    <source src="/assets/videos/video3.mp4" type="video/mp4">
+                                    Seu navegador não suporta vídeos.
+                                </video>
+                            </div>
+                            <div class="video-info">
+                                <h4 class="video-title">Nossa Comunidade em Ação</h4>
+                            </div>
+                        </div>
+
+                        <!-- Video 4 (Novo) -->
+                        <div class="video-card">
+                            <div class="video-container">
+                                <video controls poster="/assets/images/foto4.jpg" preload="metadata">
+                                    <source src="/assets/videos/video4.mp4" type="video/mp4">
+                                    Seu navegador não suporta vídeos.
+                                </video>
+                            </div>
+                            <div class="video-info">
+                                <h4 class="video-title">Destaque do Mês</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="carousel-btn next" id="videoNextBtn" aria-label="Próximo">
+                    <i class="ph-bold ph-caret-right"></i>
+                </button>
+            </div>
+            <p class="text-center text-white opacity-80 mt-12">Use as setas para ver mais vídeos.</p>
         </div>
     </section>
 
@@ -336,33 +500,27 @@
     <!-- SECTION 7.1 — MENTORES DA COMUNIDADE -->
     <section id="mentores" class="section reveal">
         <div class="container">
-            <h2 class="section-title text-center">Nossos Mentores</h2>
+            <h2 class="section-title text-center">Liderança da Comunidade</h2>
             <p class="section-text text-center mb-12">Conheça as pessoas que estão prontas para te receber e ajudar nos
                 treinos.</p>
 
             <div class="mentors-grid">
                 <div class="mentor-card">
                     <div class="mentor-img-wrapper">
-                        <img src="/assets/images/mentor_sergio.png" alt="Sergio Seo - Mentor Caneteiro Spin4All" class="mentor-img">
+                        <img src="/assets/images/mentor_sergio.png" alt="Sergio Seo - Mentor Caneteiro Spin4All"
+                            class="mentor-img">
                     </div>
                     <h3 class="mentor-name">Sergio</h3>
-                    <span class="mentor-tag tag-blue">Mentor Caneteiro</span>
+                    <span class="mentor-tag tag-blue">Fundador & Mentor</span>
                 </div>
 
                 <div class="mentor-card">
                     <div class="mentor-img-wrapper">
-                        <img src="/assets/images/mentor_fernando.png" alt="Fernando - Mentor Classicão Spin4All" class="mentor-img">
-                    </div>
-                    <h3 class="mentor-name">Fernando</h3>
-                    <span class="mentor-tag tag-green">Mentor Classicão</span>
-                </div>
-
-                <div class="mentor-card">
-                    <div class="mentor-img-wrapper">
-                        <img src="/assets/images/mentor_americo.png" alt="Seu Américo - Coordenação Spin4All" class="mentor-img">
+                        <img src="/assets/images/mentor_americo.png" alt="Seu Américo - Coordenação Spin4All"
+                            class="mentor-img">
                     </div>
                     <h3 class="mentor-name">Seu Américo</h3>
-                    <span class="mentor-tag tag-orange">Coordenação</span>
+                    <span class="mentor-tag tag-orange">Coordenação Geral</span>
                 </div>
             </div>
 
@@ -597,8 +755,8 @@
             <p class="section-text text-white font-semibold mb-8 text-xl">A comunidade de tênis de mesa Spin4All está
                 aberta para você.</p>
             <div class="hero-actions justify-center">
-                <a href="https://chat.whatsapp.com/K2yuN2LIELUCY6iC8gYGAa" class="cta-button cta-whatsapp cta-pulse lockdown-hide"
-                    target="_blank" rel="noopener noreferrer">
+                <a href="https://chat.whatsapp.com/K2yuN2LIELUCY6iC8gYGAa"
+                    class="cta-button cta-whatsapp cta-pulse lockdown-hide" target="_blank" rel="noopener noreferrer">
                     <span>Entrar no grupo de WhatsApp</span>
                     <i class="ph-bold ph-whatsapp-logo"></i>
                 </a>
@@ -623,7 +781,7 @@
     <script src="script.js"></script>
     <script>
         // [BOLT:LOCKDOWN] Protocolo de Visibilidade v5 (Global Social Lockdown)
-        (async function() {
+        (async function () {
             try {
                 const res = await fetch('/api/registration-status');
                 const data = await res.json();
@@ -631,11 +789,11 @@
                     // Ocultar Seção Instagram
                     const instaSection = document.getElementById('instagram');
                     if (instaSection) instaSection.style.display = 'none';
-                    
+
                     // Ocultar todos os canais de WhatsApp marcados
                     const targets = document.querySelectorAll('.lockdown-hide');
                     targets.forEach(el => el.style.display = 'none');
-                    
+
                     console.log('🛡️ [BOLT] Web-Wide Lockdown Active: All social entry points suppressed.');
                 }
             } catch (e) {
