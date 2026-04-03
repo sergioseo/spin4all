@@ -1,0 +1,50 @@
+# [PLAN] Fase 11: Semantic Intent Engine — Mapeamento de Domínio 🛡️🧠🧬🏗️
+
+Este plano detalha a implementação do **Cérebro Semântico (v11.0)**, resolvendo o "Dilema da Intenção" onde a IA confunde a deleção de um atributo (foto) com a deleção de uma entidade (usuário).
+
+---
+
+## 🏗️ Proposta de Arquitetura
+
+### 1. Camada de Configuração (O Mapa de Verdade)
+Criaremos os pilares de decisão do sistema para que a governança deixe de ser baseada em "palavras-chave soltas" e passe a ser baseada em regras de domínio.
+
+- **[NEW] [intent-registry.json](file:///c:/Users/sjwse/OneDrive/Documentos/Antigravity/spin4all/backend/src/governance/config/intent-registry.json)**: Mapeia intenções (ex: `remove_profile_photo`) para níveis de escopo (`FIELD_LEVEL`) e operações permitidas (`UPDATE`).
+- **[NEW] [entity-map.json](file:///c:/Users/sjwse/OneDrive/Documentos/Antigravity/spin4all/backend/src/governance/config/entity-map.json)**: Define as tabelas e campos do Spin4all (ex: tabela `users` tem campos `photo`, `bio`), permitindo ao sistema validar se uma ação atinge um campo ou um registro.
+
+### 2. O Motor Semântico (Stage 1.7)
+Evoluiremos o `IntentMediator` para o **`SemanticEngine`**.
+
+#### [NEW] [semantic-engine.js](file:///c:/Users/sjwse/OneDrive/Documentos/Antigravity/spin4all/backend/src/governance/services/semantic-engine.js)
+Este componente será responsável por:
+1. **Classificar Escopo**: Identificar se a intenção é `FIELD`, `ENTITY` ou `SYSTEM`.
+2. **Validar Operação**: Bloquear `DELETE` para intenções de nível `FIELD`.
+3. **Safe Rewriting Dinâmico**: Transformar a query da IA baseada nas regras do `intent-registry.json`.
+
+---
+
+## 🛠️ Alterações Sugeridas
+
+### [Componente] Governança
+
+#### [NEW] [intent-registry.json](file:///c:/Users/sjwse/OneDrive/Documentos/Antigravity/spin4all/backend/src/governance/config/intent-registry.json)
+#### [NEW] [entity-map.json](file:///c:/Users/sjwse/OneDrive/Documentos/Antigravity/spin4all/backend/src/governance/config/entity-map.json)
+#### [NEW] [semantic-engine.js](file:///c:/Users/sjwse/OneDrive/Documentos/Antigravity/spin4all/backend/src/governance/services/semantic-engine.js)
+
+#### [MODIFY] [bolt-runner.js](file:///c:/Users/sjwse/OneDrive/Documentos/Antigravity/spin4all/backend/src/governance/bolt-runner.js)
+Injeção do **Stage 1.7 (Semantic Validation & Rewrite)** logo após o Sanitizer.
+
+---
+
+## 📊 Planejamento de Verificação
+
+### Automated Tests
+- Criaremos um script de simulação `simulate-semantic-v11.js` focado em:
+  1. **Teste FIELD vs DELETE**: Validar se o motor corrige automaticamente o `DELETE` para `UPDATE NULL` ao detectar uma intenção de remoção de atributo.
+  2. **Teste de Entidade Protegida**: Validar se intenções de nível `ENTITY` (deletar conta) exigem uma flag de confirmação ou são sinalizadas como risco alto.
+  3. **Teste de Logística de Múltiplas Intenções**: Garantir que o comando composto (Limpar + Substituir) saia coerente do pipeline.
+
+---
+
+## 💬 Questões em Aberto
+- **Confirmação do Usuário**: Como o BoltRunner não é um processo interativo direto no console (ele roda no servidor), a "confirmação humana" (Nível ENTITY) deve ser implementada via sinalização de log ou pausa de pipeline? 👤❓

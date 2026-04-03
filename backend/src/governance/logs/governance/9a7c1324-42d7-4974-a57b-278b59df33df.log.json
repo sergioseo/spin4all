@@ -1,0 +1,38 @@
+[
+  {
+    "execution_id": "9a7c1324-42d7-4974-a57b-278b59df33df",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {},
+    "output": {},
+    "decision": {
+      "summary": "START",
+      "reason": "Agent [classifier] execution cycle initiated."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.387Z"
+  },
+  {
+    "execution_id": "9a7c1324-42d7-4974-a57b-278b59df33df",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {
+      "user_input": "Integrar API de pagamento com Stripe."
+    },
+    "output": {
+      "intent": "backend_change",
+      "domain": "backend",
+      "confidence": 0.92
+    },
+    "decision": {
+      "summary": "Classified as backend",
+      "reason": "Heuristic match for [BE_15] scenario."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.388Z"
+  }
+]

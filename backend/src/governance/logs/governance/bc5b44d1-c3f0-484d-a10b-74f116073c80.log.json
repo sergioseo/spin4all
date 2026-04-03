@@ -1,0 +1,38 @@
+[
+  {
+    "execution_id": "bc5b44d1-c3f0-484d-a10b-74f116073c80",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {},
+    "output": {},
+    "decision": {
+      "summary": "START",
+      "reason": "Agent [classifier] execution cycle initiated."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.417Z"
+  },
+  {
+    "execution_id": "bc5b44d1-c3f0-484d-a10b-74f116073c80",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {
+      "user_input": "Lista de presença com botão de check-in que atualiza o redis."
+    },
+    "output": {
+      "intent": "fullstack_change",
+      "domain": "fullstack",
+      "confidence": 0.92
+    },
+    "decision": {
+      "summary": "Classified as fullstack",
+      "reason": "Heuristic match for [FS_08] scenario."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.419Z"
+  }
+]

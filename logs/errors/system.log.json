@@ -1,0 +1,12 @@
+[
+  {
+    "step": "SYSTEM",
+    "phase": "ERROR",
+    "error": "executionId é obrigatório para o PromoteService.",
+    "timestamp": "2026-03-27T18:04:28.109Z"
+  }
+]onId é obrigatório para o PromoteService.\n    at new PromoteService (C:\\Users\\sjwse\\OneDrive\\Documentos\\Antigravity\\spin4all\\bolt-engine-core\\services\\promote-service.js:35:29)\n    at new OrchestratorExecutor (C:\\Users\\sjwse\\OneDrive\\Documentos\\Antigravity\\spin4all\\bolt-engine-core\\orchestrators\\orchestrator-executor.js:20:27)\n    at BoltRunner.run (C:\\Users\\sjwse\\OneDrive\\Documentos\\Antigravity\\spin4all\\bolt-engine-core\\bolt-runner.js:54:24)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async Worker.connection [as processFn] (C:\\Users\\sjwse\\OneDrive\\Documentos\\Antigravity\\spin4all\\bolt-engine-core\\worker-bolt.js:21:22)\n    at async C:\\Users\\sjwse\\OneDrive\\Documentos\\Antigravity\\spin4all\\node_modules\\bullmq\\dist\\cjs\\classes\\worker.js:570:32"
+    },
+    "timestamp": "2026-03-27T18:04:28.109Z"
+  }
+]

@@ -1,0 +1,18 @@
+{
+  "execution_id": "string (UUID)",
+  "contract_proposal": {
+    "contract_id": "string",
+    "technical_spec": {
+      "files_to_create": [],
+      "files_to_modify": [],
+      "api_endpoints": [],
+      "components_ui": []
+    }
+  },
+  "legacy_context": [
+    {
+      "file": "string",
+      "content": "string (code content)"
+    }
+  ]
+}

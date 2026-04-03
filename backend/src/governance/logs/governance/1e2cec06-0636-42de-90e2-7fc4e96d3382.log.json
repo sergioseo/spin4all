@@ -1,0 +1,38 @@
+[
+  {
+    "execution_id": "1e2cec06-0636-42de-90e2-7fc4e96d3382",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {},
+    "output": {},
+    "decision": {
+      "summary": "START",
+      "reason": "Agent [classifier] execution cycle initiated."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.389Z"
+  },
+  {
+    "execution_id": "1e2cec06-0636-42de-90e2-7fc4e96d3382",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {
+      "user_input": "Configurar logs de erro para o Sentry."
+    },
+    "output": {
+      "intent": "backend_change",
+      "domain": "backend",
+      "confidence": 0.92
+    },
+    "decision": {
+      "summary": "Classified as backend",
+      "reason": "Heuristic match for [BE_16] scenario."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.390Z"
+  }
+]

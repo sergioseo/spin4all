@@ -1,0 +1,38 @@
+[
+  {
+    "execution_id": "6aae9e6e-37fa-41fc-a30d-9169c33c1016",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {},
+    "output": {},
+    "decision": {
+      "summary": "START",
+      "reason": "Agent [classifier] execution cycle initiated."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.402Z"
+  },
+  {
+    "execution_id": "6aae9e6e-37fa-41fc-a30d-9169c33c1016",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {
+      "user_input": "Criar um formulário de contato que envia e-mail."
+    },
+    "output": {
+      "intent": "fullstack_change",
+      "domain": "fullstack",
+      "confidence": 0.92
+    },
+    "decision": {
+      "summary": "Classified as fullstack",
+      "reason": "Heuristic match for [FS_01] scenario."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.403Z"
+  }
+]

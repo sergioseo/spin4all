@@ -1,0 +1,53 @@
+# [PLAN] Fase 12.1: Interação Bimodal de Assets 📸🎨👤🏗️
+
+Este plano estabelece a política de **Resolução Flexível de Ativos**, garantindo que a missão seja concluída mesmo quando o recurso original (ex: foto do Brad Pitt) não estiver disponível no momento da execução.
+
+---
+
+## 🏗️ Proposta de Arquitetura: Decisão Bimodal de Ativos
+
+### 1. Detecção e Apresentação de Opções (Stage 2.7) 🔎
+Ao detectar um "Arquivo Fantasma" (ex: `brad_pitt.jpg`), o BOLT interromperá a promoção e apresentará o **`Asset Decision Card`**:
+
+> **🚨 [ASSET:MISSING] O recurso 'brad_pitt.jpg' não foi encontrado.**
+> **Como deseja prosseguir com a Missão?**
+> - **[A] Upload Real**: Fornecer o arquivo físico ou o path local para o storage oficial.
+> - **[B] Avatar Siglas**: Gerar automaticamente uma imagem padrão com as siglas (ex: "BP").
+
+### 2. Gerador de Avatares (AvatarGenerator Component) 🎨
+Implementação de um serviço leve para criação de placeholders estéticos:
+- **Formato**: SVG (Renderizável em tempo real) ou PNG gerado via Canvas (se necessário).
+- **Estética**: Cores do Style Guide Spin4all com as iniciais do nome da entidade (ex: Brad Pitt -> "BP").
+- **Asset Persistence**: A imagem gerada é salva automaticamente no storage do projeto (`public/assets/avatars/`).
+
+### 3. Promoção Condicional ✅
+- A transação só é promovida para `/current` após uma das duas rotas acima ser validada:
+  - Rota A -> Check de `fs.existsSync(new_file)`.
+  - Rota B -> Confirmação de `AvatarGenerator.generate()`.
+
+---
+
+## 🛠️ Alterações Sugeridas
+
+### [Componente] QA Validator / Assets
+#### [NEW] [avatar-generator.js](file:///c:/Users/sjwse/OneDrive/Documentos/Antigravity/spin4all/backend/src/governance/services/avatar-generator.js)
+- Serviço para geração de imagens de placeholder com siglas.
+
+### [Componente] BoltRunner
+#### [MODIFY] [bolt-runner.js](file:///c:/Users/sjwse/OneDrive/Documentos/Antigravity/spin4all/backend/src/governance/bolt-runner.js)
+- Implementação do loop de escolha bimodal para o usuário.
+
+---
+
+## 📊 Planejamento de Verificação
+
+### Simulated Mission (v12.1)
+1. **Trigger**: Input "Deletar foto e colocar Brad Pitt".
+2. **Execução**: IA gera `brad_pitt.jpg` (Ausente).
+3. **Pausa**: BOLT apresenta as opções A e B.
+4. **Resolução B**: Usuário escolhe "Siglas" -> BOLT gera `BP.svg` -> Missão Finalizada com Sucesso.
+
+---
+
+## 🏁 Conclusão do Desenvolvimento Industrial
+Com esta fase, o BOLT atinge o **Nível 12 de Maturidade**, tornando-se um sistema resiliente, semanticamente correto, seguro e esteticamente inteligente.

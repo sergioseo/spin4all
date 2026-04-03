@@ -1,66 +1,82 @@
 const { Worker } = require('bullmq');
+const path = require('path');
 const connection = require('../redis');
 const ProcessMonitor = require('../../services/governance/ProcessMonitor');
 const ETLEngine = require('../../services/data/transformation/ETLEngine');
 
+// --- INTEGRAÇÃO BOLT ENGINE (INDUSTRIALIZED) ---
+// Resolvemos o caminho para o motor BOLT
+const BOLT_ROOT = path.resolve(__dirname, '../../../../../bolt-engine-core');
+const BOLT_RUNNER_PATH = path.join(BOLT_ROOT, 'bolt-runner');
+const BOLT_SKILLS_PATH = path.join(BOLT_ROOT, 'skills', 'deterministic-skills');
+
 /**
- * Worker Global do Spin4All
- * Processa todos os jobs vindos das filas e reporta para a governança
+ * Worker Global do Spin4All (Orquestração + Governança)
+ * Processa todos os jobs vindos das filas e reporta para a governança. 🛡️🛰️
  */
 const startWorkers = () => {
-    console.log('👷 [WORKER] Iniciando processadores de orquestração...');
+    console.log('👷 [WORKER:INIT] Iniciando processadores de orquestração...');
 
+    // 1. Worker de Orquestração Interna (Site/ETL)
     const mainWorker = new Worker('main_orchestrator', async (job) => {
-        const { name, data } = job;
-        console.log(`🚀 [JOB] Processando: ${name} (ID: ${job.id})`);
+        const { name } = job;
+        console.log(`🚀 [JOB:CORE] Processando: ${name} (ID: ${job.id})`);
 
-        // Registrar início na Governança
-        const processId = await ProcessMonitor.start(name, 'BullMQ Execution');
+        const processId = await ProcessMonitor.start(name, 'Internal Queue');
 
         try {
             switch (name) {
                 case 'ETL_MATCHES':
-                    // Chamar a engine real de ETL
                     await ETLEngine.processMatches();
                     break;
-
                 case 'AI_ANALYSIS':
-                    // Futuro: Chamar o orquestrador de IA
-                    console.log('🤖 [AI] Análise de IA solicitada...');
+                    console.log('🤖 [AI] Análise de IA em fila...');
                     break;
-
                 default:
-                    console.warn(`⚠️ [WORKER] Job desconhecido: ${name}`);
+                    console.warn(`⚠️ [JOB:WARN] Desconhecido: ${name}`);
             }
-
-            // Reportar sucesso
-            await ProcessMonitor.finish(processId, 'SUCCESS', { 
-                job_id: job.id,
-                triggered_at: new Date().toISOString()
-            });
-
+            await ProcessMonitor.finish(processId, 'SUCCESS', { job_id: job.id });
         } catch (err) {
-            console.error(`❌ [JOB ERROR] Falha no job ${name}:`, err);
-            
-            // Reportar falha
-            await ProcessMonitor.finish(processId, 'FAIL', { 
-                error: err.message, 
-                job_id: job.id 
-            });
-            
-            throw err; // Lançar erro para o BullMQ tentar novamente
+            console.error(`❌ [JOB:ERR]`, err);
+            await ProcessMonitor.finish(processId, 'FAIL', { error: err.message });
+            throw err;
         }
     }, { connection });
 
-    mainWorker.on('completed', (job) => {
-        console.log(`✅ [JOB] Concluído: ${job.name}`);
+    // 2. Worker de Governança BOLT (O Motor Inteligente)
+    // Este worker ouve a fila 'governance_queue' e executa o BoltRunner
+    console.log('👷 [WORKER:BOLT] Integrando Motor de Governança Autônomo...');
+    
+    const boltWorker = new Worker('governance_queue', async (job) => {
+        const { executionId, input } = job.data;
+        console.log(`\n📦 [BOLT:WORKER] Missão Detectada! Job #${job.id} (Ref: ${executionId})`);
+        
+        try {
+            // Lazy load do Motor BOLT para evitar overhead se não usado
+            const BoltRunner = require(BOLT_RUNNER_PATH);
+            const skills = require(BOLT_SKILLS_PATH);
+            
+            const runner = new BoltRunner(skills);
+            const result = await runner.run(input, executionId, job);
+            
+            console.log(`✅ [BOLT:WORKER] Missão concluída com sucesso (Job #${job.id}).`);
+            return result;
+        } catch (err) {
+            console.error(`❌ [BOLT:WORKER] Erro na missão #${job.id}:`, err.message);
+            throw err;
+        }
+    }, { 
+        connection,
+        concurrency: 1 // Governança é atômica e sequencial por natureza
     });
 
-    mainWorker.on('failed', (job, err) => {
-        console.error(`🚨 [JOB] Falhou: ${job.name}. Erro: ${err.message}`);
+    // EVENTOS GLOBAIS
+    [mainWorker, boltWorker].forEach(w => {
+        w.on('completed', (job) => console.log(`[QUEUE] Job ${job.id} finalizado.`));
+        w.on('failed', (job, err) => console.error(`[QUEUE] ALERTA! Job ${job?.id} falhou: ${err.message}`));
     });
 
-    return mainWorker;
+    console.log('✨ [WORKERS] Orquestração e Governança operando em harmonia.');
 };
 
 module.exports = { startWorkers };

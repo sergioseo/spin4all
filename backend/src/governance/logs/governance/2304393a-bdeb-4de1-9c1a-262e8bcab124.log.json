@@ -1,0 +1,38 @@
+[
+  {
+    "execution_id": "2304393a-bdeb-4de1-9c1a-262e8bcab124",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {},
+    "output": {},
+    "decision": {
+      "summary": "START",
+      "reason": "Agent [classifier] execution cycle initiated."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.335Z"
+  },
+  {
+    "execution_id": "2304393a-bdeb-4de1-9c1a-262e8bcab124",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {
+      "user_input": "Aumentar o espaçamento entre as missões da lista."
+    },
+    "output": {
+      "intent": "ui_change",
+      "domain": "frontend",
+      "confidence": 0.92
+    },
+    "decision": {
+      "summary": "Classified as frontend",
+      "reason": "Heuristic match for [FE_15] scenario."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.336Z"
+  }
+]

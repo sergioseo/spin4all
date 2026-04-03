@@ -1,6 +1,4 @@
 const IORedis = require('ioredis');
-const path = require('path');
-require('dotenv').config({ path: path.join(__dirname, '../../.env') });
 
 /**
  * Singleton de conexão com o Redis

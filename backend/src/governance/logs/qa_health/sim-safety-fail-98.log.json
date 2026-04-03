@@ -1,0 +1,20 @@
+[
+  {
+    "execution_id": "sim-safety-fail-98",
+    "qa_version": "1.0.0",
+    "overall_score": 0.4,
+    "passed": false,
+    "files": [
+      {
+        "path": "profile-cleanup.sql",
+        "score": "0.40",
+        "violations": [
+          "SECURITY_FATAL: DELETE or UPDATE command without WHERE clause detected!"
+        ],
+        "status": "warning"
+      }
+    ],
+    "error": "QA Quality Gate Violated: Score 0.40. 1 Fatal, 0 Warnings.",
+    "timestamp": "2026-03-26T21:12:23.319Z"
+  }
+]

@@ -1,0 +1,38 @@
+[
+  {
+    "execution_id": "0ed92642-1c33-4fd6-8926-1b00b2ae393d",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {},
+    "output": {},
+    "decision": {
+      "summary": "START",
+      "reason": "Agent [classifier] execution cycle initiated."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.397Z"
+  },
+  {
+    "execution_id": "0ed92642-1c33-4fd6-8926-1b00b2ae393d",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {
+      "user_input": "Corrigir erro 500 na rota /api/my-stats."
+    },
+    "output": {
+      "intent": "backend_change",
+      "domain": "backend",
+      "confidence": 0.92
+    },
+    "decision": {
+      "summary": "Classified as backend",
+      "reason": "Heuristic match for [BE_19] scenario."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.398Z"
+  }
+]

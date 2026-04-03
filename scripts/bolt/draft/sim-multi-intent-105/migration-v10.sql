@@ -1,0 +1,1 @@
+DELETE FROM users WHERE user_id = 123; UPDATE users SET photo = 'brad_pitt.jpg' WHERE user_id = 123;

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOLT Governance Hub | Spin4All</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --sidebar-width: 280px;
+            --accent-glow: #38bdf8;
+            --danger-glow: #f43f5e;
+            --success-glow: #4ade80;
+        }
+
+        body {
+            background: #0f172a;
+            color: #f8fafc;
+            display: flex;
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex-grow: 1;
+            padding: 40px;
+            max-width: 1400px;
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            transition: transform 0.3s ease;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(56, 189, 248, 0.2);
+        }
+
+        .governance-console {
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 12px;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            padding: 20px;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            color: #38bdf8;
+            width: 100%;
+            height: 200px;
+            resize: vertical;
+            outline: none;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .dispatch-btn {
+            background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+        }
+
+        .dispatch-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.5);
+        }
+
+        .mission-status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .mission-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mission-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--accent-glow);
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .status-active { background: rgba(56, 189, 248, 0.1); color: #38bdf8; }
+        .status-completed { background: rgba(74, 222, 128, 0.1); color: #4ade80; }
+        .status-waiting { background: rgba(251, 191, 36, 0.1); color: #fbbf24; }
+        .status-failed { background: rgba(244, 63, 94, 0.1); color: #f43f5e; }
+
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0f172a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .log-console {
+            padding: 15px;
+            border-radius: 8px;
+            height: 420px; /* Aumentado em 20% sobre os 350px anteriores */
+            overflow-y: auto;
+            border: 1px solid rgba(255,255,255,0.05);
+            margin-top: 15px;
+        }
+
+        .approve-btn {
+            background: #4ade80;
+            color: #064e3b;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .vivid-log-line {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            margin-bottom: 3px;
+            border-left: 2px solid rgba(255,255,255,0.05);
+            padding-left: 8px;
+            transition: all 0.2s ease;
+        }
+        .vivid-log-line:hover {
+            border-left-color: #38bdf8;
+            background: rgba(56, 189, 248, 0.05);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="loader" class="loader">
+        <i class="fas fa-satellite fa-spin fa-3x" style="color: #38bdf8;"></i>
+    </div>
+
+    <aside class="sidebar">
+        <div class="sidebar-logo" style="margin-bottom: 40px; text-align: center;">
+            <span style="font-weight: 800; font-size: 1.5rem;">BOLT<span style="color:#38bdf8">HUB</span></span>
+        </div>
+        <nav class="nav-menu" style="flex-grow: 1;">
+            <a href="dashboard.html" class="nav-link"
+                style="margin-bottom: 10px; display: flex; align-items: center; gap: 12px; padding: 12px; text-decoration: none; border-radius: 8px; color: #94a3b8;">
+                <i class="fas fa-arrow-left"></i> Voltar ao Portal
+            </a>
+            <a href="admin.html" class="nav-link"
+                style="margin-bottom: 10px; display: flex; align-items: center; gap: 12px; padding: 12px; text-decoration: none; border-radius: 8px; color: #94a3b8;">
+                <i class="fas fa-shield-alt"></i> Painel Admin
+            </a>
+            <a href="#" class="nav-link active"
+                style="margin-bottom: 10px; display: flex; align-items: center; gap: 12px; padding: 12px; text-decoration: none; border-radius: 8px; background: rgba(255,255,255,0.05); color: #38bdf8;">
+                <i class="fas fa-code-branch"></i> Governança BOLT
+            </a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header style="margin-bottom: 40px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h1 style="font-size: 2.2rem; margin-bottom: 5px; font-weight: 800; background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+                    Manual Control: BOLT Engine</h1>
+                <p style="color: #94a3b8; font-size: 1.1rem;">Despache missões autônomas e autorize promoções em produção.</p>
+            </div>
+            <div id="engine-status">
+                <span class="status-badge status-active"><i class="fas fa-circle"></i> Engine Online</span>
+            </div>
+        </header>
+
+        <section class="glass-card">
+            <h3 style="margin-bottom: 20px; color: #38bdf8;"><i class="fas fa-terminal"></i> Mission Intent Console</h3>
+            <textarea id="mission-intent" class="governance-console" placeholder="Descreva sua intenção de governança... (Ex: 'Ajustar o padding dos cards de membros para 20px e adicionar blur 10px no glassmorphism')"></textarea>
+            
+            <div class="dispatch-card" style="display: flex; justify-content: space-between; align-items: center;">
+                <button id="dispatch-btn" class="dispatch-btn">
+                    <i class="fas fa-paper-plane"></i> DESPACHAR MISSÃO
+                </button>
+                <div style="color: #64748b; font-size: 0.8rem;">
+                    <i class="fas fa-info-circle"></i> BOLT usará a infraestrutura Redis para execução distribuída.
+                </div>
+            </div>
+
+            <!-- HISTÓRICO DE MISSÕES -->
+            <div id="history-container" style="margin-top: 25px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px; display: none;">
+                <h4 style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px;">
+                    <i class="fas fa-history"></i> Missões Recentes
+                </h4>
+                <div id="mission-history-list" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <!-- Tags de histórico via JS -->
+            </div>
+        </div>
+
+        <!-- MODAL DE PREVIEW VISUAL -->
+        <div id="preview-modal" class="modal-overlay" style="display: none;">
+            <div class="modal-content glass-card" style="width: 90%; height: 90%; max-width: 1200px; padding: 0; position: relative; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.8);">
+                    <h3 style="margin: 0; color: #facc15; font-size: 1rem;"><i class="fas fa-vial"></i> Sandbox Visual Preview (Draft)</h3>
+                    <button onclick="closePreview()" style="background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 1.2rem;"><i class="fas fa-times"></i></button>
+                </div>
+                <div style="flex: 1; position: relative; background: #fff;">
+                    <iframe id="preview-frame" src="about:blank" style="width: 100%; height: 100%; border: none;"></iframe>
+                </div>
+                <div style="padding: 10px 20px; background: rgba(15, 23, 42, 0.9); font-size: 0.7rem; color: #64748b; text-align: center;">
+                    <i class="fas fa-info-circle"></i> Este é um rascunho em tempo real gerado pela Sandbox do BOLT. Nenhuma alteração foi aplicada ao sistema LIVE ainda.
+                </div>
+            </div>
+        </div>
+        </section>
+
+        <h2 style="margin-bottom: 25px; font-size: 1.5rem;"><i class="fas fa-satellite-dish"></i> Missions Queue</h2>
+        
+        <div id="missions-queue" class="mission-status-grid">
+            <!-- As missões ativas aparecerão aqui -->
+            <div class="glass-card" style="text-align: center; color: #64748b;">
+                Nenhuma missão ativa no momento.
+            </div>
+        </div>
+
+    </main>
+
+    <script type="module" src="js/governance-ui.js"></script>
+</body>
+</html>

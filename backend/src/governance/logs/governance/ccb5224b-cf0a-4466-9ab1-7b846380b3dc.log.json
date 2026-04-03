@@ -1,0 +1,38 @@
+[
+  {
+    "execution_id": "ccb5224b-cf0a-4466-9ab1-7b846380b3dc",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {},
+    "output": {},
+    "decision": {
+      "summary": "START",
+      "reason": "Agent [classifier] execution cycle initiated."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.438Z"
+  },
+  {
+    "execution_id": "ccb5224b-cf0a-4466-9ab1-7b846380b3dc",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {
+      "user_input": "Elefante voador navegando no CSS azul."
+    },
+    "output": {
+      "intent": "question",
+      "domain": "unknown",
+      "confidence": 0.92
+    },
+    "decision": {
+      "summary": "Classified as unknown",
+      "reason": "Heuristic match for [EG_02] scenario."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.439Z"
+  }
+]

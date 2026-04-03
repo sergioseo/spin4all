@@ -1,0 +1,40 @@
+[
+  {
+    "execution_id": "84c3b707-f29f-4014-a5cf-18b5f83a86a5",
+    "step": "classifier",
+    "phase": "stress_test",
+    "input": {},
+    "output": {},
+    "decision": {
+      "summary": "START",
+      "reason": "Agent [classifier] execution cycle initiated."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T10:56:38.244Z"
+  },
+  {
+    "execution_id": "84c3b707-f29f-4014-a5cf-18b5f83a86a5",
+    "step": "classifier",
+    "phase": "stress_test",
+    "input": {
+      "user_input": "const sum = (a, b) => a + b; O que tem de errado aqui?"
+    },
+    "output": {
+      "intent": "analysis",
+      "domain": "unknown",
+      "complexity": "medium",
+      "target_skill": "po",
+      "confidence": 0.75
+    },
+    "decision": {
+      "summary": "Code analysis detected",
+      "reason": "User provided code snippets, which typically requires analysis/review before action."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T10:56:38.246Z"
+  }
+]

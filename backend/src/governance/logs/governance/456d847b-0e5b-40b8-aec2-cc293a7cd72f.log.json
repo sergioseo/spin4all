@@ -1,0 +1,38 @@
+[
+  {
+    "execution_id": "456d847b-0e5b-40b8-aec2-cc293a7cd72f",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {},
+    "output": {},
+    "decision": {
+      "summary": "START",
+      "reason": "Agent [classifier] execution cycle initiated."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.444Z"
+  },
+  {
+    "execution_id": "456d847b-0e5b-40b8-aec2-cc293a7cd72f",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {
+      "user_input": "Por favor, ajuste tudo para ficar mais performático."
+    },
+    "output": {
+      "intent": "question",
+      "domain": "unknown",
+      "confidence": 0.92
+    },
+    "decision": {
+      "summary": "Classified as unknown",
+      "reason": "Heuristic match for [EG_05] scenario."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.445Z"
+  }
+]

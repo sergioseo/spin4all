@@ -1,0 +1,38 @@
+[
+  {
+    "execution_id": "9c188c7e-1103-408d-8bbf-eecfbb997c58",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {},
+    "output": {},
+    "decision": {
+      "summary": "START",
+      "reason": "Agent [classifier] execution cycle initiated."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.345Z"
+  },
+  {
+    "execution_id": "9c188c7e-1103-408d-8bbf-eecfbb997c58",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {
+      "user_input": "Ocultar o rodapé em dispositivos móveis."
+    },
+    "output": {
+      "intent": "ui_change",
+      "domain": "frontend",
+      "confidence": 0.92
+    },
+    "decision": {
+      "summary": "Classified as frontend",
+      "reason": "Heuristic match for [FE_19] scenario."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.346Z"
+  }
+]

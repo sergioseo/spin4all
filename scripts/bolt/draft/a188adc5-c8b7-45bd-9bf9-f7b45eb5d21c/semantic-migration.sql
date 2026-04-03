@@ -1,0 +1,1 @@
+UPDATE users SET profile_photo = 'avatar-qq-1774564914908.svg' WHERE id = 123;

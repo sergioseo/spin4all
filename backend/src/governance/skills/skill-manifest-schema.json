@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "BOLT Skill Manifest",
+  "type": "object",
+  "required": ["name", "version", "hash", "last_updated", "author", "specialty"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Nome único da skill (ex: frontend, backend, db)"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Versão SemVer da skill"
+    },
+    "hash": {
+      "type": "string",
+      "description": "Checksum SHA-256 do arquivo system.txt"
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date",
+      "description": "Data da última atualização (YYYY-MM-DD)"
+    },
+    "author": {
+      "type": "string",
+      "default": "Antigravity BOLT Core"
+    },
+    "specialty": {
+      "type": "string",
+      "enum": ["frontend", "backend", "db", "orchestrator", "security"],
+      "description": "Especialidade técnica da skill"
+    },
+    "dependencies": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Outras skills que esta skill pode evocar"
+    },
+    "compliance_threshold": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "default": 0.9,
+      "description": "Score mínimo de conformidade exigido"
+    }
+  }
+}

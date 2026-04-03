@@ -1,0 +1,38 @@
+[
+  {
+    "execution_id": "1b4b9940-0ecc-4d07-b5a5-ea9af63567f7",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {},
+    "output": {},
+    "decision": {
+      "summary": "START",
+      "reason": "Agent [classifier] execution cycle initiated."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.440Z"
+  },
+  {
+    "execution_id": "1b4b9940-0ecc-4d07-b5a5-ea9af63567f7",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {
+      "user_input": "Banana."
+    },
+    "output": {
+      "intent": "question",
+      "domain": "unknown",
+      "confidence": 0.92
+    },
+    "decision": {
+      "summary": "Classified as unknown",
+      "reason": "Heuristic match for [EG_03] scenario."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.441Z"
+  }
+]

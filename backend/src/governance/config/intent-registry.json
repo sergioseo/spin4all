@@ -1,0 +1,47 @@
+{
+  "remove_profile_photo": {
+    "description": "Remoção de Foto de Perfil (Reset para o padrão colorido)",
+    "scope": "FIELD_LEVEL",
+    "target_entity": "users",
+    "target_field": "profile_photo",
+    "allowed_operations": ["UPDATE"],
+    "forbidden_operations": ["DELETE"],
+    "rewrite_strategy": "SET_NULL",
+    "risk_level": "low"
+  },
+  "update_profile_photo": {
+    "description": "Atualização de Foto de Perfil (Avatar customizado)",
+    "scope": "FIELD_LEVEL",
+    "target_entity": "users",
+    "target_field": "profile_photo",
+    "allowed_operations": ["UPDATE"],
+    "forbidden_operations": ["DELETE"],
+    "rewrite_strategy": "DIRECT_VALUE",
+    "risk_level": "low"
+  },
+  "update_user_bio": {
+    "description": "Atualização da Biografia do Usuário",
+    "scope": "FIELD_LEVEL",
+    "target_entity": "users",
+    "target_field": "bio",
+    "allowed_operations": ["UPDATE"],
+    "forbidden_operations": ["DELETE"],
+    "risk_level": "low"
+  },
+  "delete_user_account": {
+    "description": "Exclusão Definitiva de Conta de Usuário (Ação Crítica)",
+    "scope": "ENTITY_LEVEL",
+    "target_entity": "users",
+    "allowed_operations": ["DELETE"],
+    "requires_confirmation": true,
+    "risk_level": "critical"
+  },
+  "reset_password": {
+    "description": "Redefinição de Senha de Acesso",
+    "scope": "FIELD_LEVEL",
+    "target_entity": "users",
+    "target_field": "password_hash",
+    "allowed_operations": ["UPDATE"],
+    "risk_level": "high"
+  }
+}

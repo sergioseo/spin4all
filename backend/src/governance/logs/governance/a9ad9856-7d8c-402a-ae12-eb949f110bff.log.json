@@ -1,0 +1,38 @@
+[
+  {
+    "execution_id": "a9ad9856-7d8c-402a-ae12-eb949f110bff",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {},
+    "output": {},
+    "decision": {
+      "summary": "START",
+      "reason": "Agent [classifier] execution cycle initiated."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.318Z"
+  },
+  {
+    "execution_id": "a9ad9856-7d8c-402a-ae12-eb949f110bff",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {
+      "user_input": "Mudar o ícone do perfil para uma imagem redonda."
+    },
+    "output": {
+      "intent": "ui_change",
+      "domain": "frontend",
+      "confidence": 0.92
+    },
+    "decision": {
+      "summary": "Classified as frontend",
+      "reason": "Heuristic match for [FE_08] scenario."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.319Z"
+  }
+]

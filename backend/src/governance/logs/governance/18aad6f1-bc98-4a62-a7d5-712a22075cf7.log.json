@@ -1,0 +1,38 @@
+[
+  {
+    "execution_id": "18aad6f1-bc98-4a62-a7d5-712a22075cf7",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {},
+    "output": {},
+    "decision": {
+      "summary": "START",
+      "reason": "Agent [classifier] execution cycle initiated."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.422Z"
+  },
+  {
+    "execution_id": "18aad6f1-bc98-4a62-a7d5-712a22075cf7",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {
+      "user_input": "Módulo de missões com barra de progresso real ligada ao banco."
+    },
+    "output": {
+      "intent": "fullstack_change",
+      "domain": "fullstack",
+      "confidence": 0.92
+    },
+    "decision": {
+      "summary": "Classified as fullstack",
+      "reason": "Heuristic match for [FS_10] scenario."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.423Z"
+  }
+]

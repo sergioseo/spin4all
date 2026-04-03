@@ -1,12 +1,9 @@
 {
-  "task_id": "header_scaling_014",
+  "task_id": "tico_restoration_linear_015",
   "scope": "UI_ONLY",
   "allowed_files": [
-    "frontend/dashboard.html",
-    "frontend/pages/home.html",
-    "frontend/app.js",
-    "frontend/js/modules/home/*",
-    "backend/src/governance/*"
+    "backend/src/governance/*",
+    "docs/TICO_INFRAESTRUTURA_ESTRUTURADA.md"
   ],
   "forbidden_operations": [
     "remove_sidebar"

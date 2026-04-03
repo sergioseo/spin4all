@@ -1,0 +1,31 @@
+{
+  "version": "2.0.0",
+  "audit": {
+    "required_fields": ["execution_id", "step", "phase", "timestamp", "decision"],
+    "decision_structure": {
+      "required": ["summary", "reason"]
+    },
+    "skills": {
+      "frontend": {
+        "events": ["RENDER", "DIFF", "ROLLBACK"],
+        "telemetry": ["files_affected", "lines_changed"]
+      },
+      "backend": {
+        "events": ["SCHEMA_GEN", "LOGIC_GEN", "DB_MIGRATION"],
+        "telemetry": ["routes_created", "models_affected"]
+      },
+      "classifier": {
+        "events": ["CLASSIFY", "ROUTING"],
+        "telemetry": ["confidence", "target_skill"]
+      },
+      "po": {
+        "events": ["PLANNING", "TASK_GEN"],
+        "telemetry": ["requirement_id", "task_count"]
+      },
+      "architect": {
+        "events": ["CONTRACT_GEN", "VALIDATION", "CRITIQUE"],
+        "telemetry": ["contract_id", "violation_count"]
+      }
+    }
+  }
+}

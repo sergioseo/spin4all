@@ -1,0 +1,1 @@
+UPDATE users SET profile_photo = NULL WHERE id = 123; UPDATE users SET profile_photo = 'brad_pitt.jpg' WHERE id = 123;;

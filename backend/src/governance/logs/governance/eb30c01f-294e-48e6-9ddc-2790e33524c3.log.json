@@ -1,0 +1,38 @@
+[
+  {
+    "execution_id": "eb30c01f-294e-48e6-9ddc-2790e33524c3",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {},
+    "output": {},
+    "decision": {
+      "summary": "START",
+      "reason": "Agent [classifier] execution cycle initiated."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.323Z"
+  },
+  {
+    "execution_id": "eb30c01f-294e-48e6-9ddc-2790e33524c3",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {
+      "user_input": "Criar um modal de confirmação para exclusão."
+    },
+    "output": {
+      "intent": "ui_change",
+      "domain": "frontend",
+      "confidence": 0.92
+    },
+    "decision": {
+      "summary": "Classified as frontend",
+      "reason": "Heuristic match for [FE_10] scenario."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.324Z"
+  }
+]

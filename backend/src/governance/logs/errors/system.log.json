@@ -1,0 +1,132 @@
+[
+  {
+    "step": "SYSTEM",
+    "phase": "ERROR",
+    "error": {
+      "message": "Execution blocked by Deliberation: escalated",
+      "stack": "Error: Execution blocked by Deliberation: escalated\n    at BoltRunner.run (c:\\Users\\sjwse\\OneDrive\\Documentos\\Antigravity\\spin4all\\backend\\src\\governance\\bolt-runner.js:33:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async runFinalMission (c:\\Users\\sjwse\\OneDrive\\Documentos\\Antigravity\\spin4all\\scripts\\simulate-asset-bimodal-v12.js:24:20)"
+    },
+    "decision": {
+      "summary": "[BOLT:FAIL] d209893c-28b1-4663-b6a5-fef9d447fed9",
+      "reason": "Error logged via generic interface."
+    },
+    "timestamp": "2026-03-26T22:22:46.183Z"
+  },
+  {
+    "step": "SYSTEM",
+    "phase": "ERROR",
+    "error": {
+      "message": "Execution blocked by Deliberation: escalated",
+      "stack": "Error: Execution blocked by Deliberation: escalated\n    at BoltRunner.run (c:\\Users\\sjwse\\OneDrive\\Documentos\\Antigravity\\spin4all\\backend\\src\\governance\\bolt-runner.js:33:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async runFinalMission (c:\\Users\\sjwse\\OneDrive\\Documentos\\Antigravity\\spin4all\\scripts\\simulate-asset-bimodal-v12.js:39:20)"
+    },
+    "decision": {
+      "summary": "[BOLT:FAIL] 973bb349-6d8f-40c8-bfbc-1aa92ed23b44",
+      "reason": "Error logged via generic interface."
+    },
+    "timestamp": "2026-03-26T22:24:26.857Z"
+  },
+  {
+    "step": "SYSTEM",
+    "phase": "ERROR",
+    "error": {
+      "message": "Falha na sincronização STAGING: ENOENT: no such file or directory, lstat 'c:\\Users\\sjwse\\OneDrive\\Documentos\\Antigravity\\spin4all\\scripts\\bolt\\draft\\033c6e27-b737-4a55-9ce9-090854ee241f'",
+      "stack": "Error: Falha na sincronização STAGING: ENOENT: no such file or directory, lstat 'c:\\Users\\sjwse\\OneDrive\\Documentos\\Antigravity\\spin4all\\scripts\\bolt\\draft\\033c6e27-b737-4a55-9ce9-090854ee241f'\n    at PromoteService.syncToStaging (c:\\Users\\sjwse\\OneDrive\\Documentos\\Antigravity\\spin4all\\backend\\src\\governance\\services\\promote-service.js:107:13)\n    at c:\\Users\\sjwse\\OneDrive\\Documentos\\Antigravity\\spin4all\\backend\\src\\governance\\services\\promote-service.js:163:20\n    at Object.runWithGlobalLock (c:\\Users\\sjwse\\OneDrive\\Documentos\\Antigravity\\spin4all\\backend\\src\\governance\\utils\\promotion-lock.js:88:18)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async PromoteService.promote (c:\\Users\\sjwse\\OneDrive\\Documentos\\Antigravity\\spin4all\\backend\\src\\governance\\services\\promote-service.js:161:12)\n    at async BoltRunner.run (c:\\Users\\sjwse\\OneDrive\\Documentos\\Antigravity\\spin4all\\backend\\src\\governance\\bolt-runner.js:111:29)\n    at async runFinalMission (c:\\Users\\sjwse\\OneDrive\\Documentos\\Antigravity\\spin4all\\scripts\\simulate-asset-bimodal-v12.js:58:20)"
+    },
+    "decision": {
+      "summary": "[BOLT:FAIL] 033c6e27-b737-4a55-9ce9-090854ee241f",
+      "reason": "Error logged via generic interface."
+    },
+    "timestamp": "2026-03-26T22:25:07.501Z"
+  },
+  {
+    "step": "SYSTEM",
+    "phase": "ERROR",
+    "error": {
+      "message": "fs is not defined",
+      "stack": "ReferenceError: fs is not defined\n    at BoltRunner.run (c:\\Users\\sjwse\\OneDrive\\Documentos\\Antigravity\\spin4all\\backend\\src\\governance\\bolt-runner.js:86:25)\n    at async runFinalMission (c:\\Users\\sjwse\\OneDrive\\Documentos\\Antigravity\\spin4all\\scripts\\simulate-asset-bimodal-v12.js:66:20)"
+    },
+    "decision": {
+      "summary": "[BOLT:FAIL] a0ab61b2-3f83-4d24-9d85-9fe2610f249f",
+      "reason": "Error logged via generic interface."
+    },
+    "timestamp": "2026-03-26T22:26:18.669Z"
+  },
+  {
+    "step": "SYSTEM",
+    "phase": "ERROR",
+    "error": {
+      "message": "Execution blocked by Deliberation: escalated",
+      "stack": "Error: Execution blocked by Deliberation: escalated\n    at BoltRunner.run (c:\\Users\\sjwse\\OneDrive\\Documentos\\Antigravity\\spin4all\\backend\\src\\governance\\bolt-runner.js:35:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async runEliteSimulation (c:\\Users\\sjwse\\OneDrive\\Documentos\\Antigravity\\spin4all\\scripts\\simulate-elite-failover-v12.2.js:75:20)"
+    },
+    "decision": {
+      "summary": "[BOLT:FAIL] 39fef0b5-9043-4249-a78e-a422a60eafe0",
+      "reason": "Error logged via generic interface."
+    },
+    "timestamp": "2026-03-26T22:52:50.482Z"
+  },
+  {
+    "step": "SYSTEM",
+    "phase": "ERROR",
+    "error": {
+      "message": "Execution blocked by Deliberation: escalated",
+      "stack": "Error: Execution blocked by Deliberation: escalated\n    at BoltRunner.run (c:\\Users\\sjwse\\OneDrive\\Documentos\\Antigravity\\spin4all\\backend\\src\\governance\\bolt-runner.js:35:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async runHumanGateSimulation (c:\\Users\\sjwse\\OneDrive\\Documentos\\Antigravity\\spin4all\\scripts\\simulate-human-gate-v13.js:47:18)"
+    },
+    "decision": {
+      "summary": "[BOLT:FAIL] 0ff41e3f-3118-4a21-ba0a-3be270e66c08",
+      "reason": "Error logged via generic interface."
+    },
+    "timestamp": "2026-03-26T23:31:35.400Z"
+  },
+  {
+    "step": "SYSTEM",
+    "phase": "ERROR",
+    "error": {
+      "message": "Execution blocked by Deliberation: escalated",
+      "stack": "Error: Execution blocked by Deliberation: escalated\n    at BoltRunner.run (c:\\Users\\sjwse\\OneDrive\\Documentos\\Antigravity\\spin4all\\backend\\src\\governance\\bolt-runner.js:35:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async runHumanGateSimulation (c:\\Users\\sjwse\\OneDrive\\Documentos\\Antigravity\\spin4all\\scripts\\simulate-human-gate-v13.js:59:18)"
+    },
+    "decision": {
+      "summary": "[BOLT:FAIL] 31b76768-0871-4a8e-be25-971e2792da47",
+      "reason": "Error logged via generic interface."
+    },
+    "timestamp": "2026-03-26T23:32:08.374Z"
+  },
+  {
+    "step": "SYSTEM",
+    "phase": "ERROR",
+    "error": {
+      "message": "executor.promoteService.prepare is not a function",
+      "stack": "TypeError: executor.promoteService.prepare is not a function\n    at BoltRunner.run (c:\\Users\\sjwse\\OneDrive\\Documentos\\Antigravity\\spin4all\\backend\\src\\governance\\bolt-runner.js:114:56)\n    at async runInteractiveDashboard (c:\\Users\\sjwse\\OneDrive\\Documentos\\Antigravity\\spin4all\\scripts\\simulate-interactive-gate-v13.5.js:50:18)"
+    },
+    "decision": {
+      "summary": "[BOLT:FAIL] 11adab61-6374-4986-ae38-a1b2ae697c78",
+      "reason": "Error logged via generic interface."
+    },
+    "timestamp": "2026-03-26T23:42:58.678Z"
+  },
+  {
+    "step": "SYSTEM",
+    "phase": "ERROR",
+    "error": {
+      "message": "Execution blocked by Deliberation: escalated",
+      "stack": "Error: Execution blocked by Deliberation: escalated\n    at BoltRunner.run (c:\\Users\\sjwse\\OneDrive\\Documentos\\Antigravity\\spin4all\\backend\\src\\governance\\bolt-runner.js:35:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async runBacklogSimulation (c:\\Users\\sjwse\\OneDrive\\Documentos\\Antigravity\\spin4all\\scripts\\simulate-backlog-v13.7.js:34:18)"
+    },
+    "decision": {
+      "summary": "[BOLT:FAIL] dace5a56-f126-42fc-b924-a74745a3f7a6",
+      "reason": "Error logged via generic interface."
+    },
+    "timestamp": "2026-03-26T23:59:27.368Z"
+  },
+  {
+    "step": "SYSTEM",
+    "phase": "ERROR",
+    "error": {
+      "message": "Assignment to constant variable.",
+      "stack": "TypeError: Assignment to constant variable.\n    at BoltRunner.run (c:\\Users\\sjwse\\OneDrive\\Documentos\\Antigravity\\spin4all\\backend\\src\\governance\\bolt-runner.js:98:21)\n    at async runInteractiveDashboard (c:\\Users\\sjwse\\OneDrive\\Documentos\\Antigravity\\spin4all\\scripts\\simulate-interactive-gate-v13.5.js:50:18)"
+    },
+    "decision": {
+      "summary": "[BOLT:FAIL] 1d280afd-c745-4845-817b-aa044c322511",
+      "reason": "Error logged via generic interface."
+    },
+    "timestamp": "2026-03-27T00:08:58.386Z"
+  }
+]

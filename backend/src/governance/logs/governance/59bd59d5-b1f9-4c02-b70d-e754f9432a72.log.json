@@ -1,0 +1,38 @@
+[
+  {
+    "execution_id": "59bd59d5-b1f9-4c02-b70d-e754f9432a72",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {},
+    "output": {},
+    "decision": {
+      "summary": "START",
+      "reason": "Agent [classifier] execution cycle initiated."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.350Z"
+  },
+  {
+    "execution_id": "59bd59d5-b1f9-4c02-b70d-e754f9432a72",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {
+      "user_input": "Criar rota GET /api/v1/tournaments."
+    },
+    "output": {
+      "intent": "backend_change",
+      "domain": "backend",
+      "confidence": 0.92
+    },
+    "decision": {
+      "summary": "Classified as backend",
+      "reason": "Heuristic match for [BE_01] scenario."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.351Z"
+  }
+]

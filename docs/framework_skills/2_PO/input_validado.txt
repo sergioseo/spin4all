@@ -1,0 +1,6 @@
+{
+  "task": "Adicionar botão para salvar treino",
+  "intent": "fullstack_change",
+  "domain": "fullstack",
+  "complexity": "medium"
+}

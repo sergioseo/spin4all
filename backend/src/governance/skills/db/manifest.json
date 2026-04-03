@@ -1,0 +1,9 @@
+{
+  "name": "db",
+  "version": "1.0.0",
+  "hash": "c422c190e531872199b008d6c7009e4de7f88e408ec0793138b7d904c6e86480",
+  "last_updated": "2026-03-26",
+  "author": "Antigravity BOLT Core",
+  "specialty": "db",
+  "compliance_threshold": 0.95
+}

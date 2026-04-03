@@ -1,0 +1,38 @@
+[
+  {
+    "execution_id": "8d19e247-c0c3-47af-9db4-96fd1dc7afcf",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {},
+    "output": {},
+    "decision": {
+      "summary": "START",
+      "reason": "Agent [classifier] execution cycle initiated."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.333Z"
+  },
+  {
+    "execution_id": "8d19e247-c0c3-47af-9db4-96fd1dc7afcf",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {
+      "user_input": "Trocar as cores do gráfico de radar."
+    },
+    "output": {
+      "intent": "ui_change",
+      "domain": "frontend",
+      "confidence": 0.92
+    },
+    "decision": {
+      "summary": "Classified as frontend",
+      "reason": "Heuristic match for [FE_14] scenario."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.334Z"
+  }
+]

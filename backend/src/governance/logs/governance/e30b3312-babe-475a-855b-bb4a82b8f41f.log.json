@@ -1,0 +1,38 @@
+[
+  {
+    "execution_id": "e30b3312-babe-475a-855b-bb4a82b8f41f",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {},
+    "output": {},
+    "decision": {
+      "summary": "START",
+      "reason": "Agent [classifier] execution cycle initiated."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.394Z"
+  },
+  {
+    "execution_id": "e30b3312-babe-475a-855b-bb4a82b8f41f",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {
+      "user_input": "Implementar cache de 5 minutos nos rankings."
+    },
+    "output": {
+      "intent": "backend_change",
+      "domain": "backend",
+      "confidence": 0.92
+    },
+    "decision": {
+      "summary": "Classified as backend",
+      "reason": "Heuristic match for [BE_18] scenario."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.396Z"
+  }
+]

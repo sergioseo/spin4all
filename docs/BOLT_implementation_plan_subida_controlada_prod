@@ -1,0 +1,57 @@
+# Fase 13: Human-in-the-Loop (Aprovação Manual)
+
+Este plano visa eliminar o risco de alucinações da IA atingirem o ambiente de produção, introduzindo um "Gate de Comando" humano entre a validação de QA e a promoção final.
+
+## User Review Required
+
+> [!IMPORTANT]
+> **Staging-to-Prod Split**: A promoção de código agora é um processo de duas etapas. O BOLT preparará tudo e apresentará um relatório (SQL, Assets, Risks). **Nada será alterado no site vivo sem o seu comando de "Aprovar" ou "Subir".**
+
+> [!TIP]
+> **Audit Trail**: O relatório de auditoria mostrará exatamente qual SQL será executado e quais arquivos foram gerados, permitindo uma revisão visual rápida antes do deploy.
+
+## Proposed Changes
+
+### [Governance Services]
+
+Modificações para permitir o estado de "Aguardando Aprovação".
+
+---
+
+#### [MODIFY] [promote-service.js](file:///c:/Users/sjwse/OneDrive/Documentos/Antigravity/spin4all/backend/src/governance/services/promote-service.js)
+- Desacoplar o método `promote` em:
+    - `prepare(manifest)`: Sincroniza draft, valida checksum e congela a versão em `/releases`.
+    - `commit(releaseDir)`: Realiza o `atomicSwap` (Junction) final.
+
+#### [MODIFY] [bolt-runner.js](file:///c:/Users/sjwse/OneDrive/Documentos/Antigravity/spin4all/backend/src/governance/bolt-runner.js)
+- Alterar o `STAGE 3` para não promover automaticamente.
+- O Runner agora chamará `promoteService.prepare()` e retornará:
+  ```json
+  { 
+    "status": "awaiting_promotion", 
+    "release_id": "v_123...", 
+    "audit_report": { "sql": "...", "assets": ["..."], "score": 1.0 } 
+  }
+  ```
+- Adicionar lógica para lidar com o input de confirmação do usuário.
+
+### [User Interface / Simulation]
+
+#### [NEW] [simulate-human-gate-v13.js](file:///c:/Users/sjwse/OneDrive/Documentos/Antigravity/spin4all/scripts/simulate-human-gate-v13.js)
+- Script que demonstra o fluxo completo:
+    1.  Missão preparada e validada.
+    2.  BOLT aguarda aprovação.
+    3.  Aprovação recebida -> Promoção concluída.
+
+## Open Questions
+
+- **Tempo de Retenção**: Por quanto tempo uma release em Staging deve aguardar a aprovação antes de ser descartada automaticamente? Sugestão: 24 horas.
+
+## Verification Plan
+
+### Automated Tests
+- Validar que a pasta `/current` **não muda** após o `BoltRunner.run()` inicial.
+- Validar que a pasta `/current` **muda apenas após** o comando de aprovação manual.
+
+### Manual Verification
+- O relatório de auditoria deve ser legível e conter o SQL final corrigido pelo Bimodal asset fix.

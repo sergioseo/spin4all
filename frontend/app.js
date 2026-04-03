@@ -106,9 +106,12 @@ function renderShellUser(user) {
     // Toggle Admin Tabs
     const adminNav = document.getElementById('admin-nav-item');
     const monitoringNav = document.getElementById('admin-monitoring-nav');
+    const boltNav = document.getElementById('admin-bolt-nav');
+
     if (user.flg_admin) {
         if (adminNav) adminNav.style.display = 'block';
         if (monitoringNav) monitoringNav.style.display = 'block';
+        if (boltNav) boltNav.style.display = 'block';
         if (adminBadge) adminBadge.style.display = 'block';
     } else {
         if (adminBadge) adminBadge.style.display = 'none';

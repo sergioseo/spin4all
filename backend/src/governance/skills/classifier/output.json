@@ -1,0 +1,11 @@
+{
+  "intent": "fullstack_change",
+  "domain": "fullstack",
+  "complexity": "high",
+  "confidence": 0.94,
+  "target_skill": "po",
+  "decision": {
+    "summary": "Mudança estrutural Fullstack (UI + Performance)",
+    "reason": "O usuário solicita alteração visual ('cores mais vibrantes') e melhoria de performance no carregamento ('delivery mais rápido'), o que exige coordenação entre as camadas de Frontend (remodelação) e Backend (latência de dados)."
+  }
+}

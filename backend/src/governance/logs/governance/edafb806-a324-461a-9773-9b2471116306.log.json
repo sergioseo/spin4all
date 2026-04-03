@@ -1,0 +1,38 @@
+[
+  {
+    "execution_id": "edafb806-a324-461a-9773-9b2471116306",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {},
+    "output": {},
+    "decision": {
+      "summary": "START",
+      "reason": "Agent [classifier] execution cycle initiated."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.352Z"
+  },
+  {
+    "execution_id": "edafb806-a324-461a-9773-9b2471116306",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {
+      "user_input": "Adicionar campo \"score\" na tabela de jogadores."
+    },
+    "output": {
+      "intent": "backend_change",
+      "domain": "backend",
+      "confidence": 0.92
+    },
+    "decision": {
+      "summary": "Classified as backend",
+      "reason": "Heuristic match for [BE_02] scenario."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.353Z"
+  }
+]

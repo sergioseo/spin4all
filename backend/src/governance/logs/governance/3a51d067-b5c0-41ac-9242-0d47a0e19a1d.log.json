@@ -1,0 +1,38 @@
+[
+  {
+    "execution_id": "3a51d067-b5c0-41ac-9242-0d47a0e19a1d",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {},
+    "output": {},
+    "decision": {
+      "summary": "START",
+      "reason": "Agent [classifier] execution cycle initiated."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.427Z"
+  },
+  {
+    "execution_id": "3a51d067-b5c0-41ac-9242-0d47a0e19a1d",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {
+      "user_input": "Mudar a regra de decisão no sistema do Architect."
+    },
+    "output": {
+      "intent": "governance_change",
+      "domain": "governance",
+      "confidence": 0.92
+    },
+    "decision": {
+      "summary": "Classified as governance",
+      "reason": "Heuristic match for [GV_02] scenario."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.428Z"
+  }
+]

@@ -16,6 +16,21 @@
         rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link rel="stylesheet" href="style.css?v=1.2">
+    
+    <!-- BOLT LIVE PATCH LOADER: Carregamento dinâmico de segurança (Overlay Portão 1) -->
+    <script id="bolt-patch-loader">
+        (async function() {
+            const patches = ['style.bolt-patch.css'];
+            patches.forEach(patch => {
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = patch + '?t=' + Date.now();
+                link.id = 'bolt-active-patch';
+                document.head.appendChild(link);
+                console.log(`[BOLT] 🛡️ Camada de segurança carregada: ${patch}`);
+            });
+        })();
+    </script>
 </head>
 
 <body>
@@ -58,7 +73,7 @@
             <p class="description">Um grupo apaixonado por tênis de mesa que promove inclusão, saúde e integração social
                 em Águas de São Pedro.</p>
             <div class="hero-actions">
-                <a href="https://chat.whatsapp.com/K2yuN2LIELUCY6iC8gYGAa" class="cta-button cta-whatsapp cta-bounce" target="_blank"
+                <a href="https://chat.whatsapp.com/K2yuN2LIELUCY6iC8gYGAa" class="cta-button cta-whatsapp cta-bounce lockdown-hide" target="_blank"
                     rel="noopener noreferrer">
                     <span>Entrar no grupo de WhatsApp</span>
                     <i class="ph-bold ph-whatsapp-logo"></i>
@@ -582,7 +597,7 @@
             <p class="section-text text-white font-semibold mb-8 text-xl">A comunidade de tênis de mesa Spin4All está
                 aberta para você.</p>
             <div class="hero-actions justify-center">
-                <a href="https://chat.whatsapp.com/K2yuN2LIELUCY6iC8gYGAa" class="cta-button cta-whatsapp cta-pulse"
+                <a href="https://chat.whatsapp.com/K2yuN2LIELUCY6iC8gYGAa" class="cta-button cta-whatsapp cta-pulse lockdown-hide"
                     target="_blank" rel="noopener noreferrer">
                     <span>Entrar no grupo de WhatsApp</span>
                     <i class="ph-bold ph-whatsapp-logo"></i>
@@ -606,6 +621,28 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        // [BOLT:LOCKDOWN] Protocolo de Visibilidade v5 (Global Social Lockdown)
+        (async function() {
+            try {
+                const res = await fetch('/api/registration-status');
+                const data = await res.json();
+                if (data.success && data.registrationLocked) {
+                    // Ocultar Seção Instagram
+                    const instaSection = document.getElementById('instagram');
+                    if (instaSection) instaSection.style.display = 'none';
+                    
+                    // Ocultar todos os canais de WhatsApp marcados
+                    const targets = document.querySelectorAll('.lockdown-hide');
+                    targets.forEach(el => el.style.display = 'none');
+                    
+                    console.log('🛡️ [BOLT] Web-Wide Lockdown Active: All social entry points suppressed.');
+                }
+            } catch (e) {
+                console.error('Erro ao verificar trava na Landing Page:', e);
+            }
+        })();
+    </script>
 </body>
 
 </html>

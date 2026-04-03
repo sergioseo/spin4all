@@ -1,0 +1,38 @@
+[
+  {
+    "execution_id": "64cf316d-c3f9-4879-92cd-3501bcf88c05",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {},
+    "output": {},
+    "decision": {
+      "summary": "START",
+      "reason": "Agent [classifier] execution cycle initiated."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.368Z"
+  },
+  {
+    "execution_id": "64cf316d-c3f9-4879-92cd-3501bcf88c05",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {
+      "user_input": "Criar serviço de upload de imagens no S3."
+    },
+    "output": {
+      "intent": "backend_change",
+      "domain": "backend",
+      "confidence": 0.92
+    },
+    "decision": {
+      "summary": "Classified as backend",
+      "reason": "Heuristic match for [BE_08] scenario."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.369Z"
+  }
+]

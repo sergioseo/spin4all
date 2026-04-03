@@ -1,0 +1,38 @@
+[
+  {
+    "execution_id": "6342206c-e95d-47cd-a325-4be7da6dbacc",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {},
+    "output": {},
+    "decision": {
+      "summary": "START",
+      "reason": "Agent [classifier] execution cycle initiated."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.315Z"
+  },
+  {
+    "execution_id": "6342206c-e95d-47cd-a325-4be7da6dbacc",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {
+      "user_input": "Ajustar o hover dos botões para azul claro."
+    },
+    "output": {
+      "intent": "ui_change",
+      "domain": "frontend",
+      "confidence": 0.92
+    },
+    "decision": {
+      "summary": "Classified as frontend",
+      "reason": "Heuristic match for [FE_07] scenario."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.316Z"
+  }
+]

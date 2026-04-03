@@ -1,8 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const adminController = require('../controllers/admin.controller');
+const settingsController = require('../controllers/admin/settings.controller');
 const MonitoringController = require('../controllers/admin/monitoring.controller');
 const { authenticateToken, isAdmin } = require('../middlewares/auth.middleware');
+
+router.get('/settings', authenticateToken, isAdmin, settingsController.getSettings);
+router.put('/settings', authenticateToken, isAdmin, settingsController.updateSettings);
 
 router.get('/reports', authenticateToken, isAdmin, adminController.getReports);
 router.get('/members', authenticateToken, isAdmin, adminController.getMembers);

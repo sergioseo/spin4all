@@ -1,0 +1,28 @@
+# Dependências
+node_modules/
+.npm
+*.log
+
+# Ambiente e Segredos
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# DESACOPLAMENTO INDUSTRIAL: Projetos Externalizados
+# O código fonte destes projetos agora vive em repositórios próprios.
+bolt-engine-core/
+tico-toolkit-ops/
+
+# Build e Outputs
+dist/
+build/
+.next/
+out/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.bak

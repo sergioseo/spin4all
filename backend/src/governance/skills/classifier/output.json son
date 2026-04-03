@@ -1,0 +1,9 @@
+{
+  "target_skill": "po",
+  "domain": "frontend",
+  "confidence": 0.95,
+  "decision": {
+    "summary": "UI change requested",
+    "reason": "The user mentioned 'navbar color' which is a clear design/layout intervention in the frontend domain."
+  }
+}

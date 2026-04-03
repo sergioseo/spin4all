@@ -1,0 +1,1 @@
+UPDATE users SET profile_photo = 'brad_pitt.jpg' WHERE id = 123;

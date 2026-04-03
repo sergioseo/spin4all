@@ -1,0 +1,19 @@
+{
+  "users": {
+    "type": "ENTITY",
+    "primary_key": "id",
+    "fields": ["id", "name", "email", "profile_photo", "bio", "password_hash", "role", "created_at"],
+    "protected_fields": ["id", "email", "role"]
+  },
+  "tournaments": {
+    "type": "ENTITY",
+    "primary_key": "id",
+    "fields": ["id", "name", "description", "start_date", "end_date", "status", "created_by"],
+    "protected_fields": ["id", "created_by"]
+  },
+  "tournament_registrations": {
+    "type": "RELATION",
+    "primary_key": ["user_id", "tournament_id"],
+    "fields": ["user_id", "tournament_id", "status", "registration_date"]
+  }
+}

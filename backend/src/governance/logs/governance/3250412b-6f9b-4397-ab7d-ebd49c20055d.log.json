@@ -1,0 +1,38 @@
+[
+  {
+    "execution_id": "3250412b-6f9b-4397-ab7d-ebd49c20055d",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {},
+    "output": {},
+    "decision": {
+      "summary": "START",
+      "reason": "Agent [classifier] execution cycle initiated."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.305Z"
+  },
+  {
+    "execution_id": "3250412b-6f9b-4397-ab7d-ebd49c20055d",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {
+      "user_input": "Colocar um efeito de glassmorphism no header."
+    },
+    "output": {
+      "intent": "ui_change",
+      "domain": "frontend",
+      "confidence": 0.92
+    },
+    "decision": {
+      "summary": "Classified as frontend",
+      "reason": "Heuristic match for [FE_04] scenario."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.306Z"
+  }
+]

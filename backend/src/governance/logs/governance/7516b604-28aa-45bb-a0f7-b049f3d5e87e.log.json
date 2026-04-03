@@ -1,0 +1,38 @@
+[
+  {
+    "execution_id": "7516b604-28aa-45bb-a0f7-b049f3d5e87e",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {},
+    "output": {},
+    "decision": {
+      "summary": "START",
+      "reason": "Agent [classifier] execution cycle initiated."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.347Z"
+  },
+  {
+    "execution_id": "7516b604-28aa-45bb-a0f7-b049f3d5e87e",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {
+      "user_input": "Mudar a cor da borda ativa do input para dourado."
+    },
+    "output": {
+      "intent": "ui_change",
+      "domain": "frontend",
+      "confidence": 0.92
+    },
+    "decision": {
+      "summary": "Classified as frontend",
+      "reason": "Heuristic match for [FE_20] scenario."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.348Z"
+  }
+]

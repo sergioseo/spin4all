@@ -1,0 +1,47 @@
+# Fase 13.6: Refinamento de UX e Gestão de Backlog
+
+Este plano visa transformar os relatórios técnicos e "frios" do BOLT em comunicações humanizadas e úteis, além de definir o destino das missões rejeitadas.
+
+## User Review Required
+
+> [!IMPORTANT]
+> **Human-Centric Audit**: O relatório deixará de mostrar JSONs técnicos e passará a usar uma linguagem narrativa: *"O BOLT detectou que você quer mudar sua foto. Preparei um avatar com suas iniciais e o SQL está pronto para execução."*
+
+> [!TIP]
+> **Backlog Re-entry**: Se você recusar uma missão (botão "N"), ela não será deletada. Ela irá para a pasta `/backlog`, onde poderá ser revisada ou re-executada futuramente sem precisar começar do zero.
+
+## Proposed Changes
+
+### [Core Refinement]
+
+---
+
+#### [MODIFY] [bolt-runner.js](file:///c:/Users/sjwse/OneDrive/Documentos/Antigravity/spin4all/backend/src/governance/bolt-runner.js)
+- Implementar o `_generateHumanReport(manifest, qaResults)`:
+    - Traduzir `intent` técnico para linguagem natural (ex: `update_profile_photo` -> `Atualização de Foto`).
+    - Calcular e formatar o Score de QA de forma amigável (ex: `100% - Perfeito`).
+    - Listar ações em "Linguagem de Negócio": *"Alterar foto no Banco de Dados"*.
+- Corrigir os bugs de `undefined` na extração do manifesto.
+
+#### [MODIFY] [promote-service.js](file:///c:/Users/sjwse/OneDrive/Documentos/Antigravity/spin4all/backend/src/governance/services/promote-service.js)
+- Adicionar o método `moveToBacklog(releasePath)`:
+    - Se o usuário rejeitar, move a release de `/releases` para `/backlog`.
+    - Adiciona um arquivo `rejection_reason.txt` se fornecido.
+
+### [User Interface / Simulation]
+
+#### [MODIFY] [simulate-interactive-gate-v13.5.js](file:///c:/Users/sjwse/OneDrive/Documentos/Antigravity/spin4all/scripts/simulate-interactive-gate-v13.5.js)
+- Atualizar o visual do terminal para ser um "Dashboard de Comando" mais elegante e legível.
+
+## Open Questions
+
+- **Fila de Backlog**: Como você gostaria de visualizar essa fila no futuro? Um comando `bolt list-backlog` ou um dashboard visual? Sugestão: Começaremos com o comando de terminal para a Fase 14.
+
+## Verification Plan
+
+### Automated Tests
+- Validar que o `audit_report` não contém mais valores `undefined` ou `NaN`.
+- Validar o movimento físico de arquivos para a pasta `/backlog` após um input "N".
+
+### Manual Verification
+- O usuário deve conseguir ler o relatório e entender a mudança sem precisar conhecer SQL ou JSON.

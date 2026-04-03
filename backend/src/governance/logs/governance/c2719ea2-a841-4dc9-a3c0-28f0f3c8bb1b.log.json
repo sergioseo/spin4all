@@ -1,0 +1,38 @@
+[
+  {
+    "execution_id": "c2719ea2-a841-4dc9-a3c0-28f0f3c8bb1b",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {},
+    "output": {},
+    "decision": {
+      "summary": "START",
+      "reason": "Agent [classifier] execution cycle initiated."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.409Z"
+  },
+  {
+    "execution_id": "c2719ea2-a841-4dc9-a3c0-28f0f3c8bb1b",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {
+      "user_input": "Botão na UI para resetar a senha via backend."
+    },
+    "output": {
+      "intent": "fullstack_change",
+      "domain": "fullstack",
+      "confidence": 0.92
+    },
+    "decision": {
+      "summary": "Classified as fullstack",
+      "reason": "Heuristic match for [FS_04] scenario."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.410Z"
+  }
+]

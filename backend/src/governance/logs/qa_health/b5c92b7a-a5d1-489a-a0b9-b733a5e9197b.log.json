@@ -1,0 +1,20 @@
+[
+  {
+    "execution_id": "b5c92b7a-a5d1-489a-a0b9-b733a5e9197b",
+    "qa_version": "1.0.0",
+    "overall_score": 0.7,
+    "passed": false,
+    "files": [
+      {
+        "path": "semantic-migration.sql",
+        "score": "0.70",
+        "violations": [
+          "ASSET_MISSING: Physical file \"avatar-bp-123.svg\" not found in storage."
+        ],
+        "status": "warning"
+      }
+    ],
+    "error": "QA Quality Gate Violated: Score 0.70. 0 Fatal, 1 Warnings.",
+    "timestamp": "2026-03-26T23:46:19.570Z"
+  }
+]

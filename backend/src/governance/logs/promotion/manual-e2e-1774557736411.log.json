@@ -1,0 +1,10 @@
+[
+  {
+    "execution_id": "manual-e2e-1774557736411",
+    "step": "error",
+    "state": "SYNCHRONIZING",
+    "message": "Falha na sincronização STAGING: ENOENT: no such file or directory, lstat 'c:\\Users\\sjwse\\OneDrive\\Documentos\\Antigravity\\spin4all\\scripts\\bolt\\draft\\manual-e2e-1774557736411'",
+    "details": {},
+    "timestamp": "2026-03-26T20:42:16.478Z"
+  }
+]

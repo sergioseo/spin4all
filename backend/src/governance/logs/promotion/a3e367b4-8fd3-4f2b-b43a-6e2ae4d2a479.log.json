@@ -1,0 +1,10 @@
+[
+  {
+    "execution_id": "a3e367b4-8fd3-4f2b-b43a-6e2ae4d2a479",
+    "step": "sync_staging",
+    "state": "SYNCHRONIZING",
+    "message": "Replicação draft -> staging concluída via fs.cpSync.",
+    "details": {},
+    "timestamp": "2026-03-26T23:36:46.112Z"
+  }
+]

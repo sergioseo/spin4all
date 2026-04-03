@@ -1,0 +1,40 @@
+[
+  {
+    "execution_id": "fd7d08d4-27e1-44a8-9175-b1db01c38076",
+    "step": "classifier",
+    "phase": "stress_test",
+    "input": {},
+    "output": {},
+    "decision": {
+      "summary": "START",
+      "reason": "Agent [classifier] execution cycle initiated."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T10:56:38.228Z"
+  },
+  {
+    "execution_id": "fd7d08d4-27e1-44a8-9175-b1db01c38076",
+    "step": "classifier",
+    "phase": "stress_test",
+    "input": {
+      "user_input": "Mude a cor do botão para verde, mas só altere a rota no banco de dados."
+    },
+    "output": {
+      "intent": "fullstack_change",
+      "domain": "fullstack",
+      "complexity": "high",
+      "target_skill": "po",
+      "confidence": 0.75
+    },
+    "decision": {
+      "summary": "Multidomain task detected",
+      "reason": "User requested both UI changes and Backend/Logic changes in the same input, triggering Fullstack mode."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T10:56:38.237Z"
+  }
+]

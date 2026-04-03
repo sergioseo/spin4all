@@ -1,0 +1,63 @@
+{
+  "execution_id": "cec587c6-97e9-49f6-a11e-548ef43ec16e",
+  "contract_proposal": {
+    "contract_id": "arch-v1-2026-001",
+    "technical_spec": {
+      "files_to_create": [
+        "backend/src/api/v2/tournaments/performance.js",
+        "frontend/src/styles/themes/vibrant-neon.css"
+      ],
+      "files_to_modify": [
+        "backend/src/api/routes.js",
+        "frontend/src/pages/tournaments.html",
+        "frontend/src/js/modules/tournaments-loader.js"
+      ],
+      "api_endpoints": [
+        {
+          "path": "/api/v2/tournaments-stream",
+          "method": "GET",
+          "request_schema": {
+            "params": [
+              "limit",
+              "offset"
+            ]
+          },
+          "response_schema": {
+            "type": "SSE / Stream",
+            "description": "Entrega incremental de dados para reduzir tempo de percepção"
+          }
+        }
+      ],
+      "components_ui": [
+        {
+          "name": "TournamentGlassCard",
+          "props": [
+            "tournament_data",
+            "is_vibrant"
+          ],
+          "styles": "Uso de Backdrop-filter: blur(15px) e sombras neon com HSL vibrantes."
+        }
+      ]
+    },
+    "dependencies": [
+      "redis-cache",
+      "express-sse"
+    ],
+    "infrastructure_requirements": "Necessário garantir que o Redis esteja ativo para o cache de entrega rápida das partidas.",
+    "target_skill": "coder",
+    "decision": {
+      "summary": "Arquitetura de Entrega Híbrida (SSE + Cache)",
+      "reason": "Para atender ao pedido de 'delivery rápido', optei por uma abordagem de Server-Sent Events (SSE) para stream de dados, eliminando o delay de espera de um JSON gigante. Para o visual 'vibrante', os arquivos de CSS foram isolados em um novo tema para não quebrar o layout padrão."
+    }
+  },
+  "legacy_context": [
+    {
+      "file": "backend/src/application/use-cases/AnalyzeTournamentMatches.js",
+      "content": "const pool = require('../../config/db');\nconst AnalysisService = require('../../services/analysis/AnalysisService');\nconst ProcessMonitor = require('../../services/governance/ProcessMonitor');\n\n/**\n * AnalyzeTournamentMatches UseCase\n * Orchestrates the full tournament analysis process for a user.\n */\nclass AnalyzeTournamentMatches {\n    static async execute(userId) {\n        console.log(`[USE CASE] Executing AnalyzeTournamentMatches for user: ${userId}`);\n        const logId = await ProcessMonitor.start('AI_TOURNAMENT_ANALYSIS', 'Fetching Trusted Data');\n\n        try {\n            // 1. Data Retrieval\n            const matchesRes = await pool.query(`\n                SELECT \n                    id_partida, id_torneio, player_score, opponent_score, sets_won, sets_lost,\n                    dt_inicio, dt_fim, jsn_pontos_detalhado\n                FROM trusted.tb_analista_torneio_partidas\n                WHERE id_usuario = $1\n                ORDER BY dt_inicio DESC\n            `, [userId]);\n\n            const rawMatches = matchesRes.rows;\n\n            if (rawMatches.length === 0) {\n                await ProcessMonitor.finish(logId, 'SUCCESS', { message: 'Zero matches to analyze' });\n                return { has_tournament_data: false };\n            }\n\n            // 2. Core Analysis (The Pipeline)\n            await ProcessMonitor.update(logId, 'Running 4-Stage AI Pipeline', 40);\n            const analysis = await AnalysisService.getFullAnalysis(userId, rawMatches);\n\n            // 3. Side Effects (Missions)\n            await ProcessMonitor.update(logId, 'Synchronizing Missions', 80);\n            await this._syncMissions(userId, analysis);\n\n            await ProcessMonitor.finish(logId, 'SUCCESS', { hash: analysis.hash });\n\n            return {\n                success: true,\n                has_tournament_data: true,\n                ...analysis\n            };\n\n        } catch (err) {\n            console.error('[USE CASE ERROR] AnalyzeTournamentMatches failed:', err);\n            await ProcessMonitor.finish(logId, 'FAIL', { error: err.message });\n            throw err;\n        }\n    }\n\n    /**\n     * Private Orchestration: Mission Synchronization\n     */\n    static async _syncMissions(userId, analysis) {\n        try {\n            await pool.query(\"DELETE FROM trusted.tb_missoes_usuario WHERE id_usuario = $1 AND dsc_categoria = 'Analista' AND flg_concluida = FALSE\", [userId]);\n            const { flags, scenario } = analysis;\n            const missionsToInsert = [];\n            \n            if (flags.some(f => f.id === 'STAMINA')) {\n                missionsToInsert.push({ title: 'Resistência Técnica', desc: 'Realizar 5 min de Falkenberg Drill focado em movimentação.', xp: 40, tag: 'Movimentação' });\n            }\n            if (flags.some(f => f.id === 'AGRESSIVO')) {\n                missionsToInsert.push({ title: 'Controle de Ataque', desc: 'Praticar saque curto seguido de ataque de 3ª bola (10x).', xp: 50, tag: 'Ataque' });\n            }\n            \n            if (missionsToInsert.length < 2) {\n                if (scenario.id === 'T3') missionsToInsert.push({ title: 'Foco em Transição', desc: 'Treinar transição Forehand/Backhand em série de 3 min.', xp: 30, tag: 'Tático' });\n                else missionsToInsert.push({ title: 'Fundamento Base', desc: 'Dedicar 15 min do próximo treino apenas para controle de mesa.', xp: 20, tag: 'Controle' });\n            }\n\n            for (const m of missionsToInsert.slice(0, 2)) {\n                await pool.query(`\n                    INSERT INTO trusted.tb_missoes_usuario (id_usuario, dsc_titulo, dsc_descricao, dsc_categoria, dt_limite, num_xp_recompensa, dsc_tag_tecnica)\n                    VALUES ($1, $2, $3, 'Analista', CURRENT_DATE + INTERVAL '3 days', $4, $5)\n                `, [userId, m.title, m.desc, m.xp, m.tag]);\n            }\n        } catch (err) {\n            console.error('[USE CASE ERROR] Mission Sync failed:', err);\n            // Non-blocking error for the main analysis\n        }\n    }\n}\n\nmodule.exports = AnalyzeTournamentMatches;\n"
+    },
+    {
+      "file": "frontend/style.css",
+      "content": "/* --- CSS Variables & Tokens --- */\r\n:root {\r\n  /* Logo Colors & Gradients Palette */\r\n  --c-blue: #0ea5e9;\r\n  --c-blue-dark: #0284c7;\r\n  --c-green: #10b981;\r\n  --c-yellow: #facc15;\r\n  --c-orange: #f97316;\r\n  \r\n  /* Neutral Palette */\r\n  --c-bg: #f8fafc;\r\n  --c-bg-off: #eef2f7;\r\n  --c-text: #334155;\r\n  --c-text-light: #475569;\r\n  --c-heading: #0f172a;\r\n  \r\n  /* Fonts */\r\n  --f-main: 'Inter', sans-serif;\r\n  --f-display: 'Outfit', sans-serif;\r\n  \r\n  /* Effects */\r\n  --radius-sm: 8px;\r\n  --radius-"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "contract_id": "arch-v1-2026-001",
+  "technical_spec": {
+    "files_to_create": [
+      "backend/src/api/v2/tournaments/performance.js",
+      "frontend/src/styles/themes/vibrant-neon.css"
+    ],
+    "files_to_modify": [
+      "backend/src/api/routes.js",
+      "frontend/src/pages/tournaments.html",
+      "frontend/src/js/modules/tournaments-loader.js"
+    ],
+    "api_endpoints": [
+      {
+        "path": "/api/v2/tournaments-stream",
+        "method": "GET",
+        "request_schema": {
+          "params": [
+            "limit",
+            "offset"
+          ]
+        },
+        "response_schema": {
+          "type": "SSE / Stream",
+          "description": "Entrega incremental de dados para reduzir tempo de percepção"
+        }
+      }
+    ],
+    "components_ui": [
+      {
+        "name": "TournamentGlassCard",
+        "props": [
+          "tournament_data",
+          "is_vibrant"
+        ],
+        "styles": "Uso de Backdrop-filter: blur(15px) e sombras neon com HSL vibrantes."
+      }
+    ]
+  },
+  "dependencies": [
+    "redis-cache",
+    "express-sse"
+  ],
+  "infrastructure_requirements": "Necessário garantir que o Redis esteja ativo para o cache de entrega rápida das partidas.",
+  "target_skill": "coder",
+  "decision": {
+    "summary": "Arquitetura de Entrega Híbrida (SSE + Cache)",
+    "reason": "Para atender ao pedido de 'delivery rápido', optei por uma abordagem de Server-Sent Events (SSE) para stream de dados, eliminando o delay de espera de um JSON gigante. Para o visual 'vibrante', os arquivos de CSS foram isolados em um novo tema para não quebrar o layout padrão."
+  }
+}

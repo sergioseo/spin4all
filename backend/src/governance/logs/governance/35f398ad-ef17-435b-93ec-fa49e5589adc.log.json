@@ -1,0 +1,38 @@
+[
+  {
+    "execution_id": "35f398ad-ef17-435b-93ec-fa49e5589adc",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {},
+    "output": {},
+    "decision": {
+      "summary": "START",
+      "reason": "Agent [classifier] execution cycle initiated."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.399Z"
+  },
+  {
+    "execution_id": "35f398ad-ef17-435b-93ec-fa49e5589adc",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {
+      "user_input": "Adicionar suporte a CORS no servidor Express."
+    },
+    "output": {
+      "intent": "backend_change",
+      "domain": "backend",
+      "confidence": 0.92
+    },
+    "decision": {
+      "summary": "Classified as backend",
+      "reason": "Heuristic match for [BE_20] scenario."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.401Z"
+  }
+]

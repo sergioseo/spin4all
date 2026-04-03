@@ -1,0 +1,1 @@
+UPDATE users SET profile_photo = 'avatar-bp-1774568578667.svg' WHERE id = 123;

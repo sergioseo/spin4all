@@ -1,0 +1,38 @@
+[
+  {
+    "execution_id": "bd7cc0e7-a183-4d90-a3fb-14d6ac773d9b",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {},
+    "output": {},
+    "decision": {
+      "summary": "START",
+      "reason": "Agent [classifier] execution cycle initiated."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.312Z"
+  },
+  {
+    "execution_id": "bd7cc0e7-a183-4d90-a3fb-14d6ac773d9b",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {
+      "user_input": "Criar uma animação de fade-in na home."
+    },
+    "output": {
+      "intent": "ui_change",
+      "domain": "frontend",
+      "confidence": 0.92
+    },
+    "decision": {
+      "summary": "Classified as frontend",
+      "reason": "Heuristic match for [FE_06] scenario."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.314Z"
+  }
+]

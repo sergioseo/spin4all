@@ -1,0 +1,9 @@
+{
+  "classification": {
+    "intent": "string",
+    "domain": "string",
+    "complexity": "string"
+  },
+  "user_input": "string",
+  "context": {}
+}

@@ -1,0 +1,20 @@
+[
+  {
+    "execution_id": "a0ab61b2-3f83-4d24-9d85-9fe2610f249f",
+    "qa_version": "1.0.0",
+    "overall_score": 0.7,
+    "passed": false,
+    "files": [
+      {
+        "path": "semantic-migration.sql",
+        "score": "0.70",
+        "violations": [
+          "ASSET_MISSING: Physical file \"brad_pitt.jpg\" not found in storage."
+        ],
+        "status": "warning"
+      }
+    ],
+    "error": "QA Quality Gate Violated: Score 0.70. 0 Fatal, 1 Warnings.",
+    "timestamp": "2026-03-26T22:26:18.658Z"
+  }
+]

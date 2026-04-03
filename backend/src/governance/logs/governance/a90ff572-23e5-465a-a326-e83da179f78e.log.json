@@ -1,0 +1,40 @@
+[
+  {
+    "execution_id": "a90ff572-23e5-465a-a326-e83da179f78e",
+    "step": "classifier",
+    "phase": "stress_test",
+    "input": {},
+    "output": {},
+    "decision": {
+      "summary": "START",
+      "reason": "Agent [classifier] execution cycle initiated."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T10:56:38.248Z"
+  },
+  {
+    "execution_id": "a90ff572-23e5-465a-a326-e83da179f78e",
+    "step": "classifier",
+    "phase": "stress_test",
+    "input": {
+      "user_input": "Banana azul elefante voador navegando no CSS."
+    },
+    "output": {
+      "intent": "invalid",
+      "domain": "unknown",
+      "complexity": "low",
+      "target_skill": "none",
+      "confidence": 0.75
+    },
+    "decision": {
+      "summary": "Nonsense input",
+      "reason": "Input does not match any development or governance semantic patterns."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T10:56:38.249Z"
+  }
+]

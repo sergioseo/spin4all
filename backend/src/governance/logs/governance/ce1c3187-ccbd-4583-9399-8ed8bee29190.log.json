@@ -1,0 +1,38 @@
+[
+  {
+    "execution_id": "ce1c3187-ccbd-4583-9399-8ed8bee29190",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {},
+    "output": {},
+    "decision": {
+      "summary": "START",
+      "reason": "Agent [classifier] execution cycle initiated."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.290Z"
+  },
+  {
+    "execution_id": "ce1c3187-ccbd-4583-9399-8ed8bee29190",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {
+      "user_input": "Mudar a cor de fundo do dashboard para escuro."
+    },
+    "output": {
+      "intent": "ui_change",
+      "domain": "frontend",
+      "confidence": 0.92
+    },
+    "decision": {
+      "summary": "Classified as frontend",
+      "reason": "Heuristic match for [FE_01] scenario."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.296Z"
+  }
+]

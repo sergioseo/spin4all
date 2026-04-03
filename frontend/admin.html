@@ -162,6 +162,14 @@
             border-color: #38bdf8;
             box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
         }
+
+        /* Toggle Switch Premium */
+        .switch { position: relative; display: inline-block; width: 44px; height: 22px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.1); transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background: #38bdf8; }
+        input:checked + .slider:before { transform: translateX(22px); }
     </style>
 </head>
 
@@ -188,6 +196,23 @@
                 style="margin-bottom: 10px; display: flex; align-items: center; gap: 12px; padding: 12px; text-decoration: none; border-radius: 8px;">
                 <i class="fas fa-satellite-dish"></i> Monitoramento AI
             </a>
+            <a href="governance.html" class="nav-link"
+                style="margin-bottom: 10px; display: flex; align-items: center; gap: 12px; padding: 12px; text-decoration: none; border-radius: 8px;">
+                <i class="fas fa-code-branch"></i> Governança BOLT
+            </a>
+
+            <!-- NOVO: Central de Segurança -->
+            <div style="margin-top: 20px; padding: 10px; background: rgba(56, 189, 248, 0.05); border-radius: 12px; border: 1px solid rgba(56, 189, 248, 0.1);">
+                <div style="font-size: 0.7rem; color: #38bdf8; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; text-align: center;">🛡️ Central de Segurança</div>
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 5px;">
+                    <span style="font-size: 0.8rem; color: #94a3b8;">Bloquear Registro</span>
+                    <label class="switch">
+                        <input type="checkbox" id="lockdown-toggle" onchange="updateLockdownStatus(this.checked)">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <p id="lockdown-status-msg" style="font-size: 0.6rem; color: #64748b; margin-top: 8px; text-align: center;">🛡️ Proteção Ativa</p>
+            </div>
 
         </nav>
     </aside>
@@ -483,8 +508,8 @@
                 // 3. Insights do Técnico
                 loadCoachInsights();
 
-                // 4. Métricas Avançadas (Churn & Presença 14 dias)
-                // loadAdvancedMetrics(); // Comentado por não estar implementado
+                // 4. Segurança & Lockdown
+                await loadLockdownStatus();
 
                 document.getElementById('loader').style.display = 'none';
             } catch (err) {
@@ -773,6 +798,59 @@
 
             } catch (err) {
                 console.error('Erro ao carregar insights:', err);
+            }
+        }
+
+        async function loadLockdownStatus() {
+            try {
+                const token = localStorage.getItem('spin4all_token');
+                const response = await fetch(`${API_URL}/admin/settings`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    const isLocked = data.settings.registrationLocked;
+                    document.getElementById('lockdown-toggle').checked = isLocked;
+                    updateLockdownUI(isLocked);
+                }
+            } catch (err) {
+                console.error('Erro ao carregar lockdown:', err);
+            }
+        }
+
+        async function updateLockdownStatus(isLocked) {
+            try {
+                const token = localStorage.getItem('spin4all_token');
+                const response = await fetch(`${API_URL}/admin/settings`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ registrationLocked: isLocked })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    updateLockdownUI(isLocked);
+                    // Notificação flutuante ou feedback discreto
+                    console.log('🛡️ Status de segurança atualizado.');
+                }
+            } catch (err) {
+                console.error('Erro ao atualizar lockdown:', err);
+                alert('Erro ao mudar status de segurança.');
+                document.getElementById('lockdown-toggle').checked = !isLocked;
+            }
+        }
+
+        function updateLockdownUI(isLocked) {
+            const msg = document.getElementById('lockdown-status-msg');
+            if (isLocked) {
+                msg.innerHTML = "🛡️ Modo Blindado Ativo";
+                msg.style.color = "#38bdf8";
+            } else {
+                msg.innerHTML = "🔓 Cadastro Liberado";
+                msg.style.color = "#64748b";
             }
         }
 

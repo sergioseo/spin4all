@@ -1,0 +1,38 @@
+[
+  {
+    "execution_id": "ee41a732-ade6-4536-bc74-af1ce3e51b7e",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {},
+    "output": {},
+    "decision": {
+      "summary": "START",
+      "reason": "Agent [classifier] execution cycle initiated."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.330Z"
+  },
+  {
+    "execution_id": "ee41a732-ade6-4536-bc74-af1ce3e51b7e",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {
+      "user_input": "Mudar o gradiente da barra de progresso."
+    },
+    "output": {
+      "intent": "ui_change",
+      "domain": "frontend",
+      "confidence": 0.92
+    },
+    "decision": {
+      "summary": "Classified as frontend",
+      "reason": "Heuristic match for [FE_13] scenario."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.331Z"
+  }
+]

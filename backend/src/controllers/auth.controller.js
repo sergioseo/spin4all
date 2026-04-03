@@ -2,8 +2,22 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const pool = require('../config/db');
 const DataIngestor = require('../services/data/ingestion/DataIngestor');
+const fs = require('fs');
+const path = require('path');
+
+const SETTINGS_PATH = path.resolve(__dirname, '../../config/settings.json');
 
 const register = async (req, res) => {
+  // 0. CHECK LOCKDOWN
+  try {
+    if (fs.existsSync(SETTINGS_PATH)) {
+      const settings = JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8'));
+      if (settings.registrationLocked) {
+        return res.status(403).json({ success: false, message: 'CADASTRO BLOQUEADO: A comunidade está em modo de manutenção.' });
+      }
+    }
+  } catch (e) { console.error('Erro ao ler trava de segurança:', e); }
+
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
@@ -94,6 +108,27 @@ const googleLogin = async (req, res) => {
     let isNew = false;
 
     if (result.rows.length === 0) {
+      // [BOLT:SECURITY] Verificar Lockdown antes de registrar via Google
+      const fs = require('fs');
+      const path = require('path');
+      const settingsPath = path.join(__dirname, '../../config/settings.json');
+      let registrationLocked = false;
+      try {
+        if (fs.existsSync(settingsPath)) {
+          const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+          registrationLocked = settings.registrationLocked;
+        }
+      } catch (e) {
+        console.error('Erro ao ler settings no Google Login:', e);
+      }
+
+      if (registrationLocked) {
+        return res.status(403).json({ 
+          success: false, 
+          message: 'O cadastro de novos usuários está temporariamente bloqueado pela administração.' 
+        });
+      }
+
       isNew = true;
       const passDummy = await bcrypt.hash(googleId || 'google-auth-pwd', 10);
       const newUser = await pool.query(
@@ -128,8 +163,21 @@ const googleLogin = async (req, res) => {
   }
 };
 
+const checkRegistrationStatus = (req, res) => {
+  try {
+    if (fs.existsSync(SETTINGS_PATH)) {
+      const settings = JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8'));
+      return res.json({ success: true, registrationLocked: settings.registrationLocked });
+    }
+    res.json({ success: true, registrationLocked: false });
+  } catch (e) {
+    res.json({ success: true, registrationLocked: false });
+  }
+};
+
 module.exports = {
   register,
   login,
   googleLogin,
+  checkRegistrationStatus
 };

@@ -1,0 +1,6 @@
+[INPUT]
+Classifique a seguinte tarefa:
+
+{
+"task": "Criar botão verde"
+}

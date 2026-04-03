@@ -1,0 +1,38 @@
+[
+  {
+    "execution_id": "a9df2ef1-e361-42e7-8739-39d77d326b32",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {},
+    "output": {},
+    "decision": {
+      "summary": "START",
+      "reason": "Agent [classifier] execution cycle initiated."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.382Z"
+  },
+  {
+    "execution_id": "a9df2ef1-e361-42e7-8739-39d77d326b32",
+    "step": "classifier",
+    "phase": "massive_test",
+    "input": {
+      "user_input": "Implementar rate limit para evitar ataques brute force."
+    },
+    "output": {
+      "intent": "backend_change",
+      "domain": "backend",
+      "confidence": 0.92
+    },
+    "decision": {
+      "summary": "Classified as backend",
+      "reason": "Heuristic match for [BE_13] scenario."
+    },
+    "risks": [],
+    "assumptions": [],
+    "error": null,
+    "timestamp": "2026-03-25T11:08:51.383Z"
+  }
+]

@@ -1,0 +1,103 @@
+{
+  "execution_id": "EXEC-FINAL",
+  "status": "converged",
+  "safe_mode": "full",
+  "rounds": [
+    {
+      "round": 1,
+      "contract": {
+        "contract_id": "TX-001",
+        "technical_spec": {
+          "sse": true
+        },
+        "target_skill": "scanner",
+        "decision": {
+          "summary": "V1",
+          "reason": "SSE"
+        },
+        "confidence": {
+          "overall": 0.9
+        }
+      },
+      "scanner": {
+        "output": {
+          "ready": false,
+          "context_summary": "Blocked",
+          "entities": [
+            "db"
+          ],
+          "risks": [
+            "Slow query"
+          ],
+          "contract_readiness": {
+            "ready": false
+          },
+          "blocking_issues": [
+            {
+              "severity": "hard",
+              "message": "Missing IDX"
+            }
+          ],
+          "confidence": {
+            "overall": 0.9
+          },
+          "target_skill": "architect",
+          "decision": {
+            "summary": "Locked",
+            "reason": "No index"
+          }
+        },
+        "validation": {
+          "status": "success",
+          "hard_fails": 0,
+          "soft_fails": 0,
+          "issues": []
+        }
+      },
+      "po": {
+        "output": {
+          "approved": true,
+          "refined_task": "Optmize UI",
+          "scope": "Global",
+          "confidence": {
+            "overall": 1
+          },
+          "target_skill": "architect",
+          "decision": {
+            "summary": "PO OK",
+            "reason": "Value met"
+          }
+        },
+        "validation": {
+          "status": "success",
+          "hard_fails": 0,
+          "soft_fails": 0,
+          "issues": []
+        }
+      },
+      "confidence": 0.93
+    }
+  ],
+  "final_contract": {
+    "contract_id": "TX-001",
+    "technical_spec": {
+      "sse": true
+    },
+    "target_skill": "scanner",
+    "decision": {
+      "summary": "V1",
+      "reason": "SSE"
+    },
+    "confidence": {
+      "overall": 0.9
+    }
+  },
+  "weighted_confidence": 0.93,
+  "deliberation_history": {
+    "rounds_executed": 1,
+    "issues_resolved": [],
+    "strategy_shift": {
+      "occurred": false
+    }
+  }
+}
