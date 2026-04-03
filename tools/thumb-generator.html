@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spin4All | Gerador de Thumbnails Industrial</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --accent: #0ea5e9;
+            --text: #f8fafc;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: var(--card);
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        h1 { font-weight: 900; letter-spacing: -1px; margin-bottom: 8px; font-size: 2rem; }
+        p { color: #94a3b8; margin-bottom: 30px; }
+        
+        .upload-area {
+            border: 2px dashed rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .upload-area:hover { border-color: var(--accent); background: rgba(14, 165, 233, 0.05); }
+
+        video {
+            width: 100%;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            display: none;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+        
+        .controls { display: none; gap: 12px; justify-content: center; flex-wrap: wrap; }
+        
+        button, label {
+            background: var(--accent);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: transform 0.2s, background 0.2s;
+            display: inline-block;
+        }
+        button:hover, label:hover { transform: scale(1.02); filter: brightness(1.1); }
+        
+        .filename-input {
+            background: rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            width: 200px;
+            text-align: center;
+        }
+
+        canvas { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Capturador de Thumbnails v2.0</h1>
+        <p>Gere identificação visual única para os vídeos da Spin4All.</p>
+
+        <label for="videoInput" class="upload-area" id="dropArea">
+            <span>Clique aqui para carregar um vídeo (.mp4)</span>
+            <input type="file" id="videoInput" accept="video/mp4" style="display:none">
+        </label>
+
+        <video id="videoPlayer" controls></video>
+        
+        <div class="controls" id="controls">
+            <div>
+                <input type="text" id="filename" class="filename-input" value="video1_thumb.jpg">
+            </div>
+            <button onclick="capture()">Capturar Frame Atual</button>
+        </div>
+    </div>
+
+    <canvas id="canvas"></canvas>
+
+    <script>
+        const videoInput = document.getElementById('videoInput');
+        const videoPlayer = document.getElementById('videoPlayer');
+        const controls = document.getElementById('controls');
+        const canvas = document.getElementById('canvas');
+        const filenameInput = document.getElementById('filename');
+
+        videoInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                videoPlayer.src = url;
+                videoPlayer.style.display = 'block';
+                controls.style.display = 'flex';
+                document.getElementById('dropArea').style.display = 'none';
+                
+                // Sugere o nome baseado no arquivo
+                const name = file.name.split('.')[0];
+                filenameInput.value = `${name}_thumb.jpg`;
+            }
+        });
+
+        function capture() {
+            const ctx = canvas.getContext('2d');
+            canvas.width = videoPlayer.videoWidth;
+            canvas.height = videoPlayer.videoHeight;
+            
+            // Desenha o frame atual
+            ctx.drawImage(videoPlayer, 0, 0, canvas.width, canvas.height);
+            
+            // Converte para JPG e baixa
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+            const link = document.createElement('a');
+            link.download = filenameInput.value;
+            link.href = dataUrl;
+            link.click();
+            
+            alert('Sucesso! Agora mova o arquivo baixado para a pasta /assets/videos/');
+        }
+    </script>
+</body>
+</html>

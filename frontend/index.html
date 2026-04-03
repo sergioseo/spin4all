@@ -38,11 +38,11 @@
     <header class="header">
         <div class="container header-container">
             <a href="#" class="logo-text">Spin<span class="text-gradient">4</span>All</a>
-            
+
             <nav class="desktop-nav">
+                <a href="#sobre">Valores</a>
                 <a href="#treinos">Encontros</a>
                 <a href="#galeria">Fotos</a>
-                <a href="#videos">Vídeos</a>
                 <a href="#mentores">Liderança</a>
                 <a href="#faq">FAQ</a>
                 <a href="login.html" class="header-cta"
@@ -60,24 +60,50 @@
     <div class="mobile-nav" id="mobileNav">
         <button class="mobile-nav-close" id="mobileNavClose">&times;</button>
         <div class="mobile-nav-content">
+            <a href="#sobre">Valores</a>
             <a href="#treinos">Encontros</a>
             <a href="#galeria">Fotos</a>
-            <a href="#videos">Vídeos</a>
             <a href="#mentores">Liderança</a>
             <a href="#faq">FAQ</a>
             <a href="login.html" class="mobile-nav-cta">Portal do Membro</a>
         </div>
     </div>
 
-    <!-- SECTION 1 — HERO -->
-    <section id="hero" class="hero">
-        <div class="hero-content reveal">
-            <img src="/assets/images/logo.png" alt="Logo da Comunidade Spin4All Tênis de Mesa" class="hero-logo">
+    <!-- SECTION 1 — HERO v2.0 (CINEMATIC EDITION) -->
+    <section id="hero" class="hero-v2">
+        <video autoplay muted loop playsinline class="hero-v2-video">
+            <source src="/assets/videos/video1.mp4" type="video/mp4">
+            Seu navegador não suporta vídeos.
+        </video>
+        <div class="hero-v2-overlay"></div>
 
+        <div class="hero-v2-content reveal">
+            <div class="hero-v2-logo-wrapper">
+                <div class="hero-v2-logo-orb">
+                    <img src="/assets/images/logo.png" alt="Logo Spin4All">
+                </div>
+            </div>
             <h1 class="title">Spin<span class="text-gradient">4</span>All</h1>
             <h2 class="subtitle">Comunidade de Tênis de Mesa para Todos</h2>
             <p class="description">Um grupo apaixonado por tênis de mesa que promove inclusão, saúde e integração social
                 em Águas de São Pedro.</p>
+            <div class="hero-actions" style="margin-top: 30px;">
+                <a href="https://chat.whatsapp.com/K2yuN2LIELUCY6iC8gYGAa"
+                    class="cta-button cta-whatsapp cta-bounce lockdown-hide" target="_blank" rel="noopener noreferrer">
+                    <span>Entrar no grupo de WhatsApp</span>
+                    <i class="ph-bold ph-whatsapp-logo"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- [ROLLBACK v1.2] — Antigo Hero Estático
+    <section id="hero-old" class="hero">
+        <div class="hero-content reveal">
+            <img src="/assets/images/logo.png" alt="Logo da Comunidade Spin4All Tênis de Mesa" class="hero-logo">
+            <h1 class="title">Spin<span class="text-gradient">4</span>All</h1>
+            <h2 class="subtitle">Comunidade de Tênis de Mesa para Todos</h2>
+            <p class="description">Um grupo apaixonado por tênis de mesa que promove inclusão, saúde e integração social em Águas de São Pedro.</p>
             <div class="hero-actions">
                 <a href="https://chat.whatsapp.com/K2yuN2LIELUCY6iC8gYGAa"
                     class="cta-button cta-whatsapp cta-bounce lockdown-hide" target="_blank" rel="noopener noreferrer">
@@ -86,12 +112,11 @@
                 </a>
             </div>
         </div>
-
-        <!-- Animated Background Elements -->
         <div class="bg-shape shape-1"></div>
         <div class="bg-shape shape-2"></div>
         <div class="bg-shape shape-3"></div>
     </section>
+    -->
 
     <section id="sobre" class="section reveal">
         <div class="container overflow-hidden">
@@ -356,7 +381,7 @@
                         <!-- Video 1 -->
                         <div class="video-card">
                             <div class="video-container">
-                                <video controls poster="/assets/images/foto1.jpg" preload="metadata">
+                                <video controls poster="/assets/videos/video1_thumb.jpg" preload="metadata">
                                     <source src="/assets/videos/video1.mp4" type="video/mp4">
                                     Seu navegador não suporta vídeos.
                                 </video>
@@ -369,20 +394,20 @@
                         <!-- Video 2 -->
                         <div class="video-card">
                             <div class="video-container">
-                                <video controls poster="/assets/images/foto2.jpg" preload="metadata">
+                                <video controls poster="/assets/videos/video2_thumb.jpg" preload="metadata">
                                     <source src="/assets/videos/video2.mp4" type="video/mp4">
                                     Seu navegador não suporta vídeos.
                                 </video>
                             </div>
                             <div class="video-info">
-                                <h4 class="video-title">Técnicas e Alta Performance</h4>
+                                <h4 class="video-title">Dancinha de Alta Performance</h4>
                             </div>
                         </div>
 
                         <!-- Video 3 -->
                         <div class="video-card">
                             <div class="video-container">
-                                <video controls poster="/assets/images/foto3.jpg" preload="metadata">
+                                <video controls poster="/assets/videos/video3_thumb.jpg" preload="metadata">
                                     <source src="/assets/videos/video3.mp4" type="video/mp4">
                                     Seu navegador não suporta vídeos.
                                 </video>
@@ -395,13 +420,13 @@
                         <!-- Video 4 (Novo) -->
                         <div class="video-card">
                             <div class="video-container">
-                                <video controls poster="/assets/images/foto4.jpg" preload="metadata">
+                                <video controls poster="/assets/videos/video4_thumb.jpg" preload="metadata">
                                     <source src="/assets/videos/video4.mp4" type="video/mp4">
                                     Seu navegador não suporta vídeos.
                                 </video>
                             </div>
                             <div class="video-info">
-                                <h4 class="video-title">Destaque do Mês</h4>
+                                <h4 class="video-title">Andrezão em Ação</h4>
                             </div>
                         </div>
                     </div>
