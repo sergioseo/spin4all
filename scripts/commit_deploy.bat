@@ -37,8 +37,12 @@ git add .
 echo [PROCESSO] Criando commit: "!commit_msg!"
 git commit -m "[SPIN4ALL] !commit_msg!"
 
-echo [PROCESSO] Subindo para o servidor (Push)...
-git push
+:: Detecta a branch atual para o push
+for /f "tokens=*" %%a in ('git rev-parse --abbrev-ref HEAD') do set BRANCH=%%a
+
+echo [PROCESSO] Subindo para o servidor (Branch: !BRANCH!)...
+:: Tenta o push com upstream para resolver o erro 'no upstream branch'
+git push -u origin !BRANCH!
 
 if %errorlevel% equ 0 (
     echo.
