@@ -9,7 +9,7 @@ git config gc.auto 0
 git add .
 echo.
 echo 2. Criando o versionamento...
-git commit -m "[BOLT:GOVERNANCE] Industrial Lockdown Protocol v5 (Landing Page + Google Integration) 🛡️🚀⚙️"
+git commit -m "[P0:RECOVERY] Restoring Production Connectivity (Binding to 0.0.0.0) 🚨⚡🛠️"
 echo.
 echo 3. Enviando para o GitHub...
 git push origin main

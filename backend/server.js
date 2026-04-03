@@ -48,9 +48,9 @@ app.use('/api', require('./src/routes/governance.routes'));
 app.use('/api/admin', require('./src/routes/admin.routes'));
 
 // --- INICIALIZAÇÃO "SMART" ---
-app.listen(PORT, '127.0.0.1', async () => {
+app.listen(PORT, '0.0.0.0', async () => {
     console.log(`--- SPIN4ALL SERVER VERSION 11.0 (CLEAN) ---`);
-    console.log(`✅ [SERVER:CLEAN] DISPONÍVEL em http://127.0.0.1:${PORT}`);
+    console.log(`✅ [SERVER:CLEAN] DISPONÍVEL em http://0.0.0.0:${PORT}`);
     
     // Serviços que podem demorar ficam aqui em uma função separada (não bloqueantes)
     initHeavyServices();
