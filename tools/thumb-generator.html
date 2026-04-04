@@ -1,108 +1,237 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spin4All | Gerador de Thumbnails Industrial</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style>
         :root {
-            --bg: #0f172a;
-            --card: #1e293b;
+            --bg: #030712;
+            --card: rgba(30, 41, 59, 0.7);
             --accent: #0ea5e9;
+            --accent-glow: rgba(14, 165, 233, 0.3);
             --text: #f8fafc;
+            --text-dim: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
         }
+
+        * { margin: 0; padding: 0; box-box: border-box; }
+
         body {
             font-family: 'Inter', sans-serif;
             background: var(--bg);
             color: var(--text);
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
+            padding: 40px 20px;
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(14, 165, 233, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(14, 165, 233, 0.1) 0%, transparent 50%);
         }
+
         .container {
             background: var(--card);
-            padding: 40px;
-            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            padding: 60px;
+            border-radius: 40px;
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-            max-width: 800px;
+            max-width: 1000px;
             width: 100%;
             text-align: center;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
         }
-        h1 { font-weight: 900; letter-spacing: -1px; margin-bottom: 8px; font-size: 2rem; }
-        p { color: #94a3b8; margin-bottom: 30px; }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            opacity: 0.5;
+        }
+
+        h1 { 
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800; 
+            letter-spacing: -2px; 
+            margin-bottom: 12px; 
+            font-size: 3rem;
+            background: linear-gradient(to bottom, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p { color: var(--text-dim); margin-bottom: 40px; font-size: 1.1rem; }
         
         .upload-area {
-            border: 2px dashed rgba(255,255,255,0.1);
-            padding: 30px;
-            border-radius: 16px;
-            margin-bottom: 24px;
-            transition: all 0.3s;
+            border: 2px dashed var(--border);
+            padding: 60px 40px;
+            border-radius: 24px;
+            margin-bottom: 40px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            background: rgba(255,255,255,0.02);
         }
-        .upload-area:hover { border-color: var(--accent); background: rgba(14, 165, 233, 0.05); }
 
-        video {
-            width: 100%;
-            border-radius: 12px;
-            margin-bottom: 24px;
+        .upload-area:hover { 
+            border-color: var(--accent); 
+            background: rgba(14, 165, 233, 0.05);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px -10px var(--accent-glow);
+        }
+
+        .upload-area i { font-size: 48px; color: var(--accent); }
+
+        #player-wrapper {
             display: none;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            width: 100%;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            margin-bottom: 40px;
+            border: 1px solid var(--border);
+        }
+
+        video { width: 100%; display: block; }
+        
+        .controls { 
+            display: none; 
+            gap: 20px; 
+            justify-content: center; 
+            flex-wrap: wrap;
+            align-items: center;
         }
         
-        .controls { display: none; gap: 12px; justify-content: center; flex-wrap: wrap; }
-        
-        button, label {
+        .input-box {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .input-box label { font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; }
+
+        .filename-input {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+            color: white;
+            padding: 16px 20px;
+            border-radius: 16px;
+            width: 300px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .filename-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: rgba(0,0,0,0.5);
+        }
+
+        .btn-capture {
             background: var(--accent);
             color: white;
-            padding: 12px 24px;
-            border-radius: 12px;
-            font-weight: 600;
+            padding: 18px 36px;
+            border-radius: 18px;
+            font-weight: 700;
             cursor: pointer;
             border: none;
-            transition: transform 0.2s, background 0.2s;
-            display: inline-block;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1rem;
+            box-shadow: 0 10px 20px -5px var(--accent-glow);
         }
-        button:hover, label:hover { transform: scale(1.02); filter: brightness(1.1); }
-        
-        .filename-input {
-            background: rgba(0,0,0,0.2);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: white;
-            padding: 12px;
-            border-radius: 8px;
-            margin-top: 10px;
-            width: 200px;
-            text-align: center;
+
+        .btn-capture:hover { 
+            transform: translateY(-2px) scale(1.02); 
+            filter: brightness(1.1);
+            box-shadow: 0 15px 30px -5px var(--accent-glow);
+        }
+
+        .btn-capture:active { transform: translateY(0); }
+
+        .btn-capture:disabled {
+            background: #475569;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
         }
 
         canvas { display: none; }
+
+        .status-msg {
+            margin-top: 20px;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .status-success { background: rgba(34, 197, 94, 0.1); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.2); }
+        .status-error { background: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); }
+
+        .back-link {
+            margin-top: 40px;
+            color: var(--text-dim);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .back-link:hover { color: var(--accent); }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>Capturador de Thumbnails v2.0</h1>
-        <p>Gere identificação visual única para os vídeos da Spin4All.</p>
+        <h1>Thumbnails Pro <span style="color: var(--accent);">v3.0</span></h1>
+        <p>Geração Industrial de Capas para Vídeos da Comunidade</p>
 
         <label for="videoInput" class="upload-area" id="dropArea">
-            <span>Clique aqui para carregar um vídeo (.mp4)</span>
+            <i class="ph-bold ph-video-camera"></i>
+            <span style="font-weight: 600; font-size: 1.2rem;">Arraste ou clique para carregar o MP4</span>
+            <span style="font-size: 0.9rem; opacity: 0.6;">O vídeo deve estar na pasta /assets/videos/ para sincronia ideal</span>
             <input type="file" id="videoInput" accept="video/mp4" style="display:none">
         </label>
 
-        <video id="videoPlayer" controls></video>
+        <div id="player-wrapper">
+            <video id="videoPlayer" controls></video>
+        </div>
         
         <div class="controls" id="controls">
-            <div>
-                <input type="text" id="filename" class="filename-input" value="video1_thumb.jpg">
+            <div class="input-box">
+                <label>Nome do Arquivo</label>
+                <input type="text" id="filename" class="filename-input" placeholder="video_thumb.jpg">
             </div>
-            <button onclick="capture()">Capturar Frame Atual</button>
+            <button id="captureBtn" class="btn-capture" onclick="captureAndSave()">
+                <i class="ph-bold ph-lightning"></i>
+                Capturar & Salvar no Servidor
+            </button>
         </div>
+
+        <div id="status" class="status-msg"></div>
+
+        <a href="../frontend/index.html" class="back-link">
+            <i class="ph ph-arrow-left"></i>
+            Voltar para o Site
+        </a>
     </div>
 
     <canvas id="canvas"></canvas>
@@ -113,39 +242,96 @@
         const controls = document.getElementById('controls');
         const canvas = document.getElementById('canvas');
         const filenameInput = document.getElementById('filename');
+        const statusMsg = document.getElementById('status');
+        const captureBtn = document.getElementById('captureBtn');
+        const playerWrapper = document.getElementById('player-wrapper');
+
+        // Verifica Token de Admin ao carregar
+        const token = localStorage.getItem('spin4all_token');
+        if (!token) {
+            alert('Acesso Restrito: Você precisa estar logado como Admin.');
+            window.location.href = '../frontend/login.html';
+        }
 
         videoInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
                 const url = URL.createObjectURL(file);
                 videoPlayer.src = url;
-                videoPlayer.style.display = 'block';
+                playerWrapper.style.display = 'block';
                 controls.style.display = 'flex';
                 document.getElementById('dropArea').style.display = 'none';
                 
-                // Sugere o nome baseado no arquivo
+                // Sugere o nome baseado no arquivo (ex: video1.mp4 -> video1_thumb.jpg)
                 const name = file.name.split('.')[0];
                 filenameInput.value = `${name}_thumb.jpg`;
+                
+                statusMsg.style.display = 'none';
             }
         });
 
-        function capture() {
-            const ctx = canvas.getContext('2d');
-            canvas.width = videoPlayer.videoWidth;
-            canvas.height = videoPlayer.videoHeight;
-            
-            // Desenha o frame atual
-            ctx.drawImage(videoPlayer, 0, 0, canvas.width, canvas.height);
-            
-            // Converte para JPG e baixa
-            const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
-            const link = document.createElement('a');
-            link.download = filenameInput.value;
-            link.href = dataUrl;
-            link.click();
-            
-            alert('Sucesso! Agora mova o arquivo baixado para a pasta /assets/videos/');
+        async function captureAndSave() {
+            try {
+                // UI Feedback
+                captureBtn.disabled = true;
+                captureBtn.innerHTML = '<i class="ph-bold ph-circle-notch animate-spin"></i> Processando...';
+                
+                const ctx = canvas.getContext('2d');
+                canvas.width = videoPlayer.videoWidth;
+                canvas.height = videoPlayer.videoHeight;
+                
+                // Desenha o frame atual do vídeo no Canvas
+                ctx.drawImage(videoPlayer, 0, 0, canvas.width, canvas.height);
+                
+                // Converte para JPG de alta qualidade
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
+                
+                // Envia para o Backend
+                const response = await fetch('/api/admin/save-thumb', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        filename: filenameInput.value,
+                        image: dataUrl
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showStatus('✅ SUCESSO: Thumbnail salva e aplicada!', 'success');
+                } else {
+                    showStatus('❌ ERRO: ' + (result.error || 'Falha ao salvar'), 'error');
+                }
+
+            } catch (err) {
+                console.error(err);
+                showStatus('❌ ERRO CRÍTICO: Verifique o console do servidor', 'error');
+            } finally {
+                captureBtn.disabled = false;
+                captureBtn.innerHTML = '<i class="ph-bold ph-lightning"></i> Capturar & Salvar no Servidor';
+            }
+        }
+
+        function showStatus(text, type) {
+            statusMsg.textContent = text;
+            statusMsg.className = `status-msg status-${type}`;
+            statusMsg.style.display = 'block';
         }
     </script>
+
+    <style>
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+
 </body>
 </html>

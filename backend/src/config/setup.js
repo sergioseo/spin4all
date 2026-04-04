@@ -167,6 +167,15 @@ const runMigrations = async () => {
             jsn_resultado JSONB,
             UNIQUE(id_usuario, dsc_hash_input)
         );
+
+        -- TABELA DE VÍDEOS (BOLT Protocol)
+        CREATE TABLE IF NOT EXISTS trusted.tb_videos (
+            id_video SERIAL PRIMARY KEY,
+            dsc_titulo VARCHAR(255) NOT NULL,
+            dsc_video_url TEXT NOT NULL,
+            dsc_thumb_url TEXT,
+            dt_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
       `);
 
         // 6. Governança e Controle de ETL

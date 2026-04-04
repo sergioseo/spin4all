@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const nextBtn = document.getElementById(nextBtnId);
 
         if (carousel && prevBtn && nextBtn) {
-            const scrollAmount = 320; // Valor dinâmico baseado no card + gap
+            const scrollAmount = 350; // Valor dinâmico baseado no card + gap
 
             nextBtn.addEventListener('click', () => {
                 carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
@@ -108,25 +108,69 @@ document.addEventListener('DOMContentLoaded', () => {
                 carousel.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
             });
 
-            // Lógica de Visibilidade das Setas (Feedback Visual BOLT)
             const handleArrows = () => {
                 const isAtEnd = carousel.scrollLeft + carousel.clientWidth >= carousel.scrollWidth - 15;
                 const isAtStart = carousel.scrollLeft <= 15;
                 
-                prevBtn.style.opacity = isAtStart ? '0.3' : '1';
-                nextBtn.style.opacity = isAtEnd ? '0.3' : '1';
+                prevBtn.style.opacity = isAtStart ? '0.2' : '1';
+                nextBtn.style.opacity = isAtEnd ? '0.2' : '1';
                 prevBtn.style.pointerEvents = isAtStart ? 'none' : 'auto';
                 nextBtn.style.pointerEvents = isAtEnd ? 'none' : 'auto';
             };
 
             carousel.addEventListener('scroll', handleArrows);
             window.addEventListener('resize', handleArrows);
-            handleArrows(); // Inicializa o estado
+            handleArrows(); 
+            return handleArrows; // Retorna para atualização manual se necessário
         }
     };
 
+    // --- CARREGAMENTO DINÂMICO DE VÍDEOS (BOLT Protocol) ---
+    async function loadVideos() {
+        const videoTrack = document.getElementById('videoTrack');
+        if (!videoTrack) return;
+
+        try {
+            const response = await fetch('/api/videos');
+            const data = await response.json();
+
+            if (data.success && data.videos.length > 0) {
+                videoTrack.innerHTML = ''; // Limpa o spinner
+                
+                data.videos.forEach(video => {
+                    const videoCard = `
+                        <div class="video-card">
+                            <div class="video-container">
+                                <video controls poster="${video.dsc_thumb_url || ''}" preload="metadata">
+                                    <source src="${video.dsc_video_url}" type="video/mp4">
+                                    Seu navegador não suporta vídeos.
+                                </video>
+                            </div>
+                            <div class="video-info">
+                                <h4 class="video-title">${video.dsc_titulo}</h4>
+                                <span style="font-size: 0.7rem; color: rgba(255,255,255,0.4);">
+                                    ${new Date(video.dt_registro).toLocaleDateString()}
+                                </span>
+                            </div>
+                        </div>
+                    `;
+                    videoTrack.innerHTML += videoCard;
+                });
+
+                // Re-inicializa ou atualiza as setas após o carregamento
+                const updateArrows = initCarousel('videoCarousel', 'videoPrevBtn', 'videoNextBtn');
+                if (updateArrows) setTimeout(updateArrows, 100);
+            } else {
+                videoTrack.innerHTML = '<p style="color: #64748b; padding: 20px;">Nenhum vídeo disponível no momento.</p>';
+            }
+        } catch (err) {
+            console.error('Erro ao buscar vídeos:', err);
+            videoTrack.innerHTML = '<p style="color: #f43f5e; padding: 20px;">Erro ao carregar vídeos.</p>';
+        }
+    }
+
     // Inicialização BOLT (Fotos e Vídeos)
     initCarousel('galleryCarousel', 'prevBtn', 'nextBtn');
-    initCarousel('videoCarousel', 'videoPrevBtn', 'videoNextBtn');
+    loadVideos();
 
 });

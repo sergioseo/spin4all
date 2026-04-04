@@ -200,6 +200,10 @@
                 style="margin-bottom: 10px; display: flex; align-items: center; gap: 12px; padding: 12px; text-decoration: none; border-radius: 8px;">
                 <i class="fas fa-code-branch"></i> Governança BOLT
             </a>
+            <a href="../tools/thumb-generator.html" class="nav-link"
+                style="margin-bottom: 10px; display: flex; align-items: center; gap: 12px; padding: 12px; text-decoration: none; border-radius: 8px; color: #0ea5e9;">
+                <i class="fas fa-camera"></i> Gerador de Thumbs
+            </a>
 
             <!-- NOVO: Central de Segurança -->
             <div style="margin-top: 20px; padding: 10px; background: rgba(56, 189, 248, 0.05); border-radius: 12px; border: 1px solid rgba(56, 189, 248, 0.1);">
@@ -226,6 +230,10 @@
                     Relatórios Analíticos</h1>
                 <p style="color: #94a3b8; font-size: 1.1rem;">Visão consolidada da comunidade Spin4All</p>
             </div>
+            <button onclick="openVideoModal()" 
+                style="background: linear-gradient(135deg, #0ea5e9, #38bdf8); color: white; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);">
+                <i class="fas fa-plus-circle"></i> Novo Vídeo
+            </button>
         </header>
 
         <section class="dashboard-grid">
@@ -1188,26 +1196,145 @@
                 if (data.success) {
                     // Atualizar contador de Churn
                     document.getElementById('churn-count').textContent = data.churn.length;
-
-                    // Opcional: Renderizar lista de churn se houver um container específico
                 }
             } catch (err) {
                 console.error('Erro ao carregar métricas avançadas:', err);
             }
         }
 
-        // Filtro de Busca
-        document.getElementById('search-membros').addEventListener('input', (e) => {
-            const term = e.target.value.toLowerCase();
-            const rows = document.querySelectorAll('#members-list tr');
-            rows.forEach(row => {
-                const name = row.cells[0].textContent.toLowerCase();
-                row.style.display = name.includes(term) ? '' : 'none';
+        // --- GESTÃO DE VÍDEOS (BOLT Protocol) ---
+        function openVideoModal() {
+            document.getElementById('video-upload-modal').style.display = 'flex';
+        }
+
+        function closeVideoModal() {
+            document.getElementById('video-upload-modal').style.display = 'none';
+        }
+
+        async function handleVideoUpload(event) {
+            event.preventDefault();
+            const btn = document.getElementById('btn-save-video');
+            const videoFile = document.getElementById('video-file').files[0];
+            const title = document.getElementById('video-title').value;
+
+            if (!videoFile || !title) return alert('Por favor, preencha todos os campos.');
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processando...';
+
+            try {
+                console.log('Iniciando upload de vídeo:', title);
+                // 1. Extração Automática de Thumbnail (BOLT Auto-Thumb)
+                const thumbBlob = await extractThumbnail(videoFile);
+                console.log('Thumbnail extraído:', !!thumbBlob);
+                
+                // 2. Preparar FormData
+                const formData = new FormData();
+                formData.append('title', title);
+                formData.append('video', videoFile);
+                if (thumbBlob) formData.append('thumb', thumbBlob, 'thumb.jpg');
+
+                // 3. Enviar para API
+                const token = localStorage.getItem('spin4all_token');
+                if (!token) throw new Error('Token não encontrado. Faça login novamente.');
+
+                const response = await fetch('/api/videos/add', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+
+                const result = await response.json();
+                console.log('Resposta do servidor:', result);
+
+                if (result.success) {
+                    alert('Vídeo adicionado com sucesso!');
+                    location.reload();
+                } else {
+                    alert('Erro do Servidor: ' + (result.message || 'Erro desconhecido'));
+                }
+            } catch (err) {
+                console.error('Erro no upload (detalhado):', err);
+                alert('Erro ao processar vídeo: ' + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Salvar Vídeo';
+            }
+        }
+
+        /**
+         * Extrai o thumbnail do 1º segundo do vídeo (Protocolo BOLT)
+         */
+        function extractThumbnail(file) {
+            return new Promise((resolve) => {
+                const video = document.createElement('video');
+                const canvas = document.createElement('canvas');
+                const url = URL.createObjectURL(file);
+                let timeoutHandle;
+
+                video.src = url;
+                video.muted = true;
+                video.preload = 'metadata';
+
+                const cleanup = () => {
+                    clearTimeout(timeoutHandle);
+                    URL.revokeObjectURL(url);
+                };
+
+                timeoutHandle = setTimeout(() => {
+                    console.warn('Timeout na extração de thumbnail');
+                    cleanup();
+                    resolve(null);
+                }, 8000); 
+
+                video.onloadedmetadata = () => {
+                    video.currentTime = 1; 
+                };
+
+                video.onseeked = () => {
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    
+                    canvas.toBlob((blob) => {
+                        cleanup();
+                        resolve(blob);
+                    }, 'image/jpeg', 0.8);
+                };
+
+                video.onerror = (e) => {
+                    console.error('Erro ao carregar vídeo para thumb', e);
+                    cleanup();
+                    resolve(null);
+                };
             });
-        });
+        }
 
         checkAdmin();
     </script>
+
+    <!-- MODAL NOVO VÍDEO (BOLT UI) -->
+    <div id="video-upload-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 2000; justify-content: center; align-items: center;">
+        <div style="background: rgba(30, 41, 59, 0.95); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 20px; padding: 30px; width: 100%; max-width: 500px;">
+            <h2 style="color: #fff; margin-bottom: 20px;"><i class="fas fa-video"></i> Adicionar Novo Vídeo</h2>
+            <form onsubmit="handleVideoUpload(event)">
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; color: #94a3b8; margin-bottom: 8px;">Título do Vídeo</label>
+                    <input type="text" id="video-title" required placeholder="Ex: Treino de Sexta" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff;">
+                </div>
+                <div style="margin-bottom: 25px;">
+                    <label style="display: block; color: #94a3b8; margin-bottom: 8px;">Arquivo de Vídeo (.mp4)</label>
+                    <input type="file" id="video-file" accept="video/mp4" required style="width: 100%; color: #94a3b8;">
+                    <p style="font-size: 0.7rem; color: #64748b; margin-top: 5px;">* A thumbnail será gerada automaticamente.</p>
+                </div>
+                <div style="display: flex; gap: 15px;">
+                    <button type="button" onclick="closeVideoModal()" style="flex: 1; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; border-radius: 8px; cursor: pointer;">Cancelar</button>
+                    <button type="submit" id="btn-save-video" style="flex: 2; padding: 12px; background: #38bdf8; border: none; color: #fff; font-weight: 700; border-radius: 8px; cursor: pointer;">Salvar Vídeo</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
 
 </html>

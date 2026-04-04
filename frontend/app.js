@@ -107,11 +107,13 @@ function renderShellUser(user) {
     const adminNav = document.getElementById('admin-nav-item');
     const monitoringNav = document.getElementById('admin-monitoring-nav');
     const boltNav = document.getElementById('admin-bolt-nav');
+    const thumbsNav = document.getElementById('admin-thumbs-nav');
 
     if (user.flg_admin) {
         if (adminNav) adminNav.style.display = 'block';
         if (monitoringNav) monitoringNav.style.display = 'block';
         if (boltNav) boltNav.style.display = 'block';
+        if (thumbsNav) thumbsNav.style.display = 'block';
         if (adminBadge) adminBadge.style.display = 'block';
     } else {
         if (adminBadge) adminBadge.style.display = 'none';

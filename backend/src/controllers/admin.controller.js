@@ -1,4 +1,6 @@
 const pool = require('../config/db');
+const fs = require('fs');
+const path = require('path');
 
 const getReports = async (req, res) => {
   try {
@@ -159,6 +161,37 @@ const getBiomechanicalEffort = async (req, res) => {
   }
 };
 
+const saveThumbnail = async (req, res) => {
+  const { filename, image } = req.body;
+
+  if (!filename || !image) {
+    return res.status(400).json({ success: false, error: 'Dados insuficientes.' });
+  }
+
+  try {
+    // Remove o cabeçalho data:image/jpeg;base64,
+    const base64Data = image.replace(/^data:image\/\w+;base64,/, "");
+    const buffer = Buffer.from(base64Data, 'base64');
+
+    // Caminho absoluto para a pasta de vídeos
+    const videoDir = path.resolve(__dirname, '../../../assets/videos');
+    
+    // Garante que a pasta existe (embora deva existir)
+    if (!fs.existsSync(videoDir)) {
+      fs.mkdirSync(videoDir, { recursive: true });
+    }
+
+    const filePath = path.join(videoDir, filename);
+    fs.writeFileSync(filePath, buffer);
+
+    console.log(`[ADMIN] Thumbnail salva com sucesso: ${filename}`);
+    res.json({ success: true, message: `Thumbnail ${filename} salva com sucesso!` });
+  } catch (err) {
+    console.error('[ADMIN:ERR] Erro ao salvar thumbnail:', err.message);
+    res.status(500).json({ success: false, error: 'Erro interno ao salvar arquivo.' });
+  }
+};
+
 module.exports = {
   getReports,
   getMembers,
@@ -167,4 +200,5 @@ module.exports = {
   getObjectivesSummary,
   getTechnicalBottleneck,
   getBiomechanicalEffort,
+  saveThumbnail,
 };

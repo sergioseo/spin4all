@@ -20,5 +20,6 @@ router.get('/advanced-metrics', authenticateToken, isAdmin, adminController.getA
 router.get('/objectives-summary', authenticateToken, isAdmin, adminController.getObjectivesSummary);
 router.get('/technical-bottleneck', authenticateToken, isAdmin, adminController.getTechnicalBottleneck);
 router.get('/biomechanical-effort', authenticateToken, isAdmin, adminController.getBiomechanicalEffort);
+router.post('/save-thumb', authenticateToken, isAdmin, adminController.saveThumbnail);
 
 module.exports = router;
