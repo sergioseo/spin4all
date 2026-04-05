@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Termos de Uso e Autorização | Spin4All</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        :root {
+            --brand-primary: #38bdf8;
+            --brand-dark: #0f172a;
+            --brand-bg: #0f172a;
+            --accent-cyan: #00e5ff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--brand-bg);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(56, 189, 248, 0.1) 0px, transparent 50%);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 32px;
+            padding: 60px;
+            box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        header { text-align: center; margin-bottom: 60px; }
+
+        .logo { width: 80px; margin-bottom: 24px; }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.2rem;
+            line-height: 1.2;
+            background: linear-gradient(to right, #fff, var(--brand-primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: var(--accent-cyan);
+            font-weight: 700;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .update-date { color: #64748b; font-size: 0.85rem; margin-bottom: 40px; }
+
+        hr { border: 0; border-top: 1px solid rgba(255, 255, 255, 0.05); margin: 40px 0; }
+
+        section { margin-bottom: 48px; }
+
+        h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.4rem;
+            color: var(--brand-primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        h3 {
+            font-size: 1.1rem;
+            color: #fff;
+            margin-bottom: 12px;
+            margin-top: 24px;
+        }
+
+        p { color: #94a3b8; margin-bottom: 20px; font-size: 1.05rem; }
+
+        ul { margin-left: 10px; margin-bottom: 24px; list-style-type: none; }
+        li { 
+            color: #94a3b8; 
+            margin-bottom: 12px; 
+            position: relative;
+            padding-left: 28px;
+        }
+        li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--brand-primary);
+            font-weight: bold;
+        }
+
+        strong { color: #e2e8f0; }
+
+        .footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 60px;
+            padding-top: 40px;
+            text-align: center;
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+            text-decoration: none;
+            background: rgba(56, 189, 248, 0.1);
+            padding: 16px 32px;
+            border-radius: 16px;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            transition: all 0.3s;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-back:hover {
+            background: rgba(56, 189, 248, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(56, 189, 248, 0.1);
+        }
+
+        .btn-close-top {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.25rem;
+            z-index: 100;
+        }
+
+        .btn-close-top:hover {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.3);
+            transform: rotate(90deg);
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 80px 24px 40px; border-radius: 0; }
+            h1 { font-size: 1.8rem; }
+            .btn-close-top { top: 20px; right: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="/assets/images/logo.png" alt="Spin4All" class="logo">
+            <span class="subtitle">SPIN4ALL – PLATAFORMA DIGITAL</span>
+            <h1>Termo de Uso e Autorização</h1>
+            <p class="update-date">Última atualização: 05 de Abril de 2026</p>
+        </header>
+
+        <section>
+            <h2><i class="ph ph-check-circle"></i> 1. ACEITAÇÃO DOS TERMOS</h2>
+            <p>Ao acessar, se cadastrar ou utilizar a plataforma <strong>Spin4All</strong> ("Plataforma"), o usuário declara que leu, compreendeu e concorda integralmente com este Termo de Uso e Autorização.</p>
+            <p>Caso não concorde com qualquer condição, o uso da plataforma deve ser imediatamente interrompido.</p>
+        </section>
+
+        <section>
+            <h2><i class="ph ph-list-magnifying-glass"></i> 2. DEFINIÇÕES</h2>
+            <p>Para fins deste Termo:</p>
+            <ul>
+                <li><strong>Usuário:</strong> qualquer pessoa que acesse ou utilize a plataforma.</li>
+                <li><strong>Conteúdo:</strong> inclui, mas não se limita a fotos, vídeos, áudios, voz, imagem, dados de desempenho, estatísticas e materiais relacionados ao usuário.</li>
+                <li><strong>Plataforma:</strong> sistema digital acessado via spin4all.com.br.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2><i class="ph ph-target"></i> 3. OBJETO</h2>
+            <p>Este Termo regula:</p>
+            <ul>
+                <li>O uso da plataforma Spin4All.</li>
+                <li>A coleta e utilização de dados.</li>
+                <li>A autorização de uso de imagem, voz e conteúdo dos usuários.</li>
+                <li>As responsabilidades e direitos das partes.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2><i class="ph ph-user-circle-gears"></i> 4. CADASTRO E RESPONSABILIDADE</h2>
+            <p>O usuário declara que:</p>
+            <ul>
+                <li>Fornecerá informações verdadeiras, completas e atualizadas.</li>
+                <li>É responsável pela segurança de seu login e senha.</li>
+                <li>Não utilizará a plataforma para fins ilegais ou indevidos.</li>
+            </ul>
+            <p>A Spin4All poderá suspender ou excluir contas em caso de violação.</p>
+        </section>
+
+        <section>
+            <h2><i class="ph ph-video-camera"></i> 5. USO DA IMAGEM, VOZ E CONTEÚDO</h2>
+            <p>Ao aceitar este Termo, o usuário <strong>autoriza expressamente</strong>, de forma gratuita, irrevogável e irretratável:</p>
+            
+            <h3>5.1 Direitos concedidos</h3>
+            <p>A Spin4All poderá captar, armazenar e utilizar:</p>
+            <ul>
+                <li>Imagem (foto e vídeo).</li>
+                <li>Voz e áudio.</li>
+                <li>Nome e identificação.</li>
+                <li>Dados de desempenho esportivo.</li>
+            </ul>
+
+            <p>O conteúdo poderá ser utilizado para divulgação institucional, marketing, redes sociais, campanhas publicitárias e materiais educativos.</p>
+
+            <h3>5.2 Abrangência da autorização</h3>
+            <p>A autorização inclui uso no Brasil e no exterior, em qualquer mídia (digital, impressa, audiovisual), por tempo indeterminado, permitindo edição ou adaptação do conteúdo.</p>
+
+            <h3>5.3 Ausência de remuneração</h3>
+            <p>O usuário declara ciência de que não haverá pagamento pelo uso de imagem/voz/conteúdo, ocorrendo para fins institucionais e promocionais.</p>
+        </section>
+
+        <section>
+            <h2><i class="ph ph-copyright"></i> 6. PROPRIEDADE INTELECTUAL</h2>
+            <p>A plataforma, marca, layout e tecnologia são de propriedade exclusiva da Spin4All. O usuário não pode copiar, reproduzir ou explorar sem autorização prévia.</p>
+        </section>
+
+        <section>
+            <h2><i class="ph ph-fingerprint"></i> 7. DADOS E PRIVACIDADE</h2>
+            <p>A Spin4All coletará e utilizará dados para operação da plataforma, personalização de experiência e melhoria do serviço.</p>
+            <p>Os dados serão tratados conforme a legislação aplicável, incluindo a <strong>Lei Geral de Proteção de Dados (LGPD)</strong>.</p>
+        </section>
+
+        <section>
+            <h2><i class="ph ph-shield-star"></i> 8. RESPONSABILIDADES DA SPIN4ALL</h2>
+            <p>A Spin4All se compromete a manter a plataforma funcional e segura dentro de padrões razoáveis e proteger os dados dos usuários, corrigindo falhas quando identificadas.</p>
+        </section>
+
+        <section>
+            <h2><i class="ph ph-warning-octagon"></i> 9. LIMITAÇÃO DE RESPONSABILIDADE</h2>
+            <p>A Spin4All não se responsabiliza por uso indevido da plataforma por usuários, decisões tomadas com base nos dados exibidos ou falhas decorrentes de terceiros.</p>
+        </section>
+
+        <section>
+            <h2><i class="ph ph-user-minus"></i> 10. CANCELAMENTO E EXCLUSÃO</h2>
+            <p>O usuário poderá solicitar exclusão de conta, porém conteúdos já utilizados em campanhas poderão continuar sendo usados e dados mantidos para fins legais.</p>
+        </section>
+
+        <section>
+            <h2><i class="ph ph-pencil-line"></i> 11. ALTERAÇÕES DO TERMO</h2>
+            <p>A Spin4All poderá alterar este Termo a qualquer momento. O uso contínuo da plataforma após alterações implica aceitação automática.</p>
+        </section>
+
+        <section>
+            <h2><i class="ph ph-gavel"></i> 12. LEGISLAÇÃO E FORO</h2>
+            <p>Este Termo será regido pelas leis brasileiras. Fica eleito o foro da comarca estipulada em contrato ou sede da empresa, com renúncia a qualquer outro.</p>
+        </section>
+
+        <section>
+            <h2><i class="ph ph-signature"></i> 13. DECLARAÇÃO FINAL</h2>
+            <p>Ao clicar em <strong>"Aceito os Termos"</strong>, o usuário declara que leu e compreendeu todas as cláusulas, concordando com o uso de sua imagem, voz e tratamento de dados.</p>
+        </section>
+
+        <div class="footer">
+            <button onclick="closeTerms()" class="btn-back">
+                <i class="ph ph-check"></i> Li e aceito os Termos
+            </button>
+        </div>
+    </div>
+
+    <button onclick="closeTerms()" class="btn-close-top" title="Fechar">
+        <i class="ph ph-x"></i>
+    </button>
+
+    <script>
+        function closeTerms() {
+            window.close();
+        }
+    </script>
+</body>
+</html>

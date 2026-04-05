@@ -19,8 +19,21 @@ const runMigrations = async () => {
           dsc_senha_hash VARCHAR(255) NOT NULL,
           flg_admin BOOLEAN DEFAULT FALSE,
           vlr_status_conta VARCHAR(20) DEFAULT 'ativo',
+          dt_aceite_termos TIMESTAMP,
           dt_criacao_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
+
+        -- 1.1 Recuperação de Senha (Time-Safe Migration)
+        DROP TABLE IF EXISTS trusted.tb_recuperacao_senha;
+        CREATE TABLE trusted.tb_recuperacao_senha (
+          id_pedido SERIAL PRIMARY KEY,
+          id_usuario INTEGER REFERENCES trusted.tb_usuarios(id_usuario),
+          dsc_token VARCHAR(255) NOT NULL,
+          dt_expiracao TIMESTAMPTZ NOT NULL,
+          flg_usado BOOLEAN DEFAULT FALSE,
+          dt_registro TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+        );
+        CREATE INDEX IF NOT EXISTS idx_recuperacao_token ON trusted.tb_recuperacao_senha(dsc_token);
       `);
 
       // 2. Perfil de Membro
@@ -137,6 +150,9 @@ const runMigrations = async () => {
             id_usuario INTEGER REFERENCES trusted.tb_usuarios(id_usuario),
             dt_checkin TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
+        -- [BOLT:FLUSH] Resetando tabela de logs brutos para sincronizar esquema (Não destrutivo para dados de negócio)
+        DROP TABLE IF EXISTS raw.tb_perfil_atualizacoes;
+
         CREATE TABLE IF NOT EXISTS raw.tb_perfil_atualizacoes (
             id_log SERIAL PRIMARY KEY,
             id_usuario INTEGER,
@@ -215,6 +231,12 @@ const runMigrations = async () => {
             jsn_metadata JSONB,
             dt_recebimento TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             flg_processado BOOLEAN DEFAULT FALSE
+          );
+
+          CREATE TABLE IF NOT EXISTS raw.tb_onboarding_submissions (
+            id_submissao SERIAL PRIMARY KEY,
+            jsn_payload JSONB,
+            dt_recebimento TIMESTAMP DEFAULT CURRENT_TIMESTAMP
           );
         `);
 

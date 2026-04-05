@@ -1,0 +1,30 @@
+# Redesign: Mapeamento de DNA Técnico
+
+Vamos substituir o pop-up automático de login por um card estratégico e interativo na página inicial do Dashboard. Isso melhora a retenção e dá ao usuário a escolha de quando realizar seu mapeamento técnico.
+
+## User Review Required
+
+> [!IMPORTANT]
+> O formulário não aparecerá mais "do nada". Ele ficará fixado como um card pendente até que o usuário decida completá-lo.
+> 
+> **Design Escolhido**: Um card com efeito "Glow" em cyan e lime, com o título "Seu DNA de Atleta".
+
+## Proposed Changes
+
+### [Frontend] Dashboard UI
+
+#### [MODIFY] [home.html](file:///c:/Users/sjwse/OneDrive/Documentos/Antigravity/spin4all/frontend/pages/home.html)
+- Adicionar o novo card de "Mapeamento de DNA" na grade superior ou como um novo bloco acima de "Seu Momento no Jogo".
+- O card terá dois estados: **Pendente** (Brilhante/Glow) e **Atualizar** (Sutil).
+
+#### [MODIFY] [diagnostic.js](file:///c:/Users/sjwse/OneDrive/Documentos/Antigravity/spin4all/frontend/js/diagnostic.js)
+- Desativar a função `checkDiagnosticRequirement` que abre o modal automaticamente.
+- Garantir que o botão do novo card chame `window.openDiagnosticModal()`.
+
+## Verification Plan
+
+### Manual Verification
+1. Logar com um usuário novo.
+2. Confirmar que **NÃO** abre o modal de imediato.
+3. Validar se o novo card de "DNA Técnico" aparece no Dashboard.
+4. Clicar no botão do card e confirmar que o diagnóstico de 13 passos abre corretamente.

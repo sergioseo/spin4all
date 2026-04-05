@@ -17,6 +17,7 @@ export async function init() {
             if (userRes.success) {
                 updateStore('user', userRes.user);
                 homeView.updateUserProfile(userRes.user);
+                homeView.renderTechnicalDNA(userRes.user);
             }
         } catch (err) {
             console.error('[CRITICAL] User profile load failed:', err);

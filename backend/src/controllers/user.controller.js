@@ -7,8 +7,8 @@ const getMe = async (req, res) => {
     const query = `
       SELECT 
         u.id_usuario as id, u.dsc_email, u.flg_admin,
-        p.dsc_nome_completo, p.dt_nascimento, p.num_altura_cm, p.num_peso_kg,
-        p.num_telefone, p.dsc_foto_perfil, p.dsc_lateralidade, p.dsc_empunhadura,
+        p.dsc_nome_completo, p.dsc_nome_completo as dsc_nome, p.dt_nascimento, p.num_altura_cm, p.num_peso_kg,
+        p.num_telefone, p.dsc_foto_perfil, p.vlr_lateralidade as dsc_lateralidade, p.dsc_empunhadura,
         p.dsc_nivel_tecnico, p.dsc_objetivo, p.dsc_metas,
         p.num_skill_forehand, p.num_skill_backhand, p.num_skill_saque,
         p.num_skill_ataque, p.num_skill_defesa, p.num_skill_controle,
@@ -39,7 +39,7 @@ const updateProfile = async (req, res) => {
     await client.query('BEGIN');
     const { 
       name, weight, height, lateralidade, grip, level, goals, mentor_message, birth,
-      skills 
+      skills, termsAccepted, phone 
     } = req.body;
     const userId = req.user.id;
 
@@ -76,35 +76,45 @@ const updateProfile = async (req, res) => {
            num_skill_bloqueio = $18,
            num_skill_controle = $19,
            num_skill_movimentacao = $20,
+           num_telefone = $21,
            flg_perfil_concluido = TRUE,
            dt_atualizacao = CURRENT_TIMESTAMP
-       WHERE id_usuario = $21`,
+       WHERE id_usuario = $22`,
       [
-        name || oldData.dsc_nome_completo, 
-        weight || oldData.num_peso_kg, 
-        height || oldData.num_altura_cm, 
-        lateralidade || oldData.vlr_lateralidade, 
-        grip || oldData.dsc_empunhadura, 
-        level || oldData.dsc_nivel_tecnico, 
-        goals || oldData.dsc_metas, 
-        mentor_message || oldData.dsc_mensagem_mentor, 
-        birth || oldData.dt_nascimento,
-        sk.forehand ?? oldData.num_skill_forehand,
-        sk.backhand ?? oldData.num_skill_backhand,
-        sk.cozinhada ?? oldData.num_skill_cozinhada,
-        sk.topspin ?? oldData.num_skill_topspin,
-        sk.saque ?? oldData.num_skill_saque,
-        sk.rally ?? oldData.num_skill_rally,
-        sk.ataque ?? oldData.num_skill_ataque,
-        sk.defesa ?? oldData.num_skill_defesa,
-        sk.bloqueio ?? oldData.num_skill_bloqueio,
-        sk.controle ?? oldData.num_skill_controle,
-        sk.movimentacao ?? oldData.num_skill_movimentacao,
+        name || (oldData ? oldData.dsc_nome_completo : ''), 
+        weight || (oldData ? oldData.num_peso_kg : 0), 
+        height || (oldData ? oldData.num_altura_cm : 0), 
+        lateralidade || (oldData ? (oldData.vlr_lateralidade || 'Destro') : 'Destro'), 
+        grip || (oldData ? (oldData.dsc_empunhadura || 'Clássica') : 'Clássica'), 
+        level || (oldData ? (oldData.dsc_nivel_tecnico || null) : null), 
+        goals || (oldData ? oldData.dsc_metas : ''), 
+        mentor_message || (oldData ? oldData.dsc_mensagem_mentor : ''), 
+        birth || (oldData ? oldData.dt_nascimento : null),
+        sk.forehand ?? (oldData ? oldData.num_skill_forehand : 50),
+        sk.backhand ?? (oldData ? oldData.num_skill_backhand : 50),
+        sk.cozinhada ?? (oldData ? oldData.num_skill_cozinhada : 50),
+        sk.topspin ?? (oldData ? oldData.num_skill_topspin : 50),
+        sk.saque ?? (oldData ? oldData.num_skill_saque : 50),
+        sk.rally ?? (oldData ? oldData.num_skill_rally : 50),
+        sk.ataque ?? (oldData ? oldData.num_skill_ataque : 50),
+        sk.defesa ?? (oldData ? oldData.num_skill_defesa : 50),
+        sk.bloqueio ?? (oldData ? oldData.num_skill_bloqueio : 50),
+        sk.controle ?? (oldData ? oldData.num_skill_controle : 50),
+        sk.movimentacao ?? (oldData ? oldData.num_skill_movimentacao : 50),
+        phone || (oldData ? oldData.num_telefone : ''),
         userId
       ]
     );
 
-    if (oldData.num_peso_kg !== weight || oldData.dsc_nivel_tecnico !== level) {
+    // BOLT: Gravar aceite de termos se enviado (comum em Google Onboarding)
+    if (termsAccepted) {
+        await client.query(
+            'UPDATE trusted.tb_usuarios SET dt_aceite_termos = CURRENT_TIMESTAMP WHERE id_usuario = $1 AND dt_aceite_termos IS NULL',
+            [userId]
+        );
+    }
+
+    if (!oldData || oldData.num_peso_kg !== weight || oldData.dsc_nivel_tecnico !== level) {
       await client.query(
         `INSERT INTO trusted.tb_membros_evolucao (id_usuario, num_peso_kg, num_altura_cm, dsc_nivel_tecnico) 
          VALUES ($1, $2, $3, $4)`,

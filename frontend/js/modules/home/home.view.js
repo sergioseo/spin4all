@@ -139,6 +139,32 @@ class HomeView {
             </div>
         `).join('');
     }
+
+    renderTechnicalDNA(user) {
+        const container = document.getElementById('technical-dna-container');
+        if (!container) return;
+
+        const isPending = !user.flg_perfil_concluido;
+        
+        container.innerHTML = `
+            <div class="main-box-densified" style="background: ${isPending ? 'linear-gradient(90deg, rgba(56, 189, 248, 0.15) 0%, rgba(13, 23, 42, 0.7) 100%)' : 'var(--card-bg)'}; border-color: ${isPending ? 'var(--accent-cyan)' : 'var(--card-border)'}; display: flex; align-items: center; justify-content: space-between; gap: 20px;">
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <div class="metric-icon-orb" style="width: 60px; height: 60px; font-size: 1.5rem; color: ${isPending ? 'var(--accent-cyan)' : 'var(--accent-lime)'}; background: rgba(0, 0, 0, 0.4);">
+                        <i class="fas ${isPending ? 'fa-dna' : 'fa-check-circle'}"></i>
+                    </div>
+                    <div>
+                        <h4 style="color: #fff; margin: 0 0 5px 0; font-size: 1.1rem; font-weight: 900;">${isPending ? 'Mapeamento de DNA Técnico' : 'Conheça seu DNA de Atleta'}</h4>
+                        <p style="color: var(--text-muted); font-size: 12px; margin: 0;">${isPending ? 'Você ainda não mapeou suas habilidades. Toque para começar sua evolução!' : 'Seu mapeamento técnico está em dia. Continue evoluindo!'}</p>
+                    </div>
+                </div>
+                <button class="btn-elite-glow ${isPending ? 'btn-tournament' : ''}" 
+                        style="width: auto; padding: 12px 25px; margin-top: 0; background: ${isPending ? 'var(--accent-cyan)' : 'rgba(255,255,255,0.05)'}; color: ${isPending ? '#000' : '#fff'}; border: ${isPending ? 'none' : '1px solid rgba(255,255,255,0.1)'};"
+                        onclick="window.openDiagnosticModal()">
+                    ${isPending ? 'INICIAR AGORA' : 'REFINAR DNA'}
+                </button>
+            </div>
+        `;
+    }
     renderCommunityStats() { }
     drawEvolutionChart() { }
     renderCalendar() { }

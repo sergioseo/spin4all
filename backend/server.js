@@ -47,6 +47,7 @@ app.use('/api', require('./src/routes/analysis.routes'));
 app.use('/api', require('./src/routes/community.routes'));
 app.use('/api', require('./src/routes/governance.routes'));
 app.use('/api/admin', require('./src/routes/admin.routes'));
+app.use('/api/diagnostic', require('./src/routes/diagnostic.routes'));
 app.use('/api/videos', require('./src/routes/video.routes'));
 
 // --- INICIALIZAÇÃO "SMART" ---

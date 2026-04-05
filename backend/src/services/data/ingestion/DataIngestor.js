@@ -47,13 +47,13 @@ class DataIngestor {
 
                 case 'profile_update':
                     return await pool.query(
-                        'INSERT INTO raw.tb_perfil_atualizacoes (id_usuario, jsn_payload_antigo, jsn_payload_novo) VALUES ($1, $2, $3) RETURNING id_perfil_atualizacao',
+                        'INSERT INTO raw.tb_perfil_atualizacoes (id_usuario, jsn_payload_antigo, jsn_payload_novo) VALUES ($1, $2, $3) RETURNING id_log',
                         [data.id_usuario, JSON.stringify(data.old), JSON.stringify(data.new)]
                     );
 
                 case 'onboarding':
                     return await pool.query(
-                        'INSERT INTO raw.tb_onboarding_submissions (jsn_payload) VALUES ($1) RETURNING id_submission',
+                        'INSERT INTO raw.tb_onboarding_submissions (jsn_payload) VALUES ($1) RETURNING id_submissao',
                         [JSON.stringify(data.payload)]
                     );
 

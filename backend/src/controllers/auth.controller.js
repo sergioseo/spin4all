@@ -22,6 +22,12 @@ const register = async (req, res) => {
   try {
     await client.query('BEGIN');
     const { email, password, profileData } = req.body;
+ 
+    // 0.1 Check if email already exists (BOLT: Frictionless UX)
+    const emailCheck = await pool.query('SELECT 1 FROM trusted.tb_usuarios WHERE dsc_email = $1', [email]);
+    if (emailCheck.rows.length > 0) {
+      return res.status(400).json({ success: false, message: 'E-mail já cadastrado no sistema.' });
+    }
 
     // 1. Salvar na camada RAW (Auditoria Centralizada)
     await DataIngestor.ingest('onboarding', { payload: req.body });
@@ -29,17 +35,17 @@ const register = async (req, res) => {
     // 2. Criar Usuário na TRUSTED
     const hashedPassword = await bcrypt.hash(password, 10);
     const userRes = await client.query(
-      'INSERT INTO trusted.tb_usuarios (dsc_email, dsc_senha_hash) VALUES ($1, $2) RETURNING id_usuario',
+      'INSERT INTO trusted.tb_usuarios (dsc_email, dsc_senha_hash, dt_aceite_termos) VALUES ($1, $2, CURRENT_TIMESTAMP) RETURNING id_usuario',
       [email, hashedPassword]
     );
 
     const userId = userRes.rows[0].id_usuario;
 
-    // 3. Criar Perfil na TRUSTED (Estado Atual) com a flag true
+    // 3. Criar Perfil na TRUSTED (Estado Inicial: Pendente para Mapeamento)
     await client.query(`
         INSERT INTO trusted.tb_membros_perfil 
           (id_usuario, dsc_nome_completo, dt_nascimento, num_altura_cm, num_peso_kg, num_telefone, vlr_lateralidade, dsc_empunhadura, dsc_nivel_tecnico, dsc_objetivo, dsc_metas, flg_perfil_concluido)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, TRUE)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, FALSE)
       `, [
         userId, 
         profileData.name, 
@@ -49,7 +55,7 @@ const register = async (req, res) => {
         profileData.phone || '',
         profileData.lateralidade || 'Destro',
         profileData.grip || 'Clássica',
-        profileData.level || 'Iniciante', 
+        profileData.level || null, // Se NULL, ativa o Card 'INICIAR AGORA'
         profileData.objective || 'Diversão', 
         profileData.goals || ''
       ]);
@@ -66,6 +72,12 @@ const register = async (req, res) => {
   } catch (err) {
     await client.query('ROLLBACK');
     console.error(err);
+    
+    // BOLT: Handle Postgres Unique Constraint Violation (Error Code 23505)
+    if (err.code === '23505') {
+        return res.status(400).json({ success: false, message: 'E-mail já cadastrado no sistema.' });
+    }
+
     res.status(500).json({ success: false, error: 'Erro ao registrar membro.' });
   } finally {
     client.release();

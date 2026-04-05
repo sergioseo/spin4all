@@ -28,7 +28,34 @@ function updateDiagProgress() {
     }
 }
 
+function closeDiagnosticModal() {
+    const modal = document.getElementById('diagnostic-modal');
+    if (modal) modal.style.display = 'none';
+    
+    // Opcional: Resetar para o passo 1 ao fechar (BOLT: Reset de estado limpo)
+    document.querySelectorAll('.diag-step').forEach(step => step.classList.remove('active'));
+    currentDiagStep = 1;
+    document.querySelector('.diag-step[data-step="1"]').classList.add('active');
+    updateDiagProgress();
+}
+
 function nextDiagStep() {
+    // BOLT: Validação de Obrigatoriedade
+    const currentStepEl = document.querySelector(`.diag-step[data-step="${currentDiagStep}"]`);
+    const inputs = currentStepEl.querySelectorAll('input[type="hidden"]');
+    
+    let isStepComplete = true;
+    inputs.forEach(input => {
+        if (!input.value || input.value === '0') {
+            isStepComplete = false;
+        }
+    });
+
+    if (!isStepComplete) {
+        alert('Opa! Selecione uma opção para continuar. Este dado é fundamental para o seu DNA Técnico! 🎾✨');
+        return;
+    }
+
     if (currentDiagStep < totalDiagSteps) {
         document.querySelector(`.diag-step[data-step="${currentDiagStep}"]`).classList.remove('active');
         currentDiagStep++;
@@ -59,8 +86,10 @@ function selectDiagOption(el) {
     // Adicionar nova seleção
     el.classList.add('selected');
     
-    // Tenta achar o input hidden MAIS PRÓXIMO do elemento clicado
-    const hiddenInput = group.querySelector('input[type="hidden"]');
+    // Prioriza o input dentro do grupo imediato (Passo 13), fallback para container do passo (Passos 1-11)
+    const stepContainer = el.closest('.diag-step');
+    const hiddenInput = group.querySelector('input[type="hidden"]') || (stepContainer ? stepContainer.querySelector('input[type="hidden"]') : null);
+    
     if (hiddenInput) {
         hiddenInput.value = el.getAttribute('data-val');
         console.log(`[DIAG] Input ${hiddenInput.id} atualizado para: ${hiddenInput.value}`);
@@ -68,6 +97,21 @@ function selectDiagOption(el) {
 }
 
 async function finishDiag() {
+    // BOLT: Validação Final de Segurança
+    const currentStepEl = document.querySelector(`.diag-step[data-step="${currentDiagStep}"]`);
+    const inputs = currentStepEl.querySelectorAll('input[type="hidden"]');
+    let isStepComplete = true;
+    inputs.forEach(input => {
+        if (!input.value || input.value === '0') {
+            isStepComplete = false;
+        }
+    });
+
+    if (!isStepComplete) {
+        alert('Este último passo é o mais importante! Escolha todas as opções para finalizar seu DNA. 🎾🏆✨');
+        return;
+    }
+
     const btn = document.getElementById('diag-finish-btn');
     const originalText = btn.innerHTML;
     
@@ -187,10 +231,5 @@ window.closeDiagnosticModal = function() {
 
 // Abrir modal se necessário (Onboarding)
 function checkDiagnosticRequirement(user) {
-    if (!user.dsc_nivel_tecnico || user.dsc_nivel_tecnico === '--') {
-        console.log('[DIAG] Usuário sem diagnóstico. Abrindo em 1.5s...');
-        setTimeout(() => {
-            window.openDiagnosticModal();
-        }, 1500);
-    }
+    // DESATIVADO: Agora o diagnóstico é acessado via Card estratégico no Dashboard
 }

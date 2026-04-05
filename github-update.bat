@@ -9,7 +9,7 @@ git config gc.auto 0
 git add .
 echo.
 echo 2. Criando o versionamento...
-git commit -m "[P0:RECOVERY] Restoring Production Connectivity (Binding to 0.0.0.0) 🚨⚡🛠️"
+git commit -m "[P0:INDUSTRIALIZATION] Refined Diagnostic, Updated Terms, Implemented SAC Admin Control, and DB Purge 🦅💎🏁🚀🧪"
 echo.
 echo 3. Enviando para o GitHub...
 git push origin main

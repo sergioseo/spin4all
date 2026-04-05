@@ -198,6 +198,42 @@
             font-size: 0.9rem;
             margin-top: 24px;
         }
+
+        /* Terms Checkbox */
+        .terms-container {
+            margin: 20px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            background: rgba(241, 245, 249, 0.5);
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .terms-container input {
+            width: 18px;
+            height: 18px;
+            margin-top: 2px;
+            cursor: pointer;
+        }
+
+        .terms-container label {
+            font-size: 0.85rem;
+            color: #64748b;
+            line-height: 1.4;
+            cursor: pointer;
+        }
+
+        .terms-container a {
+            color: var(--brand-primary);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .terms-container a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 
@@ -236,7 +272,7 @@
                         <input type="password" id="login-password" placeholder="••••••••" required>
                     </div>
                     <div style="text-align: right; margin-bottom: 24px;">
-                        <button type="button" class="btn-ghost" style="font-size: 0.8rem; font-weight: 500;">Esqueci minha senha</button>
+                        <a href="forgot-password.html" class="btn-ghost" style="font-size: 0.8rem; font-weight: 500; text-decoration: none;">Esqueci minha senha</a>
                     </div>
                     <button type="submit" id="btn-login-submit" class="btn-primary">Entrar no Portal</button>
                 </form>
@@ -244,7 +280,7 @@
                 <div id="registration-container" style="text-align: center; margin-top: 32px;">
                     <p style="color: #64748b; font-size: 0.9rem;">
                         Ainda não faz parte? 
-                        <button onclick="goToStep('profile')" class="btn-ghost" style="color: var(--brand-primary); font-weight: 700;">Criar Minha Conta</button>
+                        <button onclick="localStorage.clear(); goToStep('profile')" class="btn-ghost" style="color: var(--brand-primary); font-weight: 700;">Criar Minha Conta</button>
                     </p>
                 </div>
 
@@ -305,6 +341,18 @@
                             <label>Telefone</label>
                             <input type="tel" id="reg-phone" placeholder="(00) 00000-0000" required>
                         </div>
+                    </div>
+
+                    <!-- Campos Técnicos Removidos (Mapeados via DNA Técnico no Dashboard) -->
+                    <input type="hidden" id="reg-level" value="">
+                    <input type="hidden" id="reg-side" value="Destro">
+                    <input type="hidden" id="reg-grip" value="Clássica">
+
+                    <div class="terms-container">
+                        <input type="checkbox" id="reg-terms" required>
+                        <label for="reg-terms">
+                            Li e concordo com os <a href="terms.html" target="_blank">Termos de Uso e Política de Privacidade</a> do portal Spin4All.
+                        </label>
                     </div>
 
                     <button type="submit" id="btn-reg-submit" class="btn-primary" style="margin-top: 12px;">Finalizar e Entrar</button>
@@ -413,15 +461,7 @@
 
                 if (result.success) {
                     localStorage.setItem('spin4all_token', result.token);
-                    if (!result.flg_perfil_concluido) {
-                        // Caso especial: conta existe mas perfil não foi feito
-                        document.getElementById('reg-email').value = email;
-                        document.getElementById('reg-email').disabled = true;
-                        document.getElementById('pass-group').style.display = 'none';
-                        goToStep('profile');
-                    } else {
-                        window.location.href = 'dashboard.html';
-                    }
+                    window.location.href = 'dashboard.html';
                 } else {
                     showError(result.message || "E-mail ou senha incorretos.");
                 }
@@ -436,6 +476,14 @@
         // --- PROFILE SUBMISSION (SIGNUP / UPDATE) ---
         document.getElementById('profile-form').onsubmit = async (e) => {
             e.preventDefault();
+            
+            // Validação de Termos (BOLT Protocol)
+            const termsAccepted = document.getElementById('reg-terms').checked;
+            if (!termsAccepted) {
+                showError("Você precisa aceitar os termos de uso para continuar.");
+                return;
+            }
+
             const btn = document.getElementById('btn-reg-submit');
             btn.disabled = true;
             btn.textContent = 'Salvando e Criando...';
@@ -444,12 +492,14 @@
                 email: document.getElementById('reg-email').value,
                 name: document.getElementById('reg-name').value,
                 password: document.getElementById('reg-password').value || null,
+                termsAccepted: document.getElementById('reg-terms').checked, // BOLT: Auditoria
                 profileData: {
                     name: document.getElementById('reg-name').value,
                     height: parseInt(document.getElementById('reg-height').value),
                     weight: parseInt(document.getElementById('reg-weight').value),
                     birthDate: document.getElementById('reg-birth').value,
-                    phone: document.getElementById('reg-phone').value
+                    phone: document.getElementById('reg-phone').value,
+                    lateralidade: document.getElementById('reg-side').value
                 }
             };
 
@@ -471,7 +521,8 @@
                             height: payload.profileData.height,
                             weight: payload.profileData.weight,
                             birth: payload.profileData.birthDate,
-                            phone: payload.profileData.phone
+                            phone: payload.profileData.phone,
+                            lateralidade: payload.profileData.lateralidade
                         })
                     });
                     const result = await res.json();
@@ -496,7 +547,7 @@
                         localStorage.setItem('spin4all_token', loginResult.token);
                         window.location.href = 'dashboard.html';
                     } else {
-                        showError(result.error || "Erro ao criar conta.");
+                        showError(result.message || result.error || "Erro ao criar conta.");
                     }
                 }
             } catch (err) {

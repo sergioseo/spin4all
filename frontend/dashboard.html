@@ -190,9 +190,207 @@
         </div>
     </div>
 
-    <!-- Modal Diagnóstico (Mantido) -->
-    <div id="diagnostic-modal" class="modal" style="display: none;">
-        <!-- ... (Diagnostic code preserved) -->
+    <!-- Modal Diagnóstico (Restaurado com Protocolo BOLT) -->
+    <div id="diagnostic-modal" class="modal" style="display: none; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);">
+        <div class="modal-card" style="max-width: 650px; border: 1px solid var(--accent-cyan); box-shadow: 0 0 30px rgba(56, 189, 248, 0.2); position: relative;">
+            
+            <!-- Botão de Fechar Exclusivo -->
+            <button class="modal-close-btn" onclick="closeDiagnosticModal()" title="Fechar Diagnóstico">&times;</button>
+
+            <div class="diag-header" style="text-align: center; margin-bottom: 30px;">
+                <h2 style="color: #fff; font-size: 1.6rem; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 15px;">DNA TÉCNICO</h2>
+                <div class="diag-progress-container" style="width: 100%; height: 6px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden;">
+                    <div id="diag-progress-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--brand-primary) 0%, var(--accent-cyan) 100%); transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);"></div>
+                </div>
+            </div>
+
+            <div id="diag-steps-container">
+                <!-- Passos 1 a 11: Skills (ID q1 a q20) -->
+                <div class="diag-step active" data-step="1">
+                    <h3 style="color: var(--accent-cyan); margin-bottom: 10px;">01. Forehand (Ataque de Direita)</h3>
+                    <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 25px;">Como você avalia sua precisão e potência no ataque de direita?</p>
+                    <div class="diag-options-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div class="diag-option" data-val="25" onclick="selectDiagOption(this)">Iniciante (Básico)</div>
+                        <div class="diag-option" data-val="50" onclick="selectDiagOption(this)">Intermediário (Regular)</div>
+                        <div class="diag-option" data-val="75" onclick="selectDiagOption(this)">Avançado (Consistente)</div>
+                        <div class="diag-option" data-val="100" onclick="selectDiagOption(this)">Elite (Alta Performance)</div>
+                    </div>
+                    <input type="hidden" id="q1" value="0">
+                </div>
+
+                <div class="diag-step" data-step="2">
+                    <h3 style="color: var(--accent-cyan); margin-bottom: 10px;">02. Backhand (Ataque de Esquerda)</h3>
+                    <p style="color: #94a3b8; margin-bottom: 25px;">Sua esquerda é segura e agressiva ou apenas defensiva?</p>
+                    <div class="diag-options-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div class="diag-option" data-val="25" onclick="selectDiagOption(this)">Apenas Passa</div>
+                        <div class="diag-option" data-val="50" onclick="selectDiagOption(this)">Golpes Regulares</div>
+                        <div class="diag-option" data-val="75" onclick="selectDiagOption(this)">Ataca c/ Confiança</div>
+                        <div class="diag-option" data-val="100" onclick="selectDiagOption(this)">Domínio Total</div>
+                    </div>
+                    <input type="hidden" id="q2" value="0">
+                </div>
+
+                <!-- Passo 3: Saque (q3) -->
+                <div class="diag-step" data-step="3">
+                    <h3 style="color: var(--accent-cyan); margin-bottom: 10px;">03. Saque (Serviço)</h3>
+                    <p style="color: #94a3b8; margin-bottom: 25px;">Você consegue variar efeito e profundidade no saque?</p>
+                    <div class="diag-options-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div class="diag-option" data-val="25" onclick="selectDiagOption(this)">Longo e sem efeito</div>
+                        <div class="diag-option" data-val="50" onclick="selectDiagOption(this)">Curto com efeito</div>
+                        <div class="diag-option" data-val="75" onclick="selectDiagOption(this)">Variação estratégica</div>
+                        <div class="diag-option" data-val="100" onclick="selectDiagOption(this)">Letal / Imprevisível</div>
+                    </div>
+                    <input type="hidden" id="q3" value="0">
+                </div>
+
+                <!-- Passo 4: Consistência (q4) -->
+                <div class="diag-step" data-step="4">
+                    <h3 style="color: var(--accent-cyan); margin-bottom: 10px;">04. Consistência (Rally)</h3>
+                    <p style="color: #94a3b8; margin-bottom: 25px;">Quantas bolas você mantém na mesa em um treino moderado?</p>
+                    <div class="diag-options-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div class="diag-option" data-val="25" onclick="selectDiagOption(this)">Erro rápido</div>
+                        <div class="diag-option" data-val="50" onclick="selectDiagOption(this)">5 a 10 bolas</div>
+                        <div class="diag-option" data-val="75" onclick="selectDiagOption(this)">Rally prolongado</div>
+                        <div class="diag-option" data-val="100" onclick="selectDiagOption(this)">Parede de Ferro</div>
+                    </div>
+                    <input type="hidden" id="q4" value="0">
+                </div>
+
+                <!-- Passo 5: Ataque (q5) -->
+                <div class="diag-step" data-step="5">
+                    <h3 style="color: var(--accent-cyan); margin-bottom: 10px;">05. Ataque (Velocidade)</h3>
+                    <p style="color: #94a3b8; margin-bottom: 25px;">Qual sua capacidade de finalizar o ponto com velocidade?</p>
+                    <div class="diag-options-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div class="diag-option" data-val="25" onclick="selectDiagOption(this)">Devagar / Passivo</div>
+                        <div class="diag-option" data-val="50" onclick="selectDiagOption(this)">Velocidade Média</div>
+                        <div class="diag-option" data-val="75" onclick="selectDiagOption(this)">Agressivo</div>
+                        <div class="diag-option" data-val="100" onclick="selectDiagOption(this)">Explosivo</div>
+                    </div>
+                    <input type="hidden" id="q5" value="0">
+                </div>
+
+                <!-- Passo 6: Defesa (q6) -->
+                <div class="diag-step" data-step="6">
+                    <h3 style="color: var(--accent-cyan); margin-bottom: 10px;">06. Defesa (Resiliência)</h3>
+                    <p style="color: #94a3b8; margin-bottom: 25px;">Quando pressionado, você consegue retomar o ponto?</p>
+                    <div class="diag-options-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div class="diag-option" data-val="25" onclick="selectDiagOption(this)">Fácil de bater</div>
+                        <div class="diag-option" data-val="50" onclick="selectDiagOption(this)">Defesa Básica</div>
+                        <div class="diag-option" data-val="75" onclick="selectDiagOption(this)">Recuperações difíceis</div>
+                        <div class="diag-option" data-val="100" onclick="selectDiagOption(this)">Imbatível</div>
+                    </div>
+                    <input type="hidden" id="q6" value="0">
+                </div>
+
+                <!-- Passo 7: Controle (q7) -->
+                <div class="diag-step" data-step="7">
+                    <h3 style="color: var(--accent-cyan); margin-bottom: 10px;">07. Controle (Precisão)</h3>
+                    <p style="color: #94a3b8; margin-bottom: 25px;">Sua colocação de bola nas pontas da mesa é precisa?</p>
+                    <div class="diag-options-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div class="diag-option" data-val="25" onclick="selectDiagOption(this)">Bate no Meio</div>
+                        <div class="diag-option" data-val="50" onclick="selectDiagOption(this)">Acerta as pontas as vezes</div>
+                        <div class="diag-option" data-val="75" onclick="selectDiagOption(this)">Colocação Estratégica</div>
+                        <div class="diag-option" data-val="100" onclick="selectDiagOption(this)">Cirúrgico</div>
+                    </div>
+                    <input type="hidden" id="q7" value="0">
+                </div>
+
+                <!-- Passo 8: Movimentação (q8) -->
+                <div class="diag-step" data-step="8">
+                    <h3 style="color: var(--accent-cyan); margin-bottom: 10px;">08. Movimentação (Footwork)</h3>
+                    <p style="color: #94a3b8; margin-bottom: 25px;">Suas pernas acompanham a velocidade do jogo?</p>
+                    <div class="diag-options-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div class="diag-option" data-val="25" onclick="selectDiagOption(this)">Lento / Estático</div>
+                        <div class="diag-option" data-val="50" onclick="selectDiagOption(this)">Passos Básicos</div>
+                        <div class="diag-option" data-val="75" onclick="selectDiagOption(this)">Ágil e Coordenado</div>
+                        <div class="diag-option" data-val="100" onclick="selectDiagOption(this)">Relâmpago na mesa</div>
+                    </div>
+                    <input type="hidden" id="q8" value="0">
+                </div>
+
+                <!-- Passo 9: Cozinhada (q18) -->
+                <div class="diag-step" data-step="9">
+                    <h3 style="color: var(--accent-cyan); margin-bottom: 10px;">09. Cozinhada (Pushes)</h3>
+                    <p style="color: #94a3b8; margin-bottom: 25px;">Seu jogo curto por cima da mesa é firme e baixo?</p>
+                    <div class="diag-options-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div class="diag-option" data-val="25" onclick="selectDiagOption(this)">Sobe muito</div>
+                        <div class="diag-option" data-val="50" onclick="selectDiagOption(this)">Regular</div>
+                        <div class="diag-option" data-val="75" onclick="selectDiagOption(this)">Agressivo / Curto</div>
+                        <div class="diag-option" data-val="100" onclick="selectDiagOption(this)">Mestre do Curto</div>
+                    </div>
+                    <input type="hidden" id="q18" value="0">
+                </div>
+
+                <!-- Passo 10: Topspin (q19) -->
+                <div class="diag-step" data-step="10">
+                    <h3 style="color: var(--accent-cyan); margin-bottom: 10px;">10. Topspin (Loop)</h3>
+                    <p style="color: #94a3b8; margin-bottom: 25px;">Sua bola raspa e carrega muito efeito de rotação?</p>
+                    <div class="diag-options-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div class="diag-option" data-val="25" onclick="selectDiagOption(this)">Bate "chapado"</div>
+                        <div class="diag-option" data-val="50" onclick="selectDiagOption(this)">Efeito Moderado</div>
+                        <div class="diag-option" data-val="75" onclick="selectDiagOption(this)">Topspin Pesado</div>
+                        <div class="diag-option" data-val="100" onclick="selectDiagOption(this)">Rotação Máxima</div>
+                    </div>
+                    <input type="hidden" id="q19" value="0">
+                </div>
+
+                <!-- Passo 11: Bloqueio (q20) -->
+                <div class="diag-step" data-step="11">
+                    <h3 style="color: var(--accent-cyan); margin-bottom: 10px;">11. Bloqueio (Recepção)</h3>
+                    <p style="color: #94a3b8; margin-bottom: 25px;">Como você lida com ataques potentes no seu contra-ataque?</p>
+                    <div class="diag-options-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div class="diag-option" data-val="25" onclick="selectDiagOption(this)">Bate e sai</div>
+                        <div class="diag-option" data-val="50" onclick="selectDiagOption(this)">Devolve Passivo</div>
+                        <div class="diag-option" data-val="75" onclick="selectDiagOption(this)">Bloqueio Amortecido</div>
+                        <div class="diag-option" data-val="100" onclick="selectDiagOption(this)">Bloqueio Ativo / Furo</div>
+                    </div>
+                    <input type="hidden" id="q20" value="0">
+                </div>
+
+                <!-- Passo 12: Estilo de Jogo (q14) -->
+                <div class="diag-step" data-step="12">
+                    <h3 style="color: var(--accent-cyan); margin-bottom: 10px;">12. Perfil de Combate</h3>
+                    <p style="color: #94a3b8; margin-bottom: 25px;">Como você definiria seu estilo predominante?</p>
+                    <div class="diag-options-grid" style="display: grid; grid-template-columns: 1fr; gap: 12px;">
+                        <div class="diag-option" data-val="Ofensivo" onclick="selectDiagOption(this)">Ofensivo (Agressivo)</div>
+                        <div class="diag-option" data-val="Defensivo" onclick="selectDiagOption(this)">Defensivo (Catedrático)</div>
+                        <div class="diag-option" data-val="All-around" onclick="selectDiagOption(this)">All-around (Misto)</div>
+                        <div class="diag-option" data-val="Contra-ataque" onclick="selectDiagOption(this)">Counter (Bloqueador)</div>
+                    </div>
+                    <input type="hidden" id="q14" value="">
+                </div>
+
+                <!-- Passo 13: Experiência (q11 e q12) -->
+                <div class="diag-step" data-step="13">
+                    <h3 style="color: var(--accent-cyan); margin-bottom: 10px;">13. Jornada do Atleta</h3>
+                    <p style="color: #94a3b8; margin-bottom: 25px;">Para finalizar, nos conte sua experiência no esporte.</p>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <label style="color: #fff; display: block; margin-bottom: 10px; font-size: 0.85rem;">Há quanto tempo você treina?</label>
+                        <div class="diag-options-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                            <div class="diag-option" style="padding: 10px;" data-val="<ctrl42>_1y" onclick="selectDiagOption(this)">Menos de 1 ano</div>
+                            <div class="diag-option" style="padding: 10px;" data-val="1y_3y" onclick="selectDiagOption(this)">1 a 3 anos</div>
+                            <input type="hidden" id="q11" value="">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label style="color: #fff; display: block; margin-bottom: 10px; font-size: 0.85rem;">Sua participação em torneios?</label>
+                        <div class="diag-options-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                            <div class="diag-option" style="padding: 10px;" data-val="amador" onclick="selectDiagOption(this)">Nunca / Amador</div>
+                            <div class="diag-option" style="padding: 10px;" data-val="federado" onclick="selectDiagOption(this)">Federado / Elite</div>
+                            <input type="hidden" id="q12" value="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="diag-footer" style="margin-top: 35px; display: flex; justify-content: space-between; gap: 15px;">
+                <button id="diag-prev-btn" onclick="prevDiagStep()" class="btn-cancel" style="flex: 1; padding: 15px; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; cursor: pointer;">ANTERIOR</button>
+                <button id="diag-next-btn" onclick="nextDiagStep()" style="flex: 2; padding: 15px; background: var(--accent-cyan); color: #000; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;"> PRÓXIMO <i class="fas fa-chevron-right"></i></button>
+                <button id="diag-finish-btn" onclick="finishDiag()" style="flex: 2; padding: 15px; background: var(--accent-lime); color: #000; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; display: none; box-shadow: 0 0 20px rgba(163, 230, 53, 0.3);"> FINALIZAR <i class="fas fa-flag-checkered"></i></button>
+            </div>
+        </div>
     </div>
 
 </body>

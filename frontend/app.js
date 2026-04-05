@@ -23,12 +23,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         const response = await userService.getUser();
         console.log('[SHELL] User response:', response.success ? 'Success' : 'Failed');
         if (response.success) {
-            // 2.1 Enforce Bio-Mechanical Profile Completion
+            // 2.1 Enforce Bio-Mechanical Profile Completion (Refacted: DNA Card handles this now)
+            /* 
             if (response.user.flg_perfil_concluido === false) {
                 console.warn('[SHELL] Profile incomplete, redirecting to profile sequence.');
-                window.location.href = 'login.html'; // Login will detect incomplete profile and show step-profile
+                window.location.href = 'login.html'; 
                 return;
             }
+            */
 
             updateStore('user', response.user);
             
